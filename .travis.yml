@@ -1,0 +1,22 @@
+language: cpp
+compiler: gcc
+
+branches:
+ - master
+ 
+before_script:
+ - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq libboost-all-dev build-essential gcc libmysql++-dev libbz2-dev libgmp3-dev g++-4.8
+ - git clone https://github.com/gamershost/ghostpp.git
+ - cd ghostpp
+ - cd bncsutil/src/bncsutil
+ - make
+ - sudo make install
+ - cd ../../../StormLib/stormlib
+ - make
+ - sudo make install
+ - cd ../../../
+ 
+script: 
+ - make
