@@ -11,6 +11,7 @@ before_script:
  - mkdir ghost
  - mv *.cpp ghost
  - mv *.h ghost
+ - mv update_dota_elo ghost
  - mv Makefile ghost
  - git clone https://github.com/gamershost/ghostpp.git
  - mv ghost/* ghostpp/ghost/
