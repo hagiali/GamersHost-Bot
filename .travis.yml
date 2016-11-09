@@ -25,3 +25,5 @@ before_script:
  
 script: 
  - make
+ - cd update_dota_elo
+ - make
