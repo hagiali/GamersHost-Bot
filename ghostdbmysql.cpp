@@ -623,6 +623,19 @@ CCallableW3MMDVarAdd *CGHostDBMySQL :: ThreadedW3MMDVarAdd( uint32_t gameid, map
 	return Callable;
 }
 
+CCallableVerifyUser *CGHostDBMySQL :: ThreadedVerifyUser( string name, string token )
+{
+        void *Connection = GetIdleConnection( );
+
+        if( !Connection )
+                ++m_NumConnections;
+
+        CCallableVerifyUser *Callable = new CMySQLCallableVerifyUser(name, token, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port, this );
+        CreateThread( Callable );
+        ++m_OutstandingCallables;
+        return Callable;
+}
+
 void *CGHostDBMySQL :: GetIdleConnection( )
 {
 	boost::mutex::scoped_lock lock(m_DatabaseMutex);
@@ -2217,6 +2230,43 @@ bool MySQLW3MMDVarAdd( void *conn, string *error, uint32_t botid, uint32_t gamei
 	return Success;
 }
 
+uint32_t MySQLVerifyUser( void *conn, string *error, uint32_t botid, string name, string token )
+{
+	uint32_t result = 0;
+	string EscName = MySQLEscapeString( conn, name );
+	string EscToken = MySQLEscapeString( conn, token );
+
+	string Query = "SELECT elo.id FROM dvstats_dota_elo_scores elo INNER JOIN dvstats_forum_connections fc ON fc.dota_player_id = elo.id WHERE LOWER(elo.name) = '" + EscName + "';";
+        if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
+                *error = mysql_error( (MYSQL *)conn );
+        else
+	{
+                MYSQL_RES *Result = mysql_store_result( (MYSQL *)conn );
+
+                if( Result )
+                {
+                        vector<string> Row = MySQLFetchRow( Result );
+
+                        if( Row.size( ) == 1 )
+                        {
+				string UpdateQuery = "UPDATE dvstats_forum_connections SET status = 'approved' WHERE dota_player_id = " + Row[0] + " AND token = '" + EscToken + "';";
+				if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
+			                *error = mysql_error( (MYSQL *)conn );
+        			else
+					result = 1;
+                        } else {
+				result = 2;
+			}
+
+                        mysql_free_result( Result );
+                }
+                else
+                        *error = mysql_error( (MYSQL *)conn );
+	}
+
+	return result;
+}
+
 //
 // MySQL Callables
 //
@@ -2608,4 +2658,14 @@ void CMySQLCallableW3MMDVarAdd :: operator( )( )
 	}
 
 	Close( );
+}
+
+void CMySQLCallableVerifyUser  :: operator( )( )
+{
+        Init( );
+
+        if( m_Error.empty( ) )
+                m_Result = MySQLVerifyUser( m_Connection, &m_Error, m_SQLBotID, m_Name, m_Token );
+
+        Close( );
 }

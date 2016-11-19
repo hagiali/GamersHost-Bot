@@ -45,6 +45,7 @@ class CCallableSnipePlayerSummaryCheck;
 class CCallableShipsPlayerSummaryCheck;
 class CCallableW3MMDPlayerSummaryCheck;
 class CCallableGameUpdate;
+class CCallableVerifyUser;
 
 typedef pair<string,CCallableBanCheck *> PairedBanCheck;
 typedef pair<string,CCallableBanAdd *> PairedBanAdd;
@@ -55,6 +56,7 @@ typedef pair<string,CCallableTreePlayerSummaryCheck *> PairedTPSCheck;
 typedef pair<string,CCallableSnipePlayerSummaryCheck *> PairedSPSCheck;
 typedef pair<string,CCallableShipsPlayerSummaryCheck *> PairedBPSCheck;
 typedef pair<string,CCallableW3MMDPlayerSummaryCheck *> PairedWPSCheck;
+typedef pair<string,CCallableVerifyUser *> PairedVerifyUserCheck;
 
 class CGame : public CBaseGame
 {
@@ -75,7 +77,7 @@ protected:
 	vector<PairedSPSCheck> m_PairedSPSChecks;	// vector of paired threaded database sniper player summary checks in progress
 	vector<PairedBPSCheck> m_PairedBPSChecks;	// vector of paired threaded database battleships player summary checks in progress
 	vector<PairedWPSCheck> m_PairedWPSChecks;	// vector of paired threaded database battleships player summary checks in progress
-	
+	vector<PairedVerifyUserCheck> m_PairedVerifyUserChecks;
 	
 	uint32_t m_LastGameUpdateTime;				// GetTime when the gamelist was last updated
 	CCallableGameUpdate *m_CallableGameUpdate;	// threaded database game update in progress
