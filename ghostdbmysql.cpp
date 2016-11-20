@@ -694,7 +694,7 @@ uint32_t MySQLAdminCount( void *conn, string *error, uint32_t botid, string serv
 {
 	string EscServer = MySQLEscapeString( conn, server );
 	uint32_t Count = 0;
-	string Query = "SELECT COUNT(*) FROM admins WHERE server='" + EscServer + "'";
+	string Query = "SELECT COUNT(*) FROM dvstats_admins WHERE server='" + EscServer + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -709,7 +709,7 @@ uint32_t MySQLAdminCount( void *conn, string *error, uint32_t botid, string serv
 			if( Row.size( ) == 1 )
 				Count = UTIL_ToUInt32( Row[0] );
 			else
-				*error = "error counting admins [" + server + "] - row doesn't have 1 column";
+				*error = "error counting dvstats_admins [" + server + "] - row doesn't have 1 column";
 
 			mysql_free_result( Result );
 		}
@@ -726,7 +726,7 @@ bool MySQLAdminCheck( void *conn, string *error, uint32_t botid, string server, 
 	string EscServer = MySQLEscapeString( conn, server );
 	string EscUser = MySQLEscapeString( conn, user );
 	bool IsAdmin = false;
-	string Query = "SELECT * FROM admins WHERE server='" + EscServer + "' AND name='" + EscUser + "'";
+	string Query = "SELECT * FROM dvstats_admins WHERE server='" + EscServer + "' AND name='" + EscUser + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -756,7 +756,7 @@ bool MySQLAdminAdd( void *conn, string *error, uint32_t botid, string server, st
 	string EscServer = MySQLEscapeString( conn, server );
 	string EscUser = MySQLEscapeString( conn, user );
 	bool Success = false;
-	string Query = "INSERT INTO admins ( botid, server, name ) VALUES ( " + UTIL_ToString( botid ) + ", '" + EscServer + "', '" + EscUser + "' )";
+	string Query = "INSERT INTO dvstats_admins ( botid, server, name ) VALUES ( " + UTIL_ToString( botid ) + ", '" + EscServer + "', '" + EscUser + "' )";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -772,7 +772,7 @@ bool MySQLAdminRemove( void *conn, string *error, uint32_t botid, string server,
 	string EscServer = MySQLEscapeString( conn, server );
 	string EscUser = MySQLEscapeString( conn, user );
 	bool Success = false;
-	string Query = "DELETE FROM admins WHERE server='" + EscServer + "' AND name='" + EscUser + "'";
+	string Query = "DELETE FROM dvstats_admins WHERE server='" + EscServer + "' AND name='" + EscUser + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -786,7 +786,7 @@ vector<string> MySQLAdminList( void *conn, string *error, uint32_t botid, string
 {
 	string EscServer = MySQLEscapeString( conn, server );
 	vector<string> AdminList;
-	string Query = "SELECT name FROM admins WHERE server='" + EscServer + "'";
+	string Query = "SELECT name FROM dvstats_admins WHERE server='" + EscServer + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -817,7 +817,7 @@ uint32_t MySQLBanCount( void *conn, string *error, uint32_t botid, string server
 {
 	string EscServer = MySQLEscapeString( conn, server );
 	uint32_t Count = 0;
-	string Query = "SELECT COUNT(*) FROM bans WHERE server='" + EscServer + "'";
+	string Query = "SELECT COUNT(*) FROM dvstats_bans WHERE server='" + EscServer + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -832,7 +832,7 @@ uint32_t MySQLBanCount( void *conn, string *error, uint32_t botid, string server
 			if( Row.size( ) == 1 )
 				Count = UTIL_ToUInt32( Row[0] );
 			else
-				*error = "error counting bans [" + server + "] - row doesn't have 1 column";
+				*error = "error counting dvstats_bans [" + server + "] - row doesn't have 1 column";
 
 			mysql_free_result( Result );
 		}
@@ -856,9 +856,9 @@ CDBBan *MySQLBanCheck( void *conn, string *error, uint32_t botid, string server,
 	string Query;
 	
 	if( server == "wc3connect" )
-		Query = "SELECT name FROM whitelist WHERE name = '" + EscUser + "'";
+		Query = "SELECT name FROM dvstats_whitelist WHERE name = '" + EscUser + "'";
 	else
-		Query = "SELECT name FROM whitelist WHERE name = '" + EscUserServer + "'";
+		Query = "SELECT name FROM dvstats_whitelist WHERE name = '" + EscUserServer + "'";
 
 	Query += " OR (LENGTH(name) >= 3 AND SUBSTR(name, 1, 1) = ':' AND LOCATE(name, ':" + EscIP + "') = 1)";
 
@@ -882,7 +882,7 @@ CDBBan *MySQLBanCheck( void *conn, string *error, uint32_t botid, string server,
 	}
 	
 	CDBBan *Ban = NULL;
-	Query = "SELECT id, name, ip, date, gamename, admin, reason, expiredate, context FROM bans WHERE ( context = 'ttr.cloud' OR context = '" + EscOwnerName + "' ) AND ((server='" + EscServer + "' AND name='" + EscUser + "')";
+	Query = "SELECT id, name, ip, date, gamename, admin, reason, expiredate, context FROM dvstats_bans WHERE ( context = 'ttr.cloud' OR context = '" + EscOwnerName + "' ) AND ((server='" + EscServer + "' AND name='" + EscUser + "')";
 	
 	if( !ip.empty( ) && !WhiteList )
 	{
@@ -935,7 +935,7 @@ uint32_t MySQLBanAdd( void *conn, string *error, uint32_t botid, string server, 
 	string EscReason = MySQLEscapeString( conn, reason );
 	string EscContext = MySQLEscapeString( conn, context );
 	uint32_t RowID = 0;
-	string Query = "INSERT INTO bans ( botid, server, name, ip, date, gamename, admin, reason, expiredate, context ) VALUES ( " + UTIL_ToString( botid ) + ", '" + EscServer + "', '" + EscUser + "', '" + EscIP + "', NOW( ), '" + EscGameName + "', '" + EscAdmin + "', '" + EscReason + "', DATE_ADD( NOW( ), INTERVAL " + UTIL_ToString( expiretime ) + " second ), '" + EscContext + "' )";
+	string Query = "INSERT INTO dvstats_bans ( botid, server, name, ip, date, gamename, admin, reason, expiredate, context ) VALUES ( " + UTIL_ToString( botid ) + ", '" + EscServer + "', '" + EscUser + "', '" + EscIP + "', NOW( ), '" + EscGameName + "', '" + EscAdmin + "', '" + EscReason + "', DATE_ADD( NOW( ), INTERVAL " + UTIL_ToString( expiretime ) + " second ), '" + EscContext + "' )";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -953,7 +953,7 @@ bool MySQLBanRemove( void *conn, string *error, uint32_t botid, string server, s
 	string EscUser = MySQLEscapeString( conn, user );
 	string EscContext = MySQLEscapeString( conn, context );
 	bool Success = false;
-	string Query = "DELETE FROM bans WHERE server='" + EscServer + "' AND name='" + EscUser + "'";
+	string Query = "DELETE FROM dvstats_bans WHERE server='" + EscServer + "' AND name='" + EscUser + "'";
 	
 	if( EscContext != "" && EscContext != "ttr.cloud" )
 		Query += " AND admin='" + EscContext + "'";
@@ -973,7 +973,7 @@ bool MySQLBanRemove( void *conn, string *error, uint32_t botid, string user, str
 	string EscUser = MySQLEscapeString( conn, user );
 	string EscContext = MySQLEscapeString( conn, context );
 	bool Success = false;
-	string Query = "DELETE FROM bans WHERE name='" + EscUser + "'";
+	string Query = "DELETE FROM dvstats_bans WHERE name='" + EscUser + "'";
 	
 	if( EscContext != "" && EscContext != "ttr.cloud" )
 		Query += " AND admin='" + EscContext + "'";
@@ -989,7 +989,7 @@ bool MySQLBanRemove( void *conn, string *error, uint32_t botid, string user, str
 map<string, string> MySQLSpoofList( void *conn, string *error, uint32_t botid )
 {
 	map<string, string> SpoofList;
-	string Query = "SELECT name, spoof FROM spoof";
+	string Query = "SELECT name, spoof FROM dvstats_spoof";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -1027,7 +1027,7 @@ void MySQLReconUpdate( void *conn, string *error, uint32_t botid, uint32_t hostc
 vector<string> MySQLCommandList( void *conn, string *error, uint32_t botid )
 {
 	vector<string> CommandList;
-	string Query = "SELECT command FROM commands WHERE botid='" + UTIL_ToString(botid) + "' ORDER BY id";
+	string Query = "SELECT command FROM dvstats_commands WHERE botid='" + UTIL_ToString(botid) + "' ORDER BY id";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -1051,7 +1051,7 @@ vector<string> MySQLCommandList( void *conn, string *error, uint32_t botid )
 			*error = mysql_error( (MYSQL *)conn );
 	}
 
-	string DeleteQuery = "DELETE FROM commands WHERE botid='" + UTIL_ToString(botid) + "'";
+	string DeleteQuery = "DELETE FROM dvstats_commands WHERE botid='" + UTIL_ToString(botid) + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, DeleteQuery.c_str( ), DeleteQuery.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -1059,7 +1059,8 @@ vector<string> MySQLCommandList( void *conn, string *error, uint32_t botid )
 	return CommandList;
 }
 
-uint32_t MySQLGameAdd( void *conn, string *error, uint32_t botid, string server, string map, string gamename, string ownername, uint32_t duration, uint32_t gamestate, string creatorname, string creatorserver, string savetype )
+uint32_t MySQLGameAdd( void *conn, string *error, uint32_t botid, string server, string map, string gamename, string ownername, uint32_t duration, uint32_t 
+tate, string creatorname, string creatorserver, string savetype )
 {
 	uint32_t RowID = 0;
 	string EscServer = MySQLEscapeString( conn, server );
@@ -1069,7 +1070,7 @@ uint32_t MySQLGameAdd( void *conn, string *error, uint32_t botid, string server,
 	string EscCreatorName = MySQLEscapeString( conn, creatorname );
 	string EscCreatorServer = MySQLEscapeString( conn, creatorserver );
 	
-	string TargetTable = "games";
+	string TargetTable = "dvstats_games";
 	
 	if( savetype == "uxtourney" )
 		TargetTable = "uxtourney_res_games";
@@ -1087,7 +1088,7 @@ uint32_t MySQLGameAdd( void *conn, string *error, uint32_t botid, string server,
 uint32_t MySQLGameUpdate( void *conn, string *error, uint32_t botid, uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalGames, uint32_t totalPlayers, bool add )
 {
 	//housekeeping
-	string Query = "DELETE FROM gamelist WHERE age IS NULL OR age < DATE_SUB(NOW(), INTERVAL 2 HOUR)";
+	string Query = "DELETE FROM dvstats_gamelist WHERE age IS NULL OR age < DATE_SUB(NOW(), INTERVAL 2 HOUR)";
 	mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) );
 
 	string EscMap = MySQLEscapeString(conn, map);
@@ -1096,19 +1097,19 @@ uint32_t MySQLGameUpdate( void *conn, string *error, uint32_t botid, uint32_t id
 	string EscCreatorName = MySQLEscapeString( conn, creatorname );
 	string EscUsernames = MySQLEscapeString( conn, usernames );
 
-	Query = "UPDATE gamelist SET map = '" + EscMap + "', gamename = '" + EscGameName + "', ownername = '" + EscOwnerName + "', creatorname = '" + EscCreatorName + "', slotstaken = '" + UTIL_ToString(players) + "', slotstotal = '" + UTIL_ToString(slotsTotal) + "', usernames = '" + EscUsernames + "', totalgames = '" + UTIL_ToString(totalGames) + "', totalplayers = '" + UTIL_ToString(totalPlayers) + "', age = NOW() WHERE botid='" + UTIL_ToString(botid) + "' AND id = '" + UTIL_ToString(id) + "'";
+	Query = "UPDATE dvstats_gamelist SET map = '" + EscMap + "', gamename = '" + EscGameName + "', ownername = '" + EscOwnerName + "', creatorname = '" + EscCreatorName + "', slotstaken = '" + UTIL_ToString(players) + "', slotstotal = '" + UTIL_ToString(slotsTotal) + "', usernames = '" + EscUsernames + "', totalgames = '" + UTIL_ToString(totalGames) + "', totalplayers = '" + UTIL_ToString(totalPlayers) + "', age = NOW() WHERE botid='" + UTIL_ToString(botid) + "' AND id = '" + UTIL_ToString(id) + "'";
 
 	if( id == 0 )
 	{
-		Query = "INSERT INTO gamelist(botid, map, gamename, ownername, creatorname, slotstaken, slotstotal, usernames, totalgames, totalplayers, age) VALUES ('" + UTIL_ToString(botid) + "', '" + EscMap + "', '" + EscGameName + "', '" + EscOwnerName + "', '" + EscCreatorName + "', '" + UTIL_ToString(players) + "', '" + UTIL_ToString(slotsTotal) + "', '" + EscUsernames + "', '" + UTIL_ToString(totalGames) + "', '" + UTIL_ToString(totalPlayers) + "', NOW())";
+		Query = "INSERT INTO dvstats_gamelist(botid, map, gamename, ownername, creatorname, slotstaken, slotstotal, usernames, totalgames, totalplayers, age) VALUES ('" + UTIL_ToString(botid) + "', '" + EscMap + "', '" + EscGameName + "', '" + EscOwnerName + "', '" + EscCreatorName + "', '" + UTIL_ToString(players) + "', '" + UTIL_ToString(slotsTotal) + "', '" + EscUsernames + "', '" + UTIL_ToString(totalGames) + "', '" + UTIL_ToString(totalPlayers) + "', NOW())";
 	}
 
 	if( !add )
 	{
 		if( gamename.empty( ) )
-			Query = "DELETE FROM gamelist WHERE botid = " + UTIL_ToString( botid );
+			Query = "DELETE FROM dvstats_gamelist WHERE botid = " + UTIL_ToString( botid );
 		else if( id != 0 )
-			Query = "DELETE FROM gamelist WHERE id = '" + UTIL_ToString( id ) + "'";
+			Query = "DELETE FROM dvstats_gamelist WHERE id = '" + UTIL_ToString( id ) + "'";
 		else
 			return 0;
 	}
@@ -1134,7 +1135,7 @@ uint32_t MySQLGamePlayerAdd( void *conn, string *error, uint32_t botid, uint32_t
 	string EscSpoofedRealm = MySQLEscapeString( conn, spoofedrealm );
 	string EscLeftReason = MySQLEscapeString( conn, leftreason );
 	
-	string TargetTable = "gameplayers";
+	string TargetTable = "dvstats_gameplayers";
 	
 	if( savetype == "uxtourney" )
 		TargetTable = "uxtourney_res_gameplayers";
@@ -1451,7 +1452,7 @@ uint32_t MySQLDotAGameAdd( void *conn, string *error, uint32_t botid, uint32_t g
 {
 	uint32_t RowID = 0;
 	
-	string table = "dotagames";
+	string table = "dvstats_dotagames";
 	
 	if( saveType == "lod" )
 		table = "lodgames";
@@ -1483,7 +1484,7 @@ uint32_t MySQLDotAPlayerAdd( void *conn, string *error, uint32_t botid, uint32_t
 	string EscItem6 = MySQLEscapeString( conn, item6 );
 	string EscHero = MySQLEscapeString( conn, hero );
 	
-	string table = "dotaplayers";
+	string table = "dvstats_dotaplayers";
 	
 	if( saveType == "lod" )
 		table = "lodplayers";
@@ -1519,7 +1520,7 @@ CDBDotAPlayerSummary *MySQLDotAPlayerSummaryCheck( void *conn, string *error, ui
 	}
 	else
 	{
-		string table = "dota_elo_scores";
+		string table = "dvstats_dota_elo_scores";
 		
 		if( saveType == "lod" )
 			table = "lod_elo_scores";
