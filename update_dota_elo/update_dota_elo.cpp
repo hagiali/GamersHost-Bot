@@ -202,7 +202,7 @@ int main( int argc, char **argv )
 		uint32_t GameID = UnscoredGames.front( );
 		UnscoredGames.pop( );
 
-		string QSelectPlayers = "SELECT dota_elo_scores.id, gameplayers.name, spoofedrealm, newcolour, winner, score, dotaplayers.kills, dotaplayers.deaths, dotaplayers.assists, dotaplayers.creepkills, dotaplayers.creepdenies, dotaplayers.neutralkills, dotaplayers.towerkills, dotaplayers.raxkills, dotaplayers.courierkills FROM dotaplayers LEFT JOIN dotagames ON dotagames.gameid=dotaplayers.gameid LEFT JOIN gameplayers ON gameplayers.gameid=dotaplayers.gameid AND gameplayers.colour=dotaplayers.colour LEFT JOIN dota_elo_scores ON dota_elo_scores.name=gameplayers.name AND server=spoofedrealm WHERE dotaplayers.gameid=" + UTIL_ToString( GameID );
+		string QSelectPlayers = "SELECT dota_elo_scores.id, gameplayers.name, spoofedrealm, newcolour, winner, score, dotaplayers.kills, dotaplayers.deaths, dotaplayers.assists, dotaplayers.creepkills, dotaplayers.creepdenies, dotaplayers.neutralkills, dotaplayers.towerkills, dotaplayers.raxkills, dotaplayers.courierkills FROM dvstats_dotaplayers dotaplayers LEFT JOIN dvstats_dotagames dotagames ON dotagames.gameid=dotaplayers.gameid LEFT JOIN dvstats_gameplayers gameplayers ON gameplayers.gameid=dotaplayers.gameid AND gameplayers.colour=dotaplayers.colour LEFT JOIN dvstats_dota_elo_scores dota_elo_scores ON dota_elo_scores.name=gameplayers.name AND server=spoofedrealm WHERE dotaplayers.gameid=" + UTIL_ToString( GameID );
 
 		if( mysql_real_query( Connection, QSelectPlayers.c_str( ), QSelectPlayers.size( ) ) != 0 )
 		{
@@ -358,7 +358,7 @@ int main( int argc, char **argv )
 
 							if( exists[i] )
 							{
-								string QUpdateScore = "UPDATE dota_elo_scores SET score=" + UTIL_ToString( player_ratings[i], 2 ) + ", games=games+1, wins=wins+"+ UTIL_ToString(((winners[i]==1&&colours[i]<7)||(winners[i]==2&&colours[i]>=7)) ? 1 : 0) +", losses=losses+" + UTIL_ToString(((winners[i]==2&&colours[i]<7)||(winners[i]==1&&colours[i]>=7)) ? 1 : 0) +", kills=kills+"+kills[i]+", deaths=deaths+"+deaths[i]+",creepkills=creepkills+"+creeps[i]+",creepdenies=creepdenies+"+denies[i]+",assists=assists+"+assists[i]+",neutralkills=neutralkills+"+neutrals[i]+",towerkills=towerkills+"+towers[i]+",raxkills=raxkills+"+rax[i]+",courierkills=courierkills+"+couriers[i]+" WHERE id=" + UTIL_ToString( rowids[i] );
+								string QUpdateScore = "UPDATE dvstats_dota_elo_scores SET score=" + UTIL_ToString( player_ratings[i], 2 ) + ", games=games+1, wins=wins+"+ UTIL_ToString(((winners[i]==1&&colours[i]<7)||(winners[i]==2&&colours[i]>=7)) ? 1 : 0) +", losses=losses+" + UTIL_ToString(((winners[i]==2&&colours[i]<7)||(winners[i]==1&&colours[i]>=7)) ? 1 : 0) +", kills=kills+"+kills[i]+", deaths=deaths+"+deaths[i]+",creepkills=creepkills+"+creeps[i]+",creepdenies=creepdenies+"+denies[i]+",assists=assists+"+assists[i]+",neutralkills=neutralkills+"+neutrals[i]+",towerkills=towerkills+"+towers[i]+",raxkills=raxkills+"+rax[i]+",courierkills=courierkills+"+couriers[i]+" WHERE id=" + UTIL_ToString( rowids[i] );
 
 								if( mysql_real_query( Connection, QUpdateScore.c_str( ), QUpdateScore.size( ) ) != 0 )
 								{
@@ -370,7 +370,7 @@ int main( int argc, char **argv )
 							{
 								string EscName = MySQLEscapeString( Connection, names[i] );
 								string EscServer = MySQLEscapeString( Connection, servers[i] );
-								string QInsertScore = "INSERT INTO dota_elo_scores VALUES ( NULL, '" + EscName + "', '" + EscServer + "', " + UTIL_ToString( player_ratings[i], 2 ) + ", 1, " + UTIL_ToString(((winners[i]==1&&colours[i]<7)||(winners[i]==2&&colours[i]>=7)) ? 1 : 0) + "," + UTIL_ToString(((winners[i]==2&&colours[i]<7)||(winners[i]==1&&colours[i]>=7)) ? 1 : 0) +", "+kills[i]+", "+deaths[i]+","+creeps[i]+","+denies[i]+","+assists[i]+","+neutrals[i]+","+towers[i]+","+rax[i]+","+couriers[i]+")";
+								string QInsertScore = "INSERT INTO dvstats_dota_elo_scores VALUES ( NULL, '" + EscName + "', '" + EscServer + "', " + UTIL_ToString( player_ratings[i], 2 ) + ", 1, " + UTIL_ToString(((winners[i]==1&&colours[i]<7)||(winners[i]==2&&colours[i]>=7)) ? 1 : 0) + "," + UTIL_ToString(((winners[i]==2&&colours[i]<7)||(winners[i]==1&&colours[i]>=7)) ? 1 : 0) +", "+kills[i]+", "+deaths[i]+","+creeps[i]+","+denies[i]+","+assists[i]+","+neutrals[i]+","+towers[i]+","+rax[i]+","+couriers[i]+")";
 
 								if( mysql_real_query( Connection, QInsertScore.c_str( ), QInsertScore.size( ) ) != 0 )
 								{
@@ -389,7 +389,7 @@ int main( int argc, char **argv )
 			}
 		}
 
-		string QInsertScored = "INSERT INTO dota_elo_games_scored ( gameid ) VALUES ( " + UTIL_ToString( GameID ) + " )";
+		string QInsertScored = "INSERT INTO dvstats_dota_elo_games_scored ( gameid ) VALUES ( " + UTIL_ToString( GameID ) + " )";
 
 		if( mysql_real_query( Connection, QInsertScored.c_str( ), QInsertScored.size( ) ) != 0 )
 		{
