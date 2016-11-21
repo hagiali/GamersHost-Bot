@@ -623,7 +623,7 @@ CCallableW3MMDVarAdd *CGHostDBMySQL :: ThreadedW3MMDVarAdd( uint32_t gameid, map
 	return Callable;
 }
 
-CCallableVerifyUser *CGHostDBMySQL :: ThreadedVerifyUser( string name, string token )
+CCallableVerifyUser *CGHostDBMySQL :: ThreadedVerifyUser( string name, string token)
 {
         void *Connection = GetIdleConnection( );
 
@@ -2249,7 +2249,7 @@ uint32_t MySQLVerifyUser( void *conn, string *error, uint32_t botid, string name
 
                         if( Row.size( ) == 1 )
                         {
-				string UpdateQuery = "UPDATE dvstats_forum_connections SET status = 'approved' WHERE dota_player_id = " + Row[0] + " AND token = '" + EscToken + "';";
+				string UpdateQuery = "UPDATE dvstats_forum_connections SET status = 'approved' WHERE dota_player_id = " + Row[0] + " AND connect_token = '" + EscToken + "';";
 				if( mysql_real_query( (MYSQL *)conn, UpdateQuery.c_str( ), UpdateQuery.size( ) ) != 0 )
 			                *error = mysql_error( (MYSQL *)conn );
         			else
