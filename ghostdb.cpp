@@ -228,6 +228,11 @@ bool CGHostDB :: W3MMDVarAdd( uint32_t gameid, map<VarP,string> var_strings, str
 	return false;
 }
 
+uint32_t CGHostDB :: VerifyUser( string name, string token )
+{
+	return 0;
+}
+
 void CGHostDB :: CreateThread( CBaseCallable *callable )
 {
 	callable->SetReady( true );
@@ -413,6 +418,11 @@ CCallableW3MMDVarAdd *CGHostDB :: ThreadedW3MMDVarAdd( uint32_t gameid, map<VarP
 	return NULL;
 }
 
+CCallableVerifyUser *CGHostDB :: ThreadedVerifyUser( string name, string token )
+{
+	return NULL;
+}
+
 //
 // Callables
 //
@@ -589,6 +599,11 @@ CCallableW3MMDPlayerAdd :: ~CCallableW3MMDPlayerAdd( )
 }
 
 CCallableW3MMDVarAdd :: ~CCallableW3MMDVarAdd( )
+{
+
+}
+
+CCallableVerifyUser :: ~CCallableVerifyUser( )
 {
 
 }

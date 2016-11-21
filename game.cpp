@@ -163,7 +163,10 @@ CGame :: ~CGame( )
 
 	for( vector<PairedWPSCheck> :: iterator i = m_PairedWPSChecks.begin( ); i != m_PairedWPSChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
-	
+
+	for( vector<PairedVerifyUserCheck> :: iterator i = m_PairedVerifyUserChecks.begin( ); i != m_PairedVerifyUserChecks.end( ); ++i)
+		m_GHost->m_Callables.push_back( i->second );
+
 	if( m_CallableGameUpdate )
 		m_GHost->m_Callables.push_back( m_CallableGameUpdate );
 	
@@ -650,6 +653,30 @@ bool CGame :: Update( void *fd, void *send_fd )
 		else
                         ++i;
 	}
+
+
+        for( vector<PairedVerifyUserCheck> :: iterator i = m_PairedVerifyUserChecks.begin( ); i != m_PairedVerifyUserChecks.end( ); )
+        {
+                if( i->second->GetReady( ) )
+                {
+			uint32_t result = i->second->GetResult( );
+			CGamePlayer *Player = GetPlayerFromName( i->first, true );
+
+			if(result == 0) {
+				SendChat(Player, "An unexpected error occured verifieing your account.");
+			} else if( result == 1) {
+				SendChat(Player, "Your account is now connected to your forum account.");
+			} else if( result == 2) {
+				SendChat(Player, "The given player name was not requested to be connected.");
+			}
+
+                        m_GHost->m_DB->RecoverCallable( i->second );
+                        delete i->second;
+                        i = m_PairedVerifyUserChecks.erase( i );
+                }
+                else
+                        ++i;
+        }
 	
 	if( m_ForfeitTime != 0 && GetTime( ) - m_ForfeitTime >= 5 )
 	{
@@ -2575,6 +2602,14 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			m_PairedGPSChecks.push_back( PairedGPSCheck( User, m_GHost->m_DB->ThreadedGamePlayerSummaryCheck( StatsUser, StatsRealm ) ) );
 
 		player->SetStatsDotASentTime( GetTime( ) );
+	}
+
+	//
+	// !VERIFY
+	//
+	else if( Command == "verify")
+	{
+		m_PairedVerifyUserChecks.push_back( PairedVerifyUserCheck( User, m_GHost->m_DB->ThreadedVerifyUser(player->GetName(), Payload)));	
 	}
 
 	//

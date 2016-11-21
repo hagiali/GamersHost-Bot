@@ -182,6 +182,9 @@ CBNET :: ~CBNET( )
         for( vector<PairedVPSCheck> :: iterator i = m_PairedVPSChecks.begin( ); i != m_PairedVPSChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
 
+	for( vector<PairedVerifyUserCheck> :: iterator i = m_PairedVerifyUserChecks.begin( ); i != m_PairedVerifyUserChecks.end( ); ++i )
+                m_GHost->m_Callables.push_back( i->second );
+
 	if( m_CallableAdminList )
 		m_GHost->m_Callables.push_back( m_CallableAdminList );
 
@@ -445,6 +448,29 @@ bool CBNET :: Update( void *fd, void *send_fd )
 		else
 			++i;
 	}
+
+        for( vector<PairedVerifyUserCheck> :: iterator i = m_PairedVerifyUserChecks.begin( ); i != m_PairedVerifyUserChecks.end( ); )
+        {
+                if( i->second->GetReady( ) )
+                {
+			uint32_t result = i->second->GetResult( );
+
+			if(result == 1) {
+				QueueChatCommand( "Your account has been successfully connected to your forum account.", i->first, !i->first.empty() );
+			} else if(result == 2) {
+				QueueChatCommand( "The token and name could not be matched to any pending confirmation.", i->first, !i->first.empty() );
+			} else {
+				QueueChatCommand( "An unexpected error occured confirming your account.", i->first, !i->first.empty() );
+			}
+
+                        m_GHost->m_DB->RecoverCallable( i->second );
+                        delete i->second;
+                        i = m_PairedVerifyUserChecks.erase( i );
+                }
+                else
+                        ++i;
+        }
+
 
 	// refresh the admin list every hour
 
@@ -2124,6 +2150,14 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 				QueueChatCommand( m_GHost->m_Language->VersionAdmin( m_GHost->m_Version ), User, Whisper );
 			else
 				QueueChatCommand( m_GHost->m_Language->VersionNotAdmin( m_GHost->m_Version ), User, Whisper );
+		}
+
+		//
+		// !VERIFY
+		//
+		else if( Command == "verify" )
+		{
+			m_PairedVerifyUserChecks.push_back( PairedVerifyUserCheck( Whisper ? User : string( ), m_GHost->m_DB->ThreadedVerifyUser( User, Payload )));
 		}
 	}
 }
