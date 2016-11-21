@@ -3033,7 +3033,7 @@ void CGame :: GetStatsUser( string *statsUser, string *statsRealm )
 		if( Matches == 1 )
 		{
 			*statsUser = player->GetName( );
-			*statsRealm = player->GetJoinedRealm( );
+			*statsRealm = player->GetSpoofedRealm( );
 		}
 	}
 }
