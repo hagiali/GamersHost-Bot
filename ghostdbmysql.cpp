@@ -1059,8 +1059,7 @@ vector<string> MySQLCommandList( void *conn, string *error, uint32_t botid )
 	return CommandList;
 }
 
-uint32_t MySQLGameAdd( void *conn, string *error, uint32_t botid, string server, string map, string gamename, string ownername, uint32_t duration, uint32_t 
-tate, string creatorname, string creatorserver, string savetype )
+uint32_t MySQLGameAdd( void *conn, string *error, uint32_t botid, string server, string map, string gamename, string ownername, uint32_t duration, uint32_t gamestate, string creatorname, string creatorserver, string savetype )
 {
 	uint32_t RowID = 0;
 	string EscServer = MySQLEscapeString( conn, server );
