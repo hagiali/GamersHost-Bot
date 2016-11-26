@@ -202,7 +202,7 @@ int main( int argc, char **argv )
 		uint32_t GameID = UnscoredGames.front( );
 		UnscoredGames.pop( );
 
-		string QSelectPlayers = "SELECT dota_elo_scores.id, gameplayers.name, spoofedrealm, newcolour, winner, score, dotaplayers.kills, dotaplayers.deaths, dotaplayers.assists, dotaplayers.creepkills, dotaplayers.creepdenies, dotaplayers.neutralkills, dotaplayers.towerkills, dotaplayers.raxkills, dotaplayers.courierkills FROM dvstats_dotaplayers dotaplayers LEFT JOIN dvstats_dotagames dotagames ON dotagames.gameid=dotaplayers.gameid LEFT JOIN dvstats_gameplayers gameplayers ON gameplayers.gameid=dotaplayers.gameid AND gameplayers.colour=dotaplayers.colour LEFT JOIN dvstats_dota_elo_scores dota_elo_scores ON dota_elo_scores.name=gameplayers.name AND server=spoofedrealm WHERE dotaplayers.gameid=" + UTIL_ToString( GameID );
+		string QSelectPlayers = "SELECT dota_elo_scores.id, gameplayers.name, spoofedrealm, newcolour, winner, score, dotaplayers.kills, dotaplayers.deaths, dotaplayers.assists, dotaplayers.creepkills, dotaplayers.creepdenies, dotaplayers.neutralkills, dotaplayers.towerkills, dotaplayers.raxkills, dotaplayers.courierkills FROM dvstats_dotaplayers dotaplayers LEFT JOIN dvstats_dotagames dotagames ON dotagames.gameid=dotaplayers.gameid LEFT JOIN dvstats_gameplayers gameplayers ON gameplayers.gameid=dotaplayers.gameid AND gameplayers.colour=dotaplayers.colour LEFT JOIN dvstats_dota_elo_scores dota_elo_scores ON dota_elo_scores.name=gameplayers.name WHERE dotaplayers.gameid=" + UTIL_ToString( GameID );
 
 		if( mysql_real_query( Connection, QSelectPlayers.c_str( ), QSelectPlayers.size( ) ) != 0 )
 		{
@@ -253,6 +253,32 @@ int main( int argc, char **argv )
 					{
 						cout << "gameid " << UTIL_ToString( GameID ) << " has more than 10 players, ignoring" << endl;
 						ignore = true;
+
+						string SelectQuery = "SELECT d.botid, g.map, g.datetime, g.gamename, g.duration, d.winner, d.min, d.sec, g.gamestate FROM games g LEFT JOIN dotagames d ON d.gameid = g.id WHERE g.id = " + UTIL_ToString( GameID );
+                				if( mysql_real_query( Connection, SelectQuery.c_str( ), SelectQuery.size( ) ) != 0 )
+                				{
+                        				cout << "error: " << mysql_error( Connection ) << endl;
+                        				return 1;
+                				}
+                				else
+                				{
+                        				MYSQL_RES *Result = mysql_store_result( Connection );
+
+                        				if( Result )
+                        				{
+                                				vector<string> Row = MySQLFetchRow( Result );
+
+                                				while( Row.size( ) == 9 )
+                                				{
+                                        				string InQ = "INSERT INTO dvstats_scoredgames VALUE (NULL, "+UTIL_ToString(GameID)+", "+Row[0]+", "+Row[1]+", "+Row[2]+", "+Row[3]+", "+Row[4]+", "+Row[5]+", "+Row[6]+", "+Row[7]+", "+Row[8]+")";
+                                        				if( mysql_real_query( Connection, InQ.c_str( ), InQ.size( ) ) != 0 )
+                                        				{
+                                                				cout << "error: " << mysql_error( Connection ) << endl;
+                                                				return 1;
+                                        				}
+                                				}
+                        				}
+                				}
 						break;
 					}
 
@@ -263,6 +289,32 @@ int main( int argc, char **argv )
 					{
 						cout << "gameid " << UTIL_ToString( GameID ) << " has no winner, ignoring" << endl;
 						ignore = true;
+
+                                                string SelectQuery = "SELECT d.botid, g.map, g.datetime, g.gamename, g.duration, d.winner, d.min, d.sec, g.gamestate FROM games g LEFT JOIN dotagames d ON d.gameid = g.id WHERE g.id = " + UTIL_ToString( GameID );
+                                                if( mysql_real_query( Connection, SelectQuery.c_str( ), SelectQuery.size( ) ) != 0 )
+                                                {
+                                                        cout << "error: " << mysql_error( Connection ) << endl;
+                                                        return 1;
+                                                }
+                                                else
+                                                {
+                                                        MYSQL_RES *Result = mysql_store_result( Connection );
+
+                                                        if( Result )
+                                                        {
+                                                                vector<string> Row = MySQLFetchRow( Result );
+
+                                                                while( Row.size( ) == 9 )
+                                                                {
+                                                                        string InQ = "INSERT INTO dvstats_scoredgames VALUE (NULL, "+UTIL_ToString(GameID)+", "+Row[0]+", "+Row[1]+", "+Row[2]+", "+Row[3]+", "+Row[4]+", "+Row[5]+", "+Row[6]+", "+Row[7]+", "+Row[8]+")";
+                                                                        if( mysql_real_query( Connection, InQ.c_str( ), InQ.size( ) ) != 0 )
+                                                                        {
+                                                                                cout << "error: " << mysql_error( Connection ) << endl;
+                                                                                return 1;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
 						break;
 					}
 					else if( Winner == 1 )
@@ -360,7 +412,11 @@ int main( int argc, char **argv )
 								if((winners[i]==2&&colours[i]<7)||(winners[i]==1&&colours[i]>=7)) {
 									streakString = "lossstreak=lossstreak+1, streak=0, maxlossstreak=IF((lossstreak+1)>maxlossstreak, (lossstreak+1), maxlossstreak),";
 								}
-								string QUpdateScore = "UPDATE dvstats_dota_elo_scores SET "+streakString+" zerodeaths=zerodeaths+"+UTIL_ToString((deaths[i] == "0") ? 1 : 0)+", score=" + UTIL_ToString( player_ratings[i], 2 ) + ", games=games+1, wins=wins+"+ UTIL_ToString(((winners[i]==1&&colours[i]<7)||(winners[i]==2&&colours[i]>=7)) ? 1 : 0) +", losses=losses+" + UTIL_ToString(((winners[i]==2&&colours[i]<7)||(winners[i]==1&&colours[i]>=7)) ? 1 : 0) +", kills=kills+"+kills[i]+", deaths=deaths+"+deaths[i]+",creepkills=creepkills+"+creeps[i]+",creepdenies=creepdenies+"+denies[i]+",assists=assists+"+assists[i]+",neutralkills=neutralkills+"+neutrals[i]+",towerkills=towerkills+"+towers[i]+",raxkills=raxkills+"+rax[i]+",courierkills=courierkills+"+couriers[i]+" WHERE id=" + UTIL_ToString( rowids[i] );
+								string serverString = "";
+								if(servers[i].length() > 0) {
+									serverString = "server='" + MySQLEscapeString( Connection, servers[i] ) + "'";
+								}
+								string QUpdateScore = "UPDATE dvstats_dota_elo_scores SET "+serverString+" "+streakString+" zerodeaths=zerodeaths+"+UTIL_ToString((deaths[i] == "0") ? 1 : 0)+", score=" + UTIL_ToString( player_ratings[i], 2 ) + ", games=games+1, wins=wins+"+ UTIL_ToString(((winners[i]==1&&colours[i]<7)||(winners[i]==2&&colours[i]>=7)) ? 1 : 0) +", losses=losses+" + UTIL_ToString(((winners[i]==2&&colours[i]<7)||(winners[i]==1&&colours[i]>=7)) ? 1 : 0) +", kills=kills+"+kills[i]+", deaths=deaths+"+deaths[i]+",creepkills=creepkills+"+creeps[i]+",creepdenies=creepdenies+"+denies[i]+",assists=assists+"+assists[i]+",neutralkills=neutralkills+"+neutrals[i]+",towerkills=towerkills+"+towers[i]+",raxkills=raxkills+"+rax[i]+",courierkills=courierkills+"+couriers[i]+" WHERE id=" + UTIL_ToString( rowids[i] );
 
 								if( mysql_real_query( Connection, QUpdateScore.c_str( ), QUpdateScore.size( ) ) != 0 )
 								{
@@ -397,6 +453,32 @@ int main( int argc, char **argv )
 		{
 			cout << "error: " << mysql_error( Connection ) << endl;
 			return 1;
+		}
+
+		string SelectQuery = "SELECT d.botid, g.map, g.datetime, g.gamename, g.duration, d.winner, d.min, d.sec, g.gamestate FROM games g LEFT JOIN dotagames d ON d.gameid = g.id WHERE g.id = " + UTIL_ToString( GameID );
+		if( mysql_real_query( Connection, SelectQuery.c_str( ), SelectQuery.size( ) ) != 0 )
+                {
+                        cout << "error: " << mysql_error( Connection ) << endl;
+                        return 1;
+                }
+		else
+		{
+                        MYSQL_RES *Result = mysql_store_result( Connection );
+
+                        if( Result )
+                        {
+                                vector<string> Row = MySQLFetchRow( Result );
+
+                                while( Row.size( ) == 9 )
+                                {
+					string InQ = "INSERT INTO dvstats_scoredgames VALUE (NULL, "+UTIL_ToString(GameID)+", "+Row[0]+", "+Row[1]+", "+Row[2]+", "+Row[3]+", "+Row[4]+", "+Row[5]+", "+Row[6]+", "+Row[7]+", "+Row[8]+")";
+					if( mysql_real_query( Connection, InQ.c_str( ), InQ.size( ) ) != 0 )
+			                {
+                        			cout << "error: " << mysql_error( Connection ) << endl;
+                        			return 1;
+                			}
+				}
+			}
 		}
 	}
 
