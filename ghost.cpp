@@ -1352,12 +1352,12 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_MatchMakingMethod = CFG->GetInt( "bot_matchmakingmethod", 1 );
 	m_MapGameType = CFG->GetUInt32( "bot_mapgametype", 21569728 );
 	m_Openstats = CFG->GetInt( "bot_openstats", 0 ) == 0 ? false : true;
-	m_Autoban = CFG->GetInt( "bot_autoban", 0 );
-	m_AutobanFirstLeavers = CFG->GetInt( "bot_autobanfirstleavers", 0 );
-	m_AutobanFirstLimit = CFG->GetInt( "bot_autobanfirstlimit", 0 );
-	m_AutobanMinAllies = CFG->GetInt( "bot_autobanminallies", 0 );
-	m_AutobanMinEnemies = CFG->GetInt( "bot_autobanminenemies", 0 );
-	m_AutobanGameLimit = CFG->GetInt( "bot_autobangamelimit", 0 );
+	m_Autoban = CFG->GetInt( "bot_autoban", 1 );
+	m_AutobanFirstLeavers = CFG->GetInt( "bot_autobanfirstleavers", 2 );
+	m_AutobanFirstLimit = CFG->GetInt( "bot_autobanfirstlimit", 2 );
+	m_AutobanMinAllies = CFG->GetInt( "bot_autobanminallies", 3 );
+	m_AutobanMinEnemies = CFG->GetInt( "bot_autobanminenemies", 3 );
+	m_AutobanGameLimit = CFG->GetInt( "bot_autobangamelimit", 300 );
 	m_GameCounterLimit = CFG->GetInt( "bot_gamecounterlimit", 100 );
 	
 	m_BanDuration = CFG->GetInt( "bot_banduration", 48 );

@@ -28,7 +28,6 @@
 #include "config.h"
 #include "language.h"
 #include "socket.h"
-#include "ghostdb.h"
 #include "bnet.h"
 #include "map.h"
 #include "packed.h"
@@ -2752,6 +2751,10 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 			string MinString = UTIL_ToString( ( m_GameTicks / 1000 ) / 60 );
 			string SecString = UTIL_ToString( ( m_GameTicks / 1000 ) % 60 );
 
+                        unsigned char SID = GetSIDFromPID( chatPlayer->GetFromPID() );
+                        uint32_t slot = GetSIDFromPID( chatPlayer->GetFromPID() );
+                        uint32_t fteam = m_Slots[SID].GetTeam();
+
 			if( MinString.size( ) == 1 )
 				MinString.insert( 0, "0" );
 
@@ -2760,6 +2763,7 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 
 			if( !ExtraFlags.empty( ) )
 			{
+
 				if( !m_GameLoaded )
 					Relay = false;
 				else if( ExtraFlags[0] == 0 )
@@ -2774,6 +2778,15 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 						boost::mutex::scoped_lock lock( m_GHost->m_CallablesMutex );
 						m_GHost->m_Callables.push_back( m_GHost->m_DB->ThreadedTournamentChat( m_TournamentChatID, player->GetName( ) + " (in-game): " + chatPlayer->GetMessage( ) ) );
 						lock.unlock( );
+					} else {
+
+						ChatEvent ce;
+						ce.time = m_GameTicks;
+						ce.playername = player->GetName();
+						ce.playerColour1 = slot;
+						ce.chatmessage = chatPlayer->GetMessage();
+						ce.side = 2;						
+						m_GameChatEvents.push_back(ce);
 					}
 
 					// don't relay ingame messages targeted for all players if we're currently muting all
@@ -2788,6 +2801,14 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 
 					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [Obs/Ref] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
 				} else {
+                                        ChatEvent ce;
+                                        ce.time = m_GameTicks;
+                                        ce.playername = player->GetName();
+                                        ce.playerColour1 = slot;
+                                        ce.chatmessage = chatPlayer->GetMessage();
+                                        ce.side = fteam;
+                                        m_GameChatEvents.push_back(ce);
+
 					// I don't care, print it to console anyway
 					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [??] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
 				}
@@ -2817,6 +2838,14 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 						boost::mutex::scoped_lock lock( m_GHost->m_CallablesMutex );
 						m_GHost->m_Callables.push_back( m_GHost->m_DB->ThreadedTournamentChat( m_TournamentChatID, player->GetName( ) + " (lobby): " + chatPlayer->GetMessage( ) ) );
 						lock.unlock( );
+					} else {
+	                                        ChatEvent ce;
+                                        	ce.time = (GetTime( ) - m_CreationTime) * 1000;
+                                	        ce.playername = player->GetName();
+                        	                ce.playerColour1 = slot;
+                	                        ce.chatmessage = chatPlayer->GetMessage();
+        	                                ce.side = fteam;
+	                                        m_LobbyChatEvents.push_back(ce);
 					}
 
 					if( m_MuteLobby )

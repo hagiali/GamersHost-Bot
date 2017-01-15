@@ -52,6 +52,12 @@ private:
 	uint32_t m_ScourgeKills;
 	uint32_t m_LastCreepTime; // last time we received creep stats, for the time limit win condition
 
+    	uint32_t m_LatestKill[12];
+	uint32_t m_KillCounter[12];
+	uint32_t m_KillStreakCounter[12];
+	bool m_FirstBlood;
+	vector<Event> m_Events;
+
 public:
 	CStatsDOTA( CBaseGame *nGame, string nConditions, string nSaveType );
 	virtual ~CStatsDOTA( );

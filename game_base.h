@@ -27,6 +27,7 @@
 #define GAME_BASE_H
 
 #include "gameslot.h"
+#include "ghostdb.h"
 
 //
 // CBaseGame
@@ -57,6 +58,8 @@ public:
 	vector<CGameSlot> m_Slots;						// vector of slots
 
 protected:
+	vector<ChatEvent> m_LobbyChatEvents;
+	vector<ChatEvent> m_GameChatEvents;
 	CTCPServer *m_Socket;							// listening socket
 	CGameProtocol *m_Protocol;						// game protocol
 	vector<CPotentialPlayer *> m_Potentials;		// vector of potential players (connections that haven't sent a W3GS_REQJOIN packet yet)
