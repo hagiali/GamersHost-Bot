@@ -506,11 +506,11 @@ CGHost :: CGHost( CConfig *CFG )
 	// load the battle.net connections
 	// we're just loading the config data and creating the CBNET classes here, the connections are established later (in the Update function)
 
-        for( uint32_t i = 1; i < 15; ++i )
+        for( uint32_t i = 0; i < 15; ++i )
 	{
 		string Prefix;
 
-		if( i == 1 )
+		if( i == 0 )
 			Prefix = "bnet_";
 		else
 			Prefix = "bnet" + UTIL_ToString( i ) + "_";

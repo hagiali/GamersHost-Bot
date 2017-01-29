@@ -1195,8 +1195,8 @@ CDBVampPlayerSummary *MySQLVampPlayerSummaryCheck( void *conn, string *error, ui
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 	string EscName = MySQLEscapeString( conn, name );
 	CDBVampPlayerSummary *VampPlayerSummary = NULL;
-	string GamesQuery = "SELECT COUNT(*) FROM w3mmdplayers WHERE name='" + EscName + "' AND category='uxvamp'";
-	string HumanGamesQuery = "SELECT COUNT(*) FROM w3mmdvars,w3mmdplayers WHERE w3mmdvars.varname='status' AND w3mmdvars.value_int >= '2' AND w3mmdplayers.gameid=w3mmdvars.gameid AND w3mmdplayers.pid=w3mmdvars.pid AND w3mmdplayers.name='" + EscName + "' AND w3mmdplayers.category='uxvamp'";
+	string GamesQuery = "SELECT COUNT(*) FROM stats_w3mmdplayers WHERE name='" + EscName + "' AND category='uxvamp'";
+	string HumanGamesQuery = "SELECT COUNT(*) FROM stats_w3mmdvars,stats_w3mmdplayers WHERE stats_w3mmdvars.varname='status' AND stats_w3mmdvars.value_int >= '2' AND stats_w3mmdplayers.gameid=stats_w3mmdvars.gameid AND stats_w3mmdplayers.pid=stats_w3mmdvars.pid AND stats_w3mmdplayers.name='" + EscName + "' AND stats_w3mmdplayers.category='uxvamp'";
 	//vamp games = total games - human games
 	string HumanWinsQuery = "SELECT COUNT(*) FROM w3mmdvars,w3mmdplayers WHERE w3mmdvars.varname='status' AND w3mmdvars.value_int = '4' AND w3mmdplayers.gameid=w3mmdvars.gameid AND w3mmdplayers.pid=w3mmdvars.pid AND w3mmdplayers.name='" + EscName + "' AND w3mmdplayers.category='uxvamp'";
 	string VampWinsQuery = "SELECT COUNT(*) FROM w3mmdvars,w3mmdplayers WHERE w3mmdvars.varname='status' AND w3mmdvars.value_int = '0' AND w3mmdplayers.gameid=w3mmdvars.gameid AND w3mmdplayers.pid=w3mmdvars.pid AND w3mmdplayers.name='" + EscName + "' AND w3mmdplayers.category='uxvamp'";
@@ -1600,7 +1600,7 @@ CDBTreePlayerSummary *MySQLTreePlayerSummaryCheck( void *conn, string *error, ui
 	string EscName = MySQLEscapeString( conn, name );
 	string EscRealm = MySQLEscapeString( conn, realm );
 	CDBTreePlayerSummary *TreePlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(intstats2), 0), IFNULL(SUM(intstats3), 0), IFNULL(SUM(intstats4), 0), IFNULL(SUM(intstats5), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'treetag'";
+	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(intstats2), 0), IFNULL(SUM(intstats3), 0), IFNULL(SUM(intstats4), 0), IFNULL(SUM(intstats5), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'treetag'";
 	
 	if( !realm.empty( ) )
 		Query += " AND server = '" + EscRealm + "'";
@@ -1653,7 +1653,7 @@ CDBShipsPlayerSummary *MySQLShipsPlayerSummaryCheck( void *conn, string *error, 
 	string EscName = MySQLEscapeString( conn, name );
 	string EscRealm = MySQLEscapeString( conn, realm );
 	CDBShipsPlayerSummary *ShipsPlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'battleships'";
+	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'battleships'";
 	
 	if( !realm.empty( ) )
 		Query += " AND server = '" + EscRealm + "'";
@@ -1701,7 +1701,7 @@ CDBSnipePlayerSummary *MySQLSnipePlayerSummaryCheck( void *conn, string *error, 
 	string EscName = MySQLEscapeString( conn, name );
 	string EscRealm = MySQLEscapeString( conn, realm );
 	CDBSnipePlayerSummary *SnipePlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'elitesnipers'";
+	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'elitesnipers'";
 	
 	if( !realm.empty( ) )
 		Query += " AND server = '" + EscRealm + "'";
@@ -1750,7 +1750,7 @@ CDBW3MMDPlayerSummary *MySQLW3MMDPlayerSummaryCheck( void *conn, string *error, 
 	string EscRealm = MySQLEscapeString( conn, realm );
 	string EscCategory = MySQLEscapeString( conn, category );
 	CDBW3MMDPlayerSummary *W3MMDPlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0), (SELECT COUNT(*) FROM w3mmd_elo_scores AS s2 WHERE s2.score > IFNULL(MAX(w3mmd_elo_scores.score), 0) AND s2.category = w3mmd_elo_scores.category) + 1 FROM w3mmd_elo_scores WHERE name='" + EscName + "' AND category = '" + EscCategory + "'";
+	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0), (SELECT COUNT(*) FROM stats_w3mmd_elo_scores AS s2 WHERE s2.score > IFNULL(MAX(stats_w3mmd_elo_scores.score), 0) AND s2.category = stats_w3mmd_elo_scores.category) + 1 FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = '" + EscCategory + "'";
 	
 	if( !realm.empty( ) )
 		Query += " AND server = '" + EscRealm + "'";
@@ -1821,7 +1821,7 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
 	Score[0] = -100000.0;
 	Score[1] = -100000.0;
 	
-	string Query = "SELECT score FROM w3mmd_elo_scores WHERE category='" + EscCategory + "' AND name='" + EscName + "' AND server='" + EscServer + "'";
+	string Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='" + EscCategory + "' AND name='" + EscName + "' AND server='" + EscServer + "'";
 	string Query2 = "SELECT -100000.0;";
 	
 	if( category == "dota" )
@@ -2135,7 +2135,7 @@ uint32_t MySQLW3MMDPlayerAdd( void *conn, string *error, uint32_t botid, string 
 	string EscName = MySQLEscapeString( conn, name );
 	string EscFlag = MySQLEscapeString( conn, flag );
 	
-	string TargetTable = "w3mmdplayers";
+	string TargetTable = "stats_w3mmdplayers";
 	
 	if( saveType == "uxtourney" )
 		TargetTable = "uxtourney_res_w3mmdplayers";
@@ -2158,7 +2158,7 @@ bool MySQLW3MMDVarAdd( void *conn, string *error, uint32_t botid, uint32_t gamei
 	bool Success = false;
 	string Query;
 	
-	string TargetTable = "w3mmdvars";
+	string TargetTable = "stats_w3mmdvars";
 	
 	if( saveType == "uxtourney" )
 		TargetTable = "uxtourney_res_w3mmdvars";
@@ -2189,7 +2189,7 @@ bool MySQLW3MMDVarAdd( void *conn, string *error, uint32_t botid, uint32_t gamei
 	bool Success = false;
 	string Query;
 	
-	string TargetTable = "w3mmdvars";
+	string TargetTable = "stats_w3mmdvars";
 	
 	if( saveType == "uxtourney" )
 		TargetTable = "uxtourney_res_w3mmdvars";
@@ -2220,7 +2220,7 @@ bool MySQLW3MMDVarAdd( void *conn, string *error, uint32_t botid, uint32_t gamei
 	bool Success = false;
 	string Query;
 	
-	string TargetTable = "w3mmdvars";
+	string TargetTable = "stats_w3mmdvars";
 	
 	if( saveType == "uxtourney" )
 		TargetTable = "uxtourney_res_w3mmdvars";
