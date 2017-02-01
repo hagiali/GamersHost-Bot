@@ -83,6 +83,7 @@ CGame :: CGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHost
 	}
     else if( m_Map->GetMapType( ) == "dota" || m_Map->GetMapType( ) == "dota_solomm")
 	{
+		CONSOLE_Print("Using " + m_Map->GetMapType( ) +" stats.");
         m_Stats = new CStatsDOTA( this, m_Map->GetConditions( ), m_Map->GetMapType( ) );
         m_MapType = m_Map->GetMapType( );
 
@@ -90,7 +91,7 @@ CGame :: CGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHost
             m_MatchMaking = true;
             m_MinimumScore = m_Map->GetMinimumScore();
             m_MaximumScore = m_Map->GetMaximumScore();
-            CONSOLE_Print("[GAME: " + m_GameName + "] created Matchmaking game from ["+UTIL_ToString(m_MinimumScore)+"] to ["+UTIL_ToString(m_MaximumScore)+"]");
+            CONSOLE_Print("[GAME: " + m_GameName + "] created Matchmaking game from ["+UTIL_ToString(m_MinimumScore, 2)+"] to ["+UTIL_ToString(m_MaximumScore, 2)+"]");
         }
     }
 }
