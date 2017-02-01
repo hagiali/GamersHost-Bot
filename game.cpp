@@ -81,11 +81,18 @@ CGame :: CGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHost
 		m_Stats = new CStatsW3MMD( this, m_Map->GetMapStatsW3MMDCategory( ), "" );
 		m_MapType = m_Map->GetMapStatsW3MMDCategory( );
 	}
-	else if( m_Map->GetMapType( ) == "dota" )
+    else if( m_Map->GetMapType( ) == "dota" || m_Map->GetMapType( ) == "dota_solomm")
 	{
-		m_Stats = new CStatsDOTA( this, m_Map->GetConditions( ), "dota" );
-		m_MapType = "dota";
-	}
+        m_Stats = new CStatsDOTA( this, m_Map->GetConditions( ), m_Map->GetMapType( ) );
+        m_MapType = m_Map->GetMapType( );
+
+        if(m_Map->GetMatchmaking()) {
+            m_MatchMaking = true;
+            m_MinimumScore = m_Map->GetMinimumScore();
+            m_MaximumScore = m_Map->GetMaximumScore();
+            CONSOLE_Print("[GAME: " + m_GameName + "] created Matchmaking game from ["+UTIL_ToString(m_MinimumScore)+"] to ["+UTIL_ToString(m_MaximumScore)+"]");
+        }
+    }
 }
 
 CGame :: ~CGame( )
@@ -291,14 +298,10 @@ bool CGame :: Update( void *fd, void *send_fd )
 
 			if( DotAPlayerSummary && DotAPlayerSummary->GetTotalGames( ) > 0 )
 			{
-				string DotaCategory = "DotA";
+                string DotaCategory = "Team DotA";
 				
-				if( i->second->GetSaveType( ) == "lod" )
-					DotaCategory = "DotA LoD";
-				else if( i->second->GetSaveType( ) == "dota2" )
-					DotaCategory = "high-ranked DotA";
-				else if( i->second->GetSaveType( ) == "eihl" )
-					DotaCategory = "DotA League";
+                if( i->second->GetSaveType( ) == "dota_solomm" )
+                    DotaCategory = "Solo DotA";
 				
 				string Summary = m_GHost->m_Language->HasPlayedDotAGamesWithThisBot(
 									StatsName,
@@ -752,12 +755,9 @@ CGamePlayer *CGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJ
 	// show player statistics if enabled
 	if( Player && m_GHost->m_StatsOnJoin )
 	{
-		if( m_MapType == "dota" || m_MapType == "eihl" || m_MapType == "lod" || ( m_MapType == "dota2" && score != NULL ) )
-		{
-			if( m_GHost->m_Openstats )
-				m_PairedDPSChecks.push_back( PairedDPSCheck( string( ), m_GHost->m_DB->ThreadedDotAPlayerSummaryCheck( Player->GetName( ), Player->GetJoinedRealm( ), "openstats" ) ) );
-			else
-				m_PairedDPSChecks.push_back( PairedDPSCheck( string( ), m_GHost->m_DB->ThreadedDotAPlayerSummaryCheck( Player->GetName( ), Player->GetJoinedRealm( ), m_MapType ) ) );
+        if( m_MapType == "dota" || (m_MapType == "dota_solomm" && score != NULL) )
+        {
+            m_PairedDPSChecks.push_back( PairedDPSCheck( string( ), m_GHost->m_DB->ThreadedDotAPlayerSummaryCheck( Player->GetName( ), Player->GetJoinedRealm( ), m_MapType ) ) );
 		}
 		
 		else if( !m_MapType.empty( ) )

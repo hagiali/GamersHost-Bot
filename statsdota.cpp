@@ -40,12 +40,12 @@ CStatsDOTA :: CStatsDOTA( CBaseGame *nGame, string nConditions, string nSaveType
 {
 	CONSOLE_Print( "[STATSDOTA] using dota stats" );
 
-        for( unsigned int i = 0; i < 12; ++i ) {
-		m_Players[i] = NULL;
-        	m_LatestKill[i] = 0;
-	        m_KillCounter[i] = 0;
-		m_KillStreakCounter[i] = 0;
-	}
+    for( unsigned int i = 0; i < 12; ++i ) {
+        m_Players[i] = NULL;
+        m_LatestKill[i] = 0;
+         m_KillCounter[i] = 0;
+        m_KillStreakCounter[i] = 0;
+    }
 	m_FirstBlood = false;
 	
 	// process the win conditions
@@ -153,129 +153,129 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 							
 								if(!m_FirstBlood) {
 									if(Killer) {
-	                                                                        if (!m_Players[ValueInt])
-        	                                                                      m_Players[ValueInt] = new CDBDotAPlayer( );
+                                        if (!m_Players[ValueInt])
+                                              m_Players[ValueInt] = new CDBDotAPlayer( );
 										m_Players[ValueInt]->SetFB();
 									}
 
 									if(Victim) {
-                                                                                if (!m_Players[VictimColour])
-                                                                                      m_Players[VictimColour] = new CDBDotAPlayer( );
-                                                                                m_Players[VictimColour]->SetFD();
-                                                                        }
+                                        if (!m_Players[VictimColour])
+                                              m_Players[VictimColour] = new CDBDotAPlayer( );
+                                        m_Players[VictimColour]->SetFD();
+                                    }
 									m_FirstBlood = true;
 								}
 
 								if( Killer && Victim && ValueInt != VictimColour) {
-                                                                        Event event;
-                                                                        event.event = "kill";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = ValueInt;
-                                                                        event.playerColour2 = VictimColour;
-                                                                        event.additional1 = "";
-                                                                        event.additional2 = "";
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                	m_Events.push_back(event);
+                                    Event event;
+                                    event.event = "kill";
+                                    event.time = m_Game->GetGameTicks();
+                                    event.playerColour1 = ValueInt;
+                                    event.playerColour2 = VictimColour;
+                                    event.additional1 = "";
+                                    event.additional2 = "";
+                                    event.additional3 = "";
+                                    event.additional4 = "";
+                                    m_Events.push_back(event);
 								} else if( Killer && Victim ) {
-                                                                        Event event;
-                                                                        event.event = "suicide";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = ValueInt;
-                                                                        event.playerColour2 = ValueInt;
-                                                                        event.additional1 = "";
-                                                                        event.additional2 = "";
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                        m_Events.push_back(event);
+                                    Event event;
+                                    event.event = "suicide";
+                                    event.time = m_Game->GetGameTicks();
+                                    event.playerColour1 = ValueInt;
+                                    event.playerColour2 = ValueInt;
+                                    event.additional1 = "";
+                                    event.additional2 = "";
+                                    event.additional3 = "";
+                                    event.additional4 = "";
+                                    m_Events.push_back(event);
 								} else if( Victim ) {
-                                                                        Event event;
-                                                                        event.event = "kill";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = 12;
-                                                                        event.playerColour2 = VictimColour;
-                                                                        event.additional1 = "";
-                                                                        event.additional2 = "";
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                        m_Events.push_back(event);
+                                    Event event;
+                                    event.event = "kill";
+                                    event.time = m_Game->GetGameTicks();
+                                    event.playerColour1 = 12;
+                                    event.playerColour2 = VictimColour;
+                                    event.additional1 = "";
+                                    event.additional2 = "";
+                                    event.additional3 = "";
+                                    event.additional4 = "";
+                                    m_Events.push_back(event);
 								}
 	
-		                		                if( Killer )
-				                                {
-							
-        	                                                        if (!m_Players[ValueInt])
-	                                                                      m_Players[ValueInt] = new CDBDotAPlayer( );
+                                if( Killer )
+                                {
 
-                                					m_KillStreakCounter[ValueInt]++;
-				                                        if( ( m_KillCounter[ValueInt] == 0 && m_LatestKill[ValueInt] == 0 ) || GetTime() - m_LatestKill[ValueInt] >= 18)
-				                                        {
-					                                        m_KillCounter[ValueInt] = 1;
-					                                        m_LatestKill[ValueInt] = GetTime();
-				                                        }
-					                                else if( m_KillCounter[ValueInt] != 0 && GetTime() - m_LatestKill[ValueInt] < 18 )
-                                    					{
-					                                        m_KillCounter[ValueInt]++;
-                                        					m_LatestKill[ValueInt] = GetTime();
-					                                        if(m_KillCounter[ValueInt] == 2 )
-					                                        {
-											m_Players[ValueInt]->inc2K();
-                                        					}
-					                                        if(m_KillCounter[ValueInt] == 3 )
-					                                        {
-											m_Players[ValueInt]->dec2K();
-                                                                                        m_Players[ValueInt]->inc3K();
-                                        					}
-					                                        if(m_KillCounter[ValueInt] == 4 )
-                                        					{
-                                                                                        m_Players[ValueInt]->dec3K();
-                                                                                        m_Players[ValueInt]->inc4K();
-                                        					}
-					                                        if(m_KillCounter[ValueInt] >= 5 )
-					                                        {
-                                                                                        m_Players[ValueInt]->dec4K();
-                                                                                        m_Players[ValueInt]->inc5K();
-                                        					}
-				                                        }
-                                    					switch(m_KillStreakCounter[ValueInt])
-				                                        {
-					                                    case 3:
-										m_Players[ValueInt]->incKS();
-                                        				    	break;
-					                                    case 4:
-                                                                                m_Players[ValueInt]->decKS();
-                                                                                m_Players[ValueInt]->incD();
-	                                        				break;
-					                                    case 5:
-                                                                                m_Players[ValueInt]->decD();
-                                                                                m_Players[ValueInt]->incMK();
-                                        				    	break;
-					                                    case 6:
-                                                                                m_Players[ValueInt]->decMK();
-                                                                                m_Players[ValueInt]->incU();
-                                        				    	break;
-                                    					    case 7:
-                                                                                m_Players[ValueInt]->decU();
-                                                                                m_Players[ValueInt]->incWS();
-                                        				    	break;
-                                    					    case 8:
-                                                                                m_Players[ValueInt]->decWS();
-                                                                                m_Players[ValueInt]->incMOK();
-                                        				    	break;
-                                    					    case 9:
-                                                                                m_Players[ValueInt]->decMOK();
-                                                                                m_Players[ValueInt]->incG();
-                                        				    	break;
-                                    					    case 10:
-                                                                                m_Players[ValueInt]->decG();
-                                                                                m_Players[ValueInt]->incBG();
-                                        				    	break;
-                                    					}
+                                    if (!m_Players[ValueInt])
+                                          m_Players[ValueInt] = new CDBDotAPlayer( );
 
-									if(m_KillStreakCounter[ValueInt] >  m_Players[ValueInt]->GetMS()) {
-										 m_Players[ValueInt]->SetMS((m_KillStreakCounter[ValueInt]));
-									}
-                                				}
+                                    m_KillStreakCounter[ValueInt]++;
+                                    if( ( m_KillCounter[ValueInt] == 0 && m_LatestKill[ValueInt] == 0 ) || GetTime() - m_LatestKill[ValueInt] >= 18)
+                                    {
+                                        m_KillCounter[ValueInt] = 1;
+                                        m_LatestKill[ValueInt] = GetTime();
+                                    }
+                                    else if( m_KillCounter[ValueInt] != 0 && GetTime() - m_LatestKill[ValueInt] < 18 )
+                                    {
+                                        m_KillCounter[ValueInt]++;
+                                        m_LatestKill[ValueInt] = GetTime();
+                                    }
+
+                                    if(m_KillCounter[ValueInt] == 2 ) {
+                                        m_Players[ValueInt]->inc2K();
+                                    }
+                                    if(m_KillCounter[ValueInt] == 3 )
+                                    {
+                                        m_Players[ValueInt]->dec2K();
+                                        m_Players[ValueInt]->inc3K();
+                                    }
+                                    if(m_KillCounter[ValueInt] == 4 )
+                                    {
+                                        m_Players[ValueInt]->dec3K();
+                                        m_Players[ValueInt]->inc4K();
+                                    }
+                                    if(m_KillCounter[ValueInt] >= 5 )
+                                    {
+                                        m_Players[ValueInt]->dec4K();
+                                        m_Players[ValueInt]->inc5K();
+                                    }
+                                }
+                                switch(m_KillStreakCounter[ValueInt])
+                                {
+                                    case 3:
+                                            m_Players[ValueInt]->incKS();
+                                            break;
+                                    case 4:
+                                        m_Players[ValueInt]->decKS();
+                                        m_Players[ValueInt]->incD();
+                                        break;
+                                    case 5:
+                                        m_Players[ValueInt]->decD();
+                                        m_Players[ValueInt]->incMK();
+                                         break;
+                                    case 6:
+                                        m_Players[ValueInt]->decMK();
+                                        m_Players[ValueInt]->incU();
+                                        break;
+                                    case 7:
+                                        m_Players[ValueInt]->decU();
+                                        m_Players[ValueInt]->incWS();
+                                        break;
+                                    case 8:
+                                        m_Players[ValueInt]->decWS();
+                                        m_Players[ValueInt]->incMOK();
+                                        break;
+                                    case 9:
+                                        m_Players[ValueInt]->decMOK();
+                                        m_Players[ValueInt]->incG();
+                                        break;
+                                    case 10:
+                                        m_Players[ValueInt]->decG();
+                                        m_Players[ValueInt]->incBG();
+                                        break;
+                                }
+
+                                if(m_KillStreakCounter[ValueInt] >  m_Players[ValueInt]->GetMS()) {
+                                     m_Players[ValueInt]->SetMS((m_KillStreakCounter[ValueInt]));
+                                }
 
 								if( Killer && Victim )
 								{
@@ -337,9 +337,9 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 										event.playerColour1 = 0;
 										event.playerColour2 = VictimColour;
 										event.additional1 = "";
-                                                                                event.additional2 = "";
-                                                                                event.additional3 = "";
-                                                                                event.additional4 = "";
+                                        event.additional2 = "";
+                                        event.additional3 = "";
+                                        event.additional4 = "";
 
 										m_Events.push_back(event);
 
@@ -348,17 +348,17 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 									{
 										m_ScourgeKills++;
 										CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the Scourge killed player [" + Victim->GetName( ) + "]" );
-                                                                                Event event;
-                                                                                event.event = "kill";
-                                                                                event.time = m_Game->GetGameTicks();
-                                                                                event.playerColour1 = 6;
-                                                                                event.playerColour2 = VictimColour;
-                                                                                event.additional1 = "";
-                                                                                event.additional2 = "";
-                                                                                event.additional3 = "";
-                                                                                event.additional4 = "";
+                                        Event event;
+                                        event.event = "kill";
+                                        event.time = m_Game->GetGameTicks();
+                                        event.playerColour1 = 6;
+                                        event.playerColour2 = VictimColour;
+                                        event.additional1 = "";
+                                        event.additional2 = "";
+                                        event.additional3 = "";
+                                        event.additional4 = "";
 
-                                                                                m_Events.push_back(event);
+                                        m_Events.push_back(event);
 									}
 								}
 							}
@@ -433,44 +433,44 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 								if( Killer ) {
 									CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] player [" + Killer->GetName( ) + "] destroyed a level [" + Level + "] " + AllianceString + " tower (" + SideString + ")" );
 
-                                                                        Event event;
-                                                                        event.event = "tower";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = ValueInt;
-                                                                        event.playerColour2 = (Alliance == "0" ? 0 : 6);
-                                                                        event.additional1 = Side;
-                                                                        event.additional2 = Level;
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                        m_Events.push_back(event);
+                                    Event event;
+                                    event.event = "tower";
+                                    event.time = m_Game->GetGameTicks();
+                                    event.playerColour1 = ValueInt;
+                                    event.playerColour2 = (Alliance == "0" ? 0 : 6);
+                                    event.additional1 = Side;
+                                    event.additional2 = Level;
+                                    event.additional3 = "";
+                                    event.additional4 = "";
+                                    m_Events.push_back(event);
 								}else
 								{
 									if( ValueInt == 0 ) {
 										CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the Sentinel destroyed a level [" + Level + "] " + AllianceString + " tower (" + SideString + ")" );
-                                                                        Event event;
-                                                                        event.event = "tower";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = 0;
-                                                                        event.playerColour2 = (Alliance == "0" ? 0 : 6);
-                                                                        event.additional1 = Side;
-                                                                        event.additional2 = Level;
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                        m_Events.push_back(event);
+                                        Event event;
+                                        event.event = "tower";
+                                        event.time = m_Game->GetGameTicks();
+                                        event.playerColour1 = 0;
+                                        event.playerColour2 = (Alliance == "0" ? 0 : 6);
+                                        event.additional1 = Side;
+                                        event.additional2 = Level;
+                                        event.additional3 = "";
+                                        event.additional4 = "";
+                                        m_Events.push_back(event);
 
 									}
 									else if( ValueInt == 6 ) {
 										CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the Scourge destroyed a level [" + Level + "] " + AllianceString + " tower (" + SideString + ")" );
-                                                                       Event event;
-                                                                        event.event = "tower";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = 6;
-                                                                        event.playerColour2 = (Alliance == "0" ? 0 : 6);
-                                                                        event.additional1 = Side;
-                                                                        event.additional2 = Level;
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                        m_Events.push_back(event);
+                                        Event event;
+                                        event.event = "tower";
+                                        event.time = m_Game->GetGameTicks();
+                                        event.playerColour1 = 6;
+                                        event.playerColour2 = (Alliance == "0" ? 0 : 6);
+                                        event.additional1 = Side;
+                                        event.additional2 = Level;
+                                        event.additional3 = "";
+                                        event.additional4 = "";
+                                        m_Events.push_back(event);
 
 									}
 								}
@@ -521,46 +521,46 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 								if( Killer ) {
 									CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] player [" + Killer->GetName( ) + "] destroyed a " + TypeString + " " + AllianceString + " rax (" + SideString + ")" );
 
-                                                                       Event event;
-                                                                        event.event = "rax";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = ValueInt;
-                                                                        event.playerColour2 = (Alliance == "0" ? 0 : 6);
-                                                                        event.additional1 = Side;
-                                                                        event.additional2 = Type;
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                        m_Events.push_back(event);
+                                    Event event;
+                                    event.event = "rax";
+                                    event.time = m_Game->GetGameTicks();
+                                    event.playerColour1 = ValueInt;
+                                    event.playerColour2 = (Alliance == "0" ? 0 : 6);
+                                    event.additional1 = Side;
+                                    event.additional2 = Type;
+                                    event.additional3 = "";
+                                    event.additional4 = "";
+                                    m_Events.push_back(event);
 
 								}else
 								{
 									if( ValueInt == 0 ) {
 										CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the Sentinel destroyed a " + TypeString + " " + AllianceString + " rax (" + SideString + ")" );
 
-                                                                       Event event;
-                                                                        event.event = "rax";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = 0;
-                                                                        event.playerColour2 = (Alliance == "0" ? 0 : 6);
-                                                                        event.additional1 = Side;
-                                                                        event.additional2 = Type;
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                        m_Events.push_back(event);
+                                        Event event;
+                                        event.event = "rax";
+                                        event.time = m_Game->GetGameTicks();
+                                        event.playerColour1 = 0;
+                                        event.playerColour2 = (Alliance == "0" ? 0 : 6);
+                                        event.additional1 = Side;
+                                        event.additional2 = Type;
+                                        event.additional3 = "";
+                                        event.additional4 = "";
+                                        m_Events.push_back(event);
 
 									}else if( ValueInt == 6 ) {
 										CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the Scourge destroyed a " + TypeString + " " + AllianceString + " rax (" + SideString + ")" );
 
-                                                                       Event event;
-                                                                        event.event = "rax";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = 6;
-                                                                        event.playerColour2 = (Alliance == "0" ? 0 : 6);
-                                                                        event.additional1 = Side;
-                                                                        event.additional2 = Type;
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                        m_Events.push_back(event);
+                                        Event event;
+                                        event.event = "rax";
+                                        event.time = m_Game->GetGameTicks();
+                                        event.playerColour1 = 6;
+                                        event.playerColour2 = (Alliance == "0" ? 0 : 6);
+                                        event.additional1 = Side;
+                                        event.additional2 = Type;
+                                        event.additional3 = "";
+                                        event.additional4 = "";
+                                        m_Events.push_back(event);
 									}
 								}
 							}
@@ -569,16 +569,16 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 								// the frozen throne got hurt
 
 								CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the Frozen Throne is now at " + UTIL_ToString( ValueInt ) + "% HP" );
-                                                                       Event event;
-                                                                        event.event = "throne";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = 0;
-                                                                        event.playerColour2 = 6;
-                                                                        event.additional1 = UTIL_ToString(ValueInt);
-                                                                        event.additional2 = "";
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                        m_Events.push_back(event);
+                                Event event;
+                                event.event = "throne";
+                                event.time = m_Game->GetGameTicks();
+                                event.playerColour1 = 0;
+                                event.playerColour2 = 6;
+                                event.additional1 = UTIL_ToString(ValueInt);
+                                event.additional2 = "";
+                                event.additional3 = "";
+                                event.additional4 = "";
+                                m_Events.push_back(event);
 							}
 							else if( KeyString.size( ) >= 4 && KeyString.substr( 0, 4 ) == "Tree" )
 							{
@@ -586,16 +586,16 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 
 								CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the World Tree is now at " + UTIL_ToString( ValueInt ) + "% HP" );
 
-                                                                       Event event;
-                                                                        event.event = "tree";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = 6;
-                                                                        event.playerColour2 = 0;
-                                                                        event.additional1 = UTIL_ToString(ValueInt);
-                                                                        event.additional2 = "";
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                        m_Events.push_back(event);
+                                Event event;
+                                event.event = "tree";
+                                event.time = m_Game->GetGameTicks();
+                                event.playerColour1 = 6;
+                                event.playerColour2 = 0;
+                                event.additional1 = UTIL_ToString(ValueInt);
+                                event.additional2 = "";
+                                event.additional3 = "";
+                                event.additional4 = "";
+                                m_Events.push_back(event);
 
 							}
 							else if( KeyString.size( ) >= 2 && KeyString.substr( 0, 2 ) == "CK" )
@@ -703,16 +703,16 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 									CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] detected winner: " + UTIL_ToString( ValueInt ) );
 
 								
-                                                                       Event event;
-                                                                        event.event = "winner";
-                                                                        event.time = m_Game->GetGameTicks();
-                                                                        event.playerColour1 = 0;
-                                                                        event.playerColour2 = 6;
-                                                                        event.additional1 = UTIL_ToString(m_Winner);
-                                                                        event.additional2 = "";
-                                                                        event.additional3 = "";
-                                                                        event.additional4 = "";
-                                                                        m_Events.push_back(event);
+                                Event event;
+                                event.event = "winner";
+                                event.time = m_Game->GetGameTicks();
+                                event.playerColour1 = 0;
+                                event.playerColour2 = 6;
+                                event.additional1 = UTIL_ToString(m_Winner);
+                                event.additional2 = "";
+                                event.additional3 = "";
+                                event.additional4 = "";
+                                m_Events.push_back(event);
 							}
 							else if( KeyString == "m" )
 								m_Min = ValueInt;

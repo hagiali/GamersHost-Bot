@@ -798,6 +798,10 @@ void CMap :: Load( CConfig *CFG, string nCFGFile )
 	m_MapLoadInGame = CFG->GetInt( "map_loadingame", 0 ) == 0 ? false : true;
 	m_Tournament = CFG->GetInt( "map_tournament", 0 ) == 0 ? false : true;
 	m_TournamentFakeSlot = CFG->GetInt( "map_tournamentfake", 255 );
+
+    m_Matchmaking = CFG->GetInt( "map_matchmaking", 0 ) == 0 ? false : true;
+    m_MinimumScore = CFG->GetInt( "map_matchmaking_minimumscore", 0 );
+    m_MaximumScore = CFG->GetInt( "map_matchmaking_maximumscore", 99999 );
 	
 	if( m_Tournament )
 	{

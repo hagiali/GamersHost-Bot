@@ -134,6 +134,9 @@ private:
 	vector<uint32_t> m_TournamentLayout;		// tournament layout from config
 	vector<uint32_t> m_FakePlayers;				// fake players layout from config
 	string m_Conditions;						// win conditions, used for some stats processing
+    bool m_Matchmaking;
+    double m_MinimumScore;
+    double m_MaximumScore;
 
 public:
 	CMap( CGHost *nGHost );
@@ -171,8 +174,11 @@ public:
 	uint32_t GetMapNumTeams( )				{ return m_MapNumTeams; }
 	vector<CGameSlot> GetSlots( )			{ return m_Slots; }
 	vector<uint32_t> GetTournamentLayout( )	{ return m_TournamentLayout; }
-	vector<uint32_t> GetFakePlayers( )		{ return m_FakePlayers; }
-	string GetConditions( )					{ return m_Conditions; }
+    vector<uint32_t> GetFakePlayers( )		{ return m_FakePlayers; }
+    string GetConditions( )					{ return m_Conditions; }
+    bool GetMatchmaking( )					{ return m_Matchmaking; }
+    double GetMinimumScore( )					{ return m_MinimumScore; }
+    double GetMaximumScore( )					{ return m_MaximumScore; }
 
 	void Load( CConfig *CFG, string nCFGFile );
 	void CheckValid( );

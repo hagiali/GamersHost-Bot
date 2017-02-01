@@ -1467,14 +1467,8 @@ uint32_t MySQLDotAGameAdd( void *conn, string *error, uint32_t botid, uint32_t g
 	
 	string table = "stats_dotagames";
 	
-	if( saveType == "lod" )
-		table = "lodgames";
-	else if( saveType == "dota2" )
-		table = "dota2games";
-	else if( saveType == "eihl" )
-		table = "eihlgames";
-	else if( saveType == "uxtourney" )
-		table = "uxtourney_res_dotagames";
+    if( saveType == "solomm" )
+        table = "stats_dotagames_solomm";
 	
 	string Query = "INSERT INTO " + table + " ( botid, gameid, winner, min, sec ) VALUES ( " + UTIL_ToString( botid ) + ", " + UTIL_ToString( gameid ) + ", " + UTIL_ToString( winner ) + ", " + UTIL_ToString( min ) + ", " + UTIL_ToString( sec ) + " )";
 
@@ -1499,14 +1493,8 @@ uint32_t MySQLDotAPlayerAdd( void *conn, string *error, uint32_t botid, uint32_t
 	
 	string table = "stats_dotaplayers";
 	
-	if( saveType == "lod" )
-		table = "lodplayers";
-	else if( saveType == "dota2" )
-		table = "dota2players";
-	else if( saveType == "eihl" )
-		table = "eihlplayers";
-	else if( saveType == "uxtourney" )
-		table = "uxtourney_res_dotaplayers";
+    if( saveType == "solomm" )
+        table = "stats_dotaplayers_solomm";
 	
 	string Query = "INSERT INTO " + table + " ( botid, gameid, colour, kills, deaths, creepkills, creepdenies, assists, gold, neutralkills, item1, item2, item3, item4, item5, item6, hero, newcolour, towerkills, raxkills, courierkills, level, suicides, 2k, 3k, 4k, 5k, fb, fd, ks, d, mk, u, ws, mok, g, bg, ms ) VALUES ( " + UTIL_ToString( botid ) + ", " + UTIL_ToString( gameid ) + ", " + UTIL_ToString( colour ) + ", " + UTIL_ToString( kills ) + ", " + UTIL_ToString( deaths ) + ", " + UTIL_ToString( creepkills ) + ", " + UTIL_ToString( creepdenies ) + ", " + UTIL_ToString( assists ) + ", " + UTIL_ToString( gold ) + ", " + UTIL_ToString( neutralkills ) + ", '" + EscItem1 + "', '" + EscItem2 + "', '" + EscItem3 + "', '" + EscItem4 + "', '" + EscItem5 + "', '" + EscItem6 + "', '" + EscHero + "', " + UTIL_ToString( newcolour ) + ", " + UTIL_ToString( towerkills ) + ", " + UTIL_ToString( raxkills ) + ", " + UTIL_ToString( courierkills ) + ", " + UTIL_ToString( level ) + ", " + UTIL_ToString( s ) + ", " + UTIL_ToString( twk) + ", " + UTIL_ToString( trk ) + ", " + UTIL_ToString( qk ) + ", " + UTIL_ToString( rk ) + ", " + (fb ? "1" : "0") + ", " + (fd ? "1" : "0")+ ", " + UTIL_ToString( ks ) + ", " + UTIL_ToString( d ) + ", " + UTIL_ToString( mk ) + ", " + UTIL_ToString( u ) + ", " + UTIL_ToString( ws ) + ", " + UTIL_ToString( mok ) + ", " + UTIL_ToString( g ) + ", " + UTIL_ToString( bg ) + ", " + UTIL_ToString( ms ) + ")";
 
@@ -1527,26 +1515,15 @@ CDBDotAPlayerSummary *MySQLDotAPlayerSummaryCheck( void *conn, string *error, ui
 	string Query = string( );
 	CDBDotAPlayerSummary *DotAPlayerSummary = NULL;
 	
-	if( saveType == "openstats" )
-	{
-		Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(kills), 0), IFNULL(SUM(deaths), 0), IFNULL(SUM(creeps), 0), IFNULL(SUM(denies), 0), IFNULL(SUM(assists), 0), IFNULL(SUM(neutrals), 0), IFNULL(SUM(towers), 0), IFNULL(SUM(rax), 0), 0, IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats WHERE player='" + EscName + "'";
-	}
-	else
-	{
-		string table = "stats_dota_elo_scores";
-		
-		if( saveType == "lod" )
-			table = "lod_elo_scores";
-		else if( saveType == "dota2" )
-			table = "dota2_elo_scores";
-		else if( saveType == "eihl" )
-			table = "eihl_elo_scores";
-		
-		Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(kills), 0), IFNULL(SUM(deaths), 0), IFNULL(SUM(creepkills), 0), IFNULL(SUM(creepdenies), 0), IFNULL(SUM(assists), 0), IFNULL(SUM(neutralkills), 0), IFNULL(SUM(towerkills), 0), IFNULL(SUM(raxkills), 0), IFNULL(SUM(courierkills), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM " + table + " WHERE name='" + EscName + "'";
-	
-		if( !realm.empty( ) )
-			Query += " AND server = '" + EscRealm + "'";
-	}
+    string table = "stats_dota_elo_scores";
+
+    if( saveType == "solomm" )
+        table = "stats_dota_elo_scores_solomm";
+
+    Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(kills), 0), IFNULL(SUM(deaths), 0), IFNULL(SUM(creepkills), 0), IFNULL(SUM(creepdenies), 0), IFNULL(SUM(assists), 0), IFNULL(SUM(neutralkills), 0), IFNULL(SUM(towerkills), 0), IFNULL(SUM(raxkills), 0), IFNULL(SUM(courierkills), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM " + table + " WHERE name='" + EscName + "'";
+
+    if( !realm.empty( ) )
+        Query += " AND server = '" + EscRealm + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -1818,21 +1795,21 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
 	//first element of score is the score needed to join the game
 	//second element is the score in the actual category
 	double *Score = new double[2];
-	Score[0] = -100000.0;
-	Score[1] = -100000.0;
+    Score[0] = 0;
+    Score[1] = 0;
 	
-	string Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='" + EscCategory + "' AND name='" + EscName + "' AND server='" + EscServer + "'";
+    string Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='" + EscCategory + "' AND name='" + EscName + "'";
 	string Query2 = "SELECT -100000.0;";
-	
+
 	if( category == "dota" )
 	{
-		Query = "SELECT score FROM dota_elo_scores WHERE name='" + EscName + "' AND server='" + EscServer + "'";
-		Query2 = "SELECT score FROM dota_elo_scores WHERE name='" + EscName + "' AND server='" + EscServer + "'";
+        Query = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "'";
+        Query2 = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "'";
 	}
-	else if( category == "openstats" )
-	{
-		Query = "SELECT score FROM stats WHERE player='" + EscName + "'";
-		Query2 = "SELECT score FROM stats WHERE player='" + EscName + "'";
+    else if( category == "solomm" )
+    {
+        Query = "SELECT score FROM stats_dota_elo_scores_solomm WHERE name='" + EscName + "'";
+        Query2 = "SELECT score FROM stats_dota_elo_scores_solomm WHERE name='" + EscName + "'";
 	}
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
@@ -1865,9 +1842,7 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
 			vector<string> Row = MySQLFetchRow( Result );
 
 			if( Row.size( ) == 1 )
-				Score[1] = UTIL_ToDouble( Row[0] );
-			/* else
-				*error = "error checking score [" + category + " : " + name + " : " + server + "] - row doesn't have 1 column"; */
+                Score[1] = UTIL_ToDouble( Row[0] );
 
 			mysql_free_result( Result );
 		}
@@ -2137,9 +2112,6 @@ uint32_t MySQLW3MMDPlayerAdd( void *conn, string *error, uint32_t botid, string 
 	
 	string TargetTable = "stats_w3mmdplayers";
 	
-	if( saveType == "uxtourney" )
-		TargetTable = "uxtourney_res_w3mmdplayers";
-	
 	string Query = "INSERT INTO " + TargetTable + " ( botid, category, gameid, pid, name, flag, leaver, practicing ) VALUES ( " + UTIL_ToString( botid ) + ", '" + EscCategory + "', " + UTIL_ToString( gameid ) + ", " + UTIL_ToString( pid ) + ", '" + EscName + "', '" + EscFlag + "', " + UTIL_ToString( leaver ) + ", " + UTIL_ToString( practicing ) + " )";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
@@ -2159,9 +2131,6 @@ bool MySQLW3MMDVarAdd( void *conn, string *error, uint32_t botid, uint32_t gamei
 	string Query;
 	
 	string TargetTable = "stats_w3mmdvars";
-	
-	if( saveType == "uxtourney" )
-		TargetTable = "uxtourney_res_w3mmdvars";
 
         for( map<VarP,int32_t> :: iterator i = var_ints.begin( ); i != var_ints.end( ); ++i )
 	{
@@ -2190,9 +2159,6 @@ bool MySQLW3MMDVarAdd( void *conn, string *error, uint32_t botid, uint32_t gamei
 	string Query;
 	
 	string TargetTable = "stats_w3mmdvars";
-	
-	if( saveType == "uxtourney" )
-		TargetTable = "uxtourney_res_w3mmdvars";
 
         for( map<VarP,double> :: iterator i = var_reals.begin( ); i != var_reals.end( ); ++i )
 	{
@@ -2220,10 +2186,7 @@ bool MySQLW3MMDVarAdd( void *conn, string *error, uint32_t botid, uint32_t gamei
 	bool Success = false;
 	string Query;
 	
-	string TargetTable = "stats_w3mmdvars";
-	
-	if( saveType == "uxtourney" )
-		TargetTable = "uxtourney_res_w3mmdvars";
+    string TargetTable = "stats_w3mmdvars";
 
         for( map<VarP,string> :: iterator i = var_strings.begin( ); i != var_strings.end( ); ++i )
 	{
