@@ -2039,13 +2039,6 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			}
 
 			//
-			// !SCORES
-			//
-
-			else if( Command == "scores" )
-				ShowTeamScores( );
-
-			//
 			// !SENDLAN
 			//
 
@@ -2313,6 +2306,13 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 
 	if( Command == "checkme" )
 		SendChat( player, m_GHost->m_Language->CheckedPlayer( User, player->GetNumPings( ) > 0 ? UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", m_GHost->FromCheck( player->GetExternalIPString( ) ), AdminCheck || RootAdminCheck ? "Yes" : "No", IsOwner( User ) ? "Yes" : "No", player->GetSpoofed( ) ? "Yes" : "No", player->GetSpoofedRealm( ).empty( ) ? "Garena" : player->GetSpoofedRealm( ), player->GetReserved( ) ? "Yes" : "No" ) );
+
+	//
+	// !SCORES
+	//
+
+	else if( Command == "scores" && GetTime( ) - player->GetStatsDotASentTime( ) >= 3 )
+		ShowTeamScores( );
 
 	//
 	// !STATSDOTA

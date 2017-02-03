@@ -1424,8 +1424,17 @@ void CBaseGame :: SendAllChat( unsigned char fromPID, string message )
 	{
 		CONSOLE_Print( "[GAME: " + m_GameName + "] [Local]: " + message );
 
+                ChatEvent ce;
+                ce.time = m_GameTicks;
+                ce.playername = "Bot";
+                ce.playerColour1 = 0;
+                ce.chatmessage = message;
+                ce.side = 0;
+
 		if( !m_GameLoading && !m_GameLoaded )
 		{
+                        m_LobbyChatEvents.push_back(ce);
+
 			if( message.size( ) > 254 )
 				message = message.substr( 0, 254 );
 
@@ -1433,6 +1442,8 @@ void CBaseGame :: SendAllChat( unsigned char fromPID, string message )
 		}
 		else
 		{
+			m_GameChatEvents.push_back(ce);
+
 			if( message.size( ) > 127 )
 				message = message.substr( 0, 127 );
 
