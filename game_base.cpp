@@ -1981,6 +1981,15 @@ CGamePlayer *CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncom
 		return NULL;
 	}
 
+        if( joinPlayer->GetName().find( "|" ) != string::npos )
+        {
+                CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game but has an invalid name" );
+                potential->SetBanned( );
+                potential->SendBannedInfo( NULL, "invalid name" );
+                m_GHost->DenyIP( potential->GetExternalIPString( ), 30000, "invalid name" );
+                return NULL;
+        }
+
 	// check if the new player's name is the same as the virtual host name
 
 	if( joinPlayer->GetName( ) == m_VirtualHostName )

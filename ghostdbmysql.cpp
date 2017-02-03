@@ -1467,7 +1467,7 @@ uint32_t MySQLDotAGameAdd( void *conn, string *error, uint32_t botid, uint32_t g
 	
 	string table = "stats_dotagames";
 	
-    if( saveType == "solomm" )
+    if( saveType == "dota_solomm" )
         table = "stats_dotagames_solomm";
 	
 	string Query = "INSERT INTO " + table + " ( botid, gameid, winner, min, sec ) VALUES ( " + UTIL_ToString( botid ) + ", " + UTIL_ToString( gameid ) + ", " + UTIL_ToString( winner ) + ", " + UTIL_ToString( min ) + ", " + UTIL_ToString( sec ) + " )";
@@ -1493,7 +1493,7 @@ uint32_t MySQLDotAPlayerAdd( void *conn, string *error, uint32_t botid, uint32_t
 	
 	string table = "stats_dotaplayers";
 	
-    if( saveType == "solomm" )
+    if( saveType == "dota_solomm" )
         table = "stats_dotaplayers_solomm";
 	
 	string Query = "INSERT INTO " + table + " ( botid, gameid, colour, kills, deaths, creepkills, creepdenies, assists, gold, neutralkills, item1, item2, item3, item4, item5, item6, hero, newcolour, towerkills, raxkills, courierkills, level, suicides, 2k, 3k, 4k, 5k, fb, fd, ks, d, mk, u, ws, mok, g, bg, ms ) VALUES ( " + UTIL_ToString( botid ) + ", " + UTIL_ToString( gameid ) + ", " + UTIL_ToString( colour ) + ", " + UTIL_ToString( kills ) + ", " + UTIL_ToString( deaths ) + ", " + UTIL_ToString( creepkills ) + ", " + UTIL_ToString( creepdenies ) + ", " + UTIL_ToString( assists ) + ", " + UTIL_ToString( gold ) + ", " + UTIL_ToString( neutralkills ) + ", '" + EscItem1 + "', '" + EscItem2 + "', '" + EscItem3 + "', '" + EscItem4 + "', '" + EscItem5 + "', '" + EscItem6 + "', '" + EscHero + "', " + UTIL_ToString( newcolour ) + ", " + UTIL_ToString( towerkills ) + ", " + UTIL_ToString( raxkills ) + ", " + UTIL_ToString( courierkills ) + ", " + UTIL_ToString( level ) + ", " + UTIL_ToString( s ) + ", " + UTIL_ToString( twk) + ", " + UTIL_ToString( trk ) + ", " + UTIL_ToString( qk ) + ", " + UTIL_ToString( rk ) + ", " + (fb ? "1" : "0") + ", " + (fd ? "1" : "0")+ ", " + UTIL_ToString( ks ) + ", " + UTIL_ToString( d ) + ", " + UTIL_ToString( mk ) + ", " + UTIL_ToString( u ) + ", " + UTIL_ToString( ws ) + ", " + UTIL_ToString( mok ) + ", " + UTIL_ToString( g ) + ", " + UTIL_ToString( bg ) + ", " + UTIL_ToString( ms ) + ")";
@@ -1517,7 +1517,7 @@ CDBDotAPlayerSummary *MySQLDotAPlayerSummaryCheck( void *conn, string *error, ui
 	
     string table = "stats_dota_elo_scores";
 
-    if( saveType == "solomm" )
+    if( saveType == "dota_solomm" )
         table = "stats_dota_elo_scores_solomm";
 
     Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(kills), 0), IFNULL(SUM(deaths), 0), IFNULL(SUM(creepkills), 0), IFNULL(SUM(creepdenies), 0), IFNULL(SUM(assists), 0), IFNULL(SUM(neutralkills), 0), IFNULL(SUM(towerkills), 0), IFNULL(SUM(raxkills), 0), IFNULL(SUM(courierkills), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM " + table + " WHERE name='" + EscName + "'";
@@ -1806,7 +1806,7 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
         Query = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "'";
         Query2 = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "'";
 	}
-    else if( category == "solomm" )
+    else if( category == "dota_solomm" )
     {
         Query = "SELECT score FROM stats_dota_elo_scores_solomm WHERE name='" + EscName + "'";
         Query2 = "SELECT score FROM stats_dota_elo_scores_solomm WHERE name='" + EscName + "'";
