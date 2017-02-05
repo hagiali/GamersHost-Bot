@@ -726,7 +726,7 @@ bool MySQLAdminCheck( void *conn, string *error, uint32_t botid, string server, 
 	string EscServer = MySQLEscapeString( conn, server );
 	string EscUser = MySQLEscapeString( conn, user );
 	bool IsAdmin = false;
-	string Query = "SELECT * FROM stats_admins a INNER JOIN stats_forum_connections fc ON fc.id = a.member_id INNER JOIN stats_dota_elo_scores s ON  s.id = fc.dota_player_id WHERE a.server='" + EscServer + "' AND s.name='" + EscUser + "' AND fc.status = 'approved'";
+	string Query = "SELECT * FROM stats_admins WHERE server='" + EscServer + "' AND name='" + EscUser + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -764,7 +764,7 @@ vector<string> MySQLAdminList( void *conn, string *error, uint32_t botid, string
 {
 	string EscServer = MySQLEscapeString( conn, server );
 	vector<string> AdminList;
-	string Query = "SELECT s.name FROM stats_admins a INNER JOIN stats_forum_connections fc ON fc.id = a.member_id INNER JOIN stats_dota_elo_scores s ON s.id = fc.dota_player_id WHERE a.server='" + EscServer + "' AND fc.status = 'approved'";
+	string Query = "SELECT name FROM stats_admins WHERE server='" + EscServer + "'";
 
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
