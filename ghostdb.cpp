@@ -228,7 +228,7 @@ bool CGHostDB :: W3MMDVarAdd( uint32_t gameid, map<VarP,string> var_strings, str
 	return false;
 }
 
-uint32_t CGHostDB :: VerifyUser( string name, string token )
+uint32_t CGHostDB :: VerifyUser( string name, string token, string realm )
 {
 	return 0;
 }
@@ -418,7 +418,7 @@ CCallableW3MMDVarAdd *CGHostDB :: ThreadedW3MMDVarAdd( uint32_t gameid, map<VarP
 	return NULL;
 }
 
-CCallableVerifyUser *CGHostDB :: ThreadedVerifyUser( string name, string token )
+CCallableVerifyUser *CGHostDB :: ThreadedVerifyUser( string name, string token, string realm )
 {
 	return NULL;
 }

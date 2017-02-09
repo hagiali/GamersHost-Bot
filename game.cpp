@@ -2610,7 +2610,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 	//
 	else if( Command == "verify")
 	{
-		m_PairedVerifyUserChecks.push_back( PairedVerifyUserCheck( User, m_GHost->m_DB->ThreadedVerifyUser(player->GetName(), Payload)));	
+		m_PairedVerifyUserChecks.push_back( PairedVerifyUserCheck( User, m_GHost->m_DB->ThreadedVerifyUser(player->GetName(), Payload, player->GetSpoofedRealm())));	
 	}
 
 	//

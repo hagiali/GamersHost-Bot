@@ -154,7 +154,7 @@ public:
 	virtual bool W3MMDVarAdd( uint32_t gameid, map<VarP,int32_t> var_ints, string saveType );
 	virtual bool W3MMDVarAdd( uint32_t gameid, map<VarP,double> var_reals, string saveType );
 	virtual bool W3MMDVarAdd( uint32_t gameid, map<VarP,string> var_strings, string saveType );
-	virtual uint32_t VerifyUser(string name, string token);
+	virtual uint32_t VerifyUser(string name, string token, string realm);
 
 	// threaded database functions
 
@@ -195,7 +195,7 @@ public:
 	virtual CCallableW3MMDVarAdd *ThreadedW3MMDVarAdd( uint32_t gameid, map<VarP,int32_t> var_ints, string saveType );
 	virtual CCallableW3MMDVarAdd *ThreadedW3MMDVarAdd( uint32_t gameid, map<VarP,double> var_reals, string saveType );
 	virtual CCallableW3MMDVarAdd *ThreadedW3MMDVarAdd( uint32_t gameid, map<VarP,string> var_strings, string saveType );
-	virtual CCallableVerifyUser *ThreadedVerifyUser( string name, string token );
+	virtual CCallableVerifyUser *ThreadedVerifyUser( string name, string token, string realm );
 };
 
 //
@@ -874,10 +874,11 @@ class CCallableVerifyUser : virtual public CBaseCallable
 protected:
 	string m_Name;
 	string m_Token;
+	string m_Realm;
 	uint32_t m_Result;
 
 public:
-	CCallableVerifyUser(string nName, string nToken) : CBaseCallable( ), m_Name( nName ), m_Token( nToken ), m_Result( 0 ) { }
+	CCallableVerifyUser(string nName, string nToken, string nRealm) : CBaseCallable( ), m_Name( nName ), m_Token( nToken ), m_Realm(nRealm), m_Result( 0 ) { }
 	virtual ~CCallableVerifyUser( );
 
 	virtual uint32_t GetResult( ) { return m_Result; }

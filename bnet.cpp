@@ -2139,7 +2139,7 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		else if( Command == "verify" )
 		{
-			m_PairedVerifyUserChecks.push_back( PairedVerifyUserCheck( Whisper ? User : string( ), m_GHost->m_DB->ThreadedVerifyUser( User, Payload )));
+			m_PairedVerifyUserChecks.push_back( PairedVerifyUserCheck( Whisper ? User : string( ), m_GHost->m_DB->ThreadedVerifyUser( User, Payload, m_Server )));
 		}
 	}
 }
