@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `stats_admins` (
   `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
   `botid` tinyint(4) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `server` enum('europe.battle.net','useast.battle.net','uswest.battle.net','asia.battle.net') COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -41,15 +41,15 @@ CREATE TABLE `stats_admins` (
 
 CREATE TABLE `stats_banhistory` (
   `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ip` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `server` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `server` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `botid` int(11) NOT NULL DEFAULT '0',
-  `admin` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `admin` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reason` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `expiredate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `context` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `context` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `warn` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -62,14 +62,14 @@ CREATE TABLE `stats_banhistory` (
 CREATE TABLE `stats_bans` (
   `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
-  `server` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `ip` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `server` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `ip` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `gamename` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `admin` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `context` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `gamename` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `admin` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reason` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `context` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `expiredate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `warn` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -83,7 +83,7 @@ CREATE TABLE `stats_bans` (
 CREATE TABLE `stats_commands` (
   `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
-  `command` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
+  `command` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -168,8 +168,8 @@ CREATE TABLE `stats_dota_elo_games_scored` (
 
 CREATE TABLE `stats_dota_elo_scores` (
   `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `server` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `server` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `score` decimal(10,0) NOT NULL DEFAULT '0',
   `games` int(11) NOT NULL DEFAULT '0',
   `wins` int(11) NOT NULL DEFAULT '0',
@@ -217,10 +217,10 @@ CREATE TABLE `stats_forum_connections` (
 CREATE TABLE `stats_gamelist` (
   `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
-  `gamename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `ownername` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `creatorname` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `map` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `gamename` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `ownername` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `creatorname` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `map` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `slotstaken` int(11) NOT NULL DEFAULT '0',
   `slotstotal` int(11) NOT NULL DEFAULT '0',
   `usernames` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -239,16 +239,16 @@ CREATE TABLE `stats_gameplayers` (
   `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
   `gameid` bigint(20) NOT NULL DEFAULT '0',
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `ip` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `spoofed` int(11) NOT NULL DEFAULT '0',
   `reserved` int(11) NOT NULL DEFAULT '0',
   `loadingtime` int(11) NOT NULL DEFAULT '0',
   `left` int(11) NOT NULL DEFAULT '0',
-  `leftreason` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `leftreason` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `team` int(11) NOT NULL DEFAULT '0',
   `colour` int(11) NOT NULL DEFAULT '0',
-  `spoofedrealm` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `spoofedrealm` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -260,15 +260,15 @@ CREATE TABLE `stats_gameplayers` (
 CREATE TABLE `stats_games` (
   `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
-  `server` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `map` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `server` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `map` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `gamename` varchar(31) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `ownername` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `duration` int(11) NOT NULL DEFAULT '0',
   `gamestate` int(11) NOT NULL DEFAULT '0',
-  `creatorname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `creatorserver` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `creatorname` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `creatorserver` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `stats` tinyint(1) DEFAULT '0',
   `views` int(11) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -284,7 +284,7 @@ CREATE TABLE `stats_game_chatevents` (
   `gameid` int(11) NOT NULL DEFAULT '0',
   `time` int(11) NOT NULL DEFAULT '0',
   `playercolour` int(11) NOT NULL DEFAULT '0',
-  `playername` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `playername` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `chatmessage` text COLLATE utf8mb4_unicode_ci,
   `side` tinyint(4) NOT NULL DEFAULT '0',
   `lobby` bit(1) NOT NULL DEFAULT b'0'
@@ -299,14 +299,14 @@ CREATE TABLE `stats_game_chatevents` (
 CREATE TABLE `stats_game_events` (
   `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
   `gameid` int(11) NOT NULL DEFAULT '0',
-  `event` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `event` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `time` int(11) NOT NULL DEFAULT '0',
   `player1_colour` int(11) NOT NULL DEFAULT '0',
   `player2_colour` int(11) NOT NULL DEFAULT '0',
-  `additional1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `additional2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `additional3` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `additional4` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `additional1` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `additional2` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `additional3` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `additional4` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -335,7 +335,7 @@ CREATE TABLE `stats_items` (
 
 CREATE TABLE `stats_spoof` (
   `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `spoof` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -422,7 +422,7 @@ CREATE TABLE `stats_w3mmd_elo_scores` (
 
 CREATE TABLE `stats_whitelist` (
   `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
