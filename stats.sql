@@ -47,8 +47,8 @@ CREATE TABLE `stats_banhistory` (
   `botid` int(11) NOT NULL DEFAULT '0',
   `admin` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `reason` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `date` datetime DEFAULT CURRENT_TIMESTAMP,
-  `expiredate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `date` datetime DEFAULT NULL,
+  `expiredate` datetime DEFAULT NULL,
   `context` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `warn` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -65,12 +65,12 @@ CREATE TABLE `stats_bans` (
   `server` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `ip` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `date` datetime DEFAULT NULL,
   `gamename` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `admin` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `reason` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `context` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `expiredate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `expiredate` timestamp NULL DEFAULT NULL,
   `warn` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -208,7 +208,7 @@ CREATE TABLE `stats_gamelist` (
   `usernames` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `totalgames` tinyint(4) NOT NULL DEFAULT '0',
   `totalplayers` int(11) NOT NULL DEFAULT '0',
-  `age` datetime DEFAULT CURRENT_TIMESTAMP
+  `age` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -244,7 +244,7 @@ CREATE TABLE `stats_games` (
   `botid` tinyint(4) NOT NULL DEFAULT '0',
   `server` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `map` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `datetime` datetime DEFAULT CURRENT_TIMESTAMP,
+  `datetime` datetime DEFAULT NULL,
   `gamename` varchar(31) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `ownername` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `duration` int(11) NOT NULL DEFAULT '0',
