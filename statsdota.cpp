@@ -323,7 +323,7 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 										if (!m_Players[VictimColour])
 											m_Players[VictimColour] = new CDBDotAPlayer( );
 	
-										m_KillStreakCounter[ValueInt] = 0;	
+										m_KillStreakCounter[VictimColour] = 0;	
 										m_Players[VictimColour]->SetDeaths( m_Players[VictimColour]->GetDeaths() + 1 );
 									}
 									
