@@ -642,6 +642,10 @@ void UTIL_Replace( string &Text, string Key, string Value )
 	}
 }
 
+bool UTIL_IsNonPrintable( char c )
+{
+	return c < 32 || c >= 127;
+}
 vector<string> UTIL_Split( string &s, char delim, vector<string> &elems ) {
     stringstream ss(s);
     string item;
@@ -657,7 +661,6 @@ std::vector<std::string> UTIL_Split( string &s, char delim ) {
     UTIL_Split( s, delim, elems );
     return elems;
 }
-
 vector<string> UTIL_Tokenize( string s, char delim )
 {
 	vector<string> Tokens;

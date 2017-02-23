@@ -181,6 +181,19 @@ CCallableAdminCheck *CGHostDBMySQL :: ThreadedAdminCheck( string server, string 
 	return Callable;
 }
 
+CCallableAliasCheck *CGHostDBMySQL :: ThreadedAliasCheck( string ip )
+{
+	void *Connection = GetIdleConnection( );
+
+	if( !Connection )
+                ++m_NumConnections;
+
+	CCallableAliasCheck *Callable = new CMySQLCallableAliasCheck( ip, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port, this );
+	CreateThread( Callable );
+        ++m_OutstandingCallables;
+	return Callable;
+}
+
 CCallableAdminAdd *CGHostDBMySQL :: ThreadedAdminAdd( string server, string user )
 {
 	void *Connection = GetIdleConnection( );
@@ -311,6 +324,7 @@ CCallableReconUpdate *CGHostDBMySQL :: ThreadedReconUpdate( uint32_t hostcounter
 	return Callable;
 }
 
+
 CCallableCommandList *CGHostDBMySQL :: ThreadedCommandList( )
 {
 	void *Connection = GetIdleConnection( );
@@ -323,6 +337,8 @@ CCallableCommandList *CGHostDBMySQL :: ThreadedCommandList( )
         ++m_OutstandingCallables;
 	return Callable;
 }
+
+
 
 CCallableGameAdd *CGHostDBMySQL :: ThreadedGameAdd( string server, string map, string gamename, string ownername, uint32_t duration, uint32_t gamestate, string creatorname, string creatorserver, string savetype, vector<ChatEvent> lobbylog, vector<ChatEvent> gamelog )
 {
@@ -337,14 +353,40 @@ CCallableGameAdd *CGHostDBMySQL :: ThreadedGameAdd( string server, string map, s
 	return Callable;
 }
 
-CCallableGameUpdate *CGHostDBMySQL :: ThreadedGameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalGames, uint32_t totalPlayers, bool add )
+CCallableGameUpdate *CGHostDBMySQL :: ThreadedGameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalPlayers, bool lobby, bool add )
 {
 	void *Connection = GetIdleConnection( );
 
 	if( !Connection )
                 ++m_NumConnections;
 
-	CCallableGameUpdate *Callable = new CMySQLCallableGameUpdate( id, map, gamename, ownername, creatorname, players, usernames, slotsTotal, totalGames, totalPlayers, add, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port, this );
+	CCallableGameUpdate *Callable = new CMySQLCallableGameUpdate( id, map, gamename, ownername, creatorname, players, usernames, slotsTotal, totalPlayers, lobby, add, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port, this );
+	CreateThread( Callable );
+        ++m_OutstandingCallables;
+	return Callable;
+}
+
+CCallableStreamGameUpdate *CGHostDBMySQL :: ThreadedStreamGameUpdate( string gamename, string map, uint32_t mapcrc, uint32_t mapflags, uint32_t port )
+{
+	void *Connection = GetIdleConnection( );
+
+	if( !Connection )
+                ++m_NumConnections;
+
+	CCallableStreamGameUpdate *Callable = new CMySQLCallableStreamGameUpdate( gamename, map, mapcrc, mapflags, port, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port, this );
+	CreateThread( Callable );
+        ++m_OutstandingCallables;
+	return Callable;
+}
+
+CCallableStreamPlayerUpdate *CGHostDBMySQL :: ThreadedStreamPlayerUpdate( string name, string gamename )
+{
+	void *Connection = GetIdleConnection( );
+
+	if( !Connection )
+                ++m_NumConnections;
+
+	CCallableStreamPlayerUpdate *Callable = new CMySQLCallableStreamPlayerUpdate( name, gamename, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port, this );
 	CreateThread( Callable );
         ++m_OutstandingCallables;
 	return Callable;
@@ -441,6 +483,19 @@ CCallableTreePlayerSummaryCheck *CGHostDBMySQL :: ThreadedTreePlayerSummaryCheck
 	return Callable;
 }
 
+CCallableIslandPlayerSummaryCheck *CGHostDBMySQL :: ThreadedIslandPlayerSummaryCheck( string name, string realm )
+{
+	void *Connection = GetIdleConnection( );
+
+	if( !Connection )
+                ++m_NumConnections;
+
+	CCallableIslandPlayerSummaryCheck *Callable = new CMySQLCallableIslandPlayerSummaryCheck( name, realm, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port, this );
+	CreateThread( Callable );
+        ++m_OutstandingCallables;
+	return Callable;
+}
+
 CCallableSnipePlayerSummaryCheck *CGHostDBMySQL :: ThreadedSnipePlayerSummaryCheck( string name, string realm )
 {
 	void *Connection = GetIdleConnection( );
@@ -462,6 +517,19 @@ CCallableShipsPlayerSummaryCheck *CGHostDBMySQL :: ThreadedShipsPlayerSummaryChe
                 ++m_NumConnections;
 
 	CCallableShipsPlayerSummaryCheck *Callable = new CMySQLCallableShipsPlayerSummaryCheck( name, realm, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port, this );
+	CreateThread( Callable );
+        ++m_OutstandingCallables;
+	return Callable;
+}
+
+CCallableRVSPlayerSummaryCheck *CGHostDBMySQL :: ThreadedRVSPlayerSummaryCheck( string name, string realm )
+{
+	void *Connection = GetIdleConnection( );
+
+	if( !Connection )
+                ++m_NumConnections;
+
+	CCallableRVSPlayerSummaryCheck *Callable = new CMySQLCallableRVSPlayerSummaryCheck( name, realm, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port, this );
 	CreateThread( Callable );
         ++m_OutstandingCallables;
 	return Callable;
@@ -566,6 +634,19 @@ CCallableTournamentUpdate *CGHostDBMySQL :: ThreadedTournamentUpdate( uint32_t m
                 ++m_NumConnections;
 
 	CCallableTournamentUpdate *Callable = new CMySQLCallableTournamentUpdate( matchid, gamename, status, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port, this );
+	CreateThread( Callable );
+        ++m_OutstandingCallables;
+	return Callable;
+}
+
+CCallableAdminCommand *CGHostDBMySQL :: ThreadedAdminCommand( string admin, string command, string description, string gamename )
+{
+	void *Connection = GetIdleConnection( );
+
+	if( !Connection )
+                ++m_NumConnections;
+
+	CCallableAdminCommand *Callable = new CMySQLCallableAdminCommand( admin, command, description, gamename, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port, this );
 	CreateThread( Callable );
         ++m_OutstandingCallables;
 	return Callable;
@@ -750,6 +831,40 @@ bool MySQLAdminCheck( void *conn, string *error, uint32_t botid, string server, 
 	return IsAdmin;
 }
 
+string MySQLAliasCheck( void *conn, string *error, uint32_t botid, string ip )
+{
+	string EscIP = MySQLEscapeString( conn, ip );
+	string Aliases = "";
+	string Query = "SELECT DISTINCT name, spoofedrealm FROM stats_gameplayers WHERE ip = '" + EscIP + "' ORDER BY id DESC LIMIT 4;";
+
+	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
+		*error = mysql_error( (MYSQL *)conn );
+	else
+	{
+		MYSQL_RES *Result = mysql_store_result( (MYSQL *)conn );
+
+		if( Result )
+		{
+			vector<string> Row = MySQLFetchRow( Result );
+
+			while( Row.size( ) == 2 )
+			{
+				Aliases += ", " + Row[0] + "@" + Row[1];
+				Row = MySQLFetchRow( Result );
+			}
+
+			mysql_free_result( Result );
+		}
+		else
+			*error = mysql_error( (MYSQL *)conn );
+	}
+
+	if( Aliases.length( ) < 3 )
+		return "No aliases found.";
+	else
+		return "Aliases: " + Aliases.substr( 2 );
+}
+
 bool MySQLAdminAdd( void *conn, string *error, uint32_t botid, string server, string user )
 {
 	return false;
@@ -765,7 +880,6 @@ vector<string> MySQLAdminList( void *conn, string *error, uint32_t botid, string
 	string EscServer = MySQLEscapeString( conn, server );
 	vector<string> AdminList;
 	string Query = "SELECT name FROM stats_admins WHERE server='" + EscServer + "'";
-
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -861,7 +975,7 @@ CDBBan *MySQLBanCheck( void *conn, string *error, uint32_t botid, string server,
 	}
 	
 	CDBBan *Ban = NULL;
-	Query = "SELECT id, name, ip, date, gamename, admin, reason, expiredate, context FROM stats_bans WHERE ( context = 'ttr.cloud' OR context = '" + EscOwnerName + "' ) AND ((server='" + EscServer + "' AND name='" + EscUser + "')";
+	Query = "SELECT id, name, ip, date, gamename, admin, reason, expiredate, context FROM stats_bans WHERE ( context = 'ttr.cloud' OR context = '" + EscOwnerName + "' ) AND (admin != 'autoban' OR processed = 1) AND (targetbot = 0 OR targetbot = " + UTIL_ToString( botid ) + ") AND ((server='" + EscServer + "' AND name='" + EscUser + "')";
 	
 	if( !ip.empty( ) && !WhiteList )
 	{
@@ -914,7 +1028,7 @@ uint32_t MySQLBanAdd( void *conn, string *error, uint32_t botid, string server, 
 	string EscReason = MySQLEscapeString( conn, reason );
 	string EscContext = MySQLEscapeString( conn, context );
 	uint32_t RowID = 0;
-	string Query = "INSERT INTO stats_bans ( botid, server, name, ip, date, gamename, admin, reason, expiredate, context ) VALUES ( " + UTIL_ToString( botid ) + ", '" + EscServer + "', '" + EscUser + "', '" + EscIP + "', NOW( ), '" + EscGameName + "', '" + EscAdmin + "', '" + EscReason + "', DATE_ADD( NOW( ), INTERVAL " + UTIL_ToString( expiretime ) + " second ), '" + EscContext + "' )";
+	string Query = "INSERT INTO stats_bans ( botid, server, name, ip, date, gamename, admin, reason, expiredate, context ) VALUES ( " + UTIL_ToString( botid ) + ", '" + EscServer + "', '" + EscUser + "', '" + EscIP + "', CURDATE( ), '" + EscGameName + "', '" + EscAdmin + "', '" + EscReason + "', DATE_ADD( NOW( ), INTERVAL " + UTIL_ToString( expiretime ) + " second ), '" + EscContext + "' )";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -935,7 +1049,7 @@ bool MySQLBanRemove( void *conn, string *error, uint32_t botid, string server, s
 	string Query = "DELETE FROM stats_bans WHERE server='" + EscServer + "' AND name='" + EscUser + "'";
 	
 	if( EscContext != "" && EscContext != "ttr.cloud" )
-		Query += " AND admin='" + EscContext + "'";
+		Query += " AND context='" + EscContext + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -955,7 +1069,7 @@ bool MySQLBanRemove( void *conn, string *error, uint32_t botid, string user, str
 	string Query = "DELETE FROM stats_bans WHERE name='" + EscUser + "'";
 	
 	if( EscContext != "" && EscContext != "ttr.cloud" )
-		Query += " AND admin='" + EscContext + "'";
+		Query += " AND context='" + EscContext + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -1085,33 +1199,78 @@ uint32_t MySQLGameAdd( void *conn, string *error, uint32_t botid, string server,
 	return RowID;
 }
 
-uint32_t MySQLGameUpdate( void *conn, string *error, uint32_t botid, uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalGames, uint32_t totalPlayers, bool add )
+uint32_t MySQLGameUpdate( void *conn, string *error, uint32_t botid, uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalPlayers, bool lobby, bool add )
 {
+
+// uint32_t totalGames is replaced by 'bool lobby' and the querry remaded.
+
+
 	//housekeeping
-	string Query = "DELETE FROM stats_gamelist WHERE age IS NULL OR age < DATE_SUB(NOW(), INTERVAL 2 HOUR)";
+	string Query = "DELETE FROM stats_gamelist WHERE age IS NULL OR age < DATE_SUB(NOW(), INTERVAL 5 MINUTE)";
 	mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) );
 
-	string EscMap = MySQLEscapeString(conn, map);
+	string EscMap = MySQLEscapeString( conn, map );
 	string EscGameName = MySQLEscapeString( conn, gamename );
 	string EscOwnerName = MySQLEscapeString( conn, ownername );
 	string EscCreatorName = MySQLEscapeString( conn, creatorname );
 	string EscUsernames = MySQLEscapeString( conn, usernames );
-
-	Query = "UPDATE stats_gamelist SET map = '" + EscMap + "', gamename = '" + EscGameName + "', ownername = '" + EscOwnerName + "', creatorname = '" + EscCreatorName + "', slotstaken = '" + UTIL_ToString(players) + "', slotstotal = '" + UTIL_ToString(slotsTotal) + "', usernames = '" + EscUsernames + "', totalgames = '" + UTIL_ToString(totalGames) + "', totalplayers = '" + UTIL_ToString(totalPlayers) + "', age = NOW() WHERE botid='" + UTIL_ToString(botid) + "' AND id = '" + UTIL_ToString(id) + "'";
-
-	if( id == 0 )
-	{
-		Query = "INSERT INTO stats_gamelist(botid, map, gamename, ownername, creatorname, slotstaken, slotstotal, usernames, totalgames, totalplayers, age) VALUES ('" + UTIL_ToString(botid) + "', '" + EscMap + "', '" + EscGameName + "', '" + EscOwnerName + "', '" + EscCreatorName + "', '" + UTIL_ToString(players) + "', '" + UTIL_ToString(slotsTotal) + "', '" + EscUsernames + "', '" + UTIL_ToString(totalGames) + "', '" + UTIL_ToString(totalPlayers) + "', NOW())";
-	}
-
+	
 	if( !add )
 	{
 		if( gamename.empty( ) )
 			Query = "DELETE FROM stats_gamelist WHERE botid = " + UTIL_ToString( botid );
 		else if( id != 0 )
 			Query = "DELETE FROM stats_gamelist WHERE id = '" + UTIL_ToString( id ) + "'";
+		else if( !EscGameName.empty( ) )
+			Query = "DELETE FROM stats_gamelist WHERE gamename = '" + EscGameName + "'";
 		else
 			return 0;
+	}
+	else
+	{
+		Query = "INSERT INTO stats_gamelist( botid, map, gamename, ownername, creatorname, slotstaken, slotstotal, usernames, totalplayers, lobby, age, eventtime) VALUES ( '" + UTIL_ToString( botid ) + "', '" + EscMap + "', '" + EscGameName + "', '" + EscOwnerName + "', '" + EscCreatorName + "', '" + UTIL_ToString( players ) + "', '" + UTIL_ToString( slotsTotal ) + "', '" + EscUsernames + "', '" + UTIL_ToString( totalPlayers ) + "', '" + ( lobby ? "1" : "0" ) + "', NOW( ), NOW( ) )";
+
+		if( id != 0 )
+		{
+			//confirm that the row exists
+			// also need to check if we're switching from lobby to ingame
+			string ExistQuery = "SELECT lobby FROM stats_gamelist WHERE id = " + UTIL_ToString( id );
+			bool Exists = false;
+
+			if( mysql_real_query( (MYSQL *)conn, ExistQuery.c_str( ), ExistQuery.size( ) ) == 0 )
+			{
+				MYSQL_RES *Result = mysql_store_result( (MYSQL *)conn );
+		
+				if( Result )
+				{
+					vector<string> Row = MySQLFetchRow( Result );
+			
+					if( !Row.empty( ) )
+					{
+						Exists = true;
+						
+						if( Row[0] == "1" && !lobby )
+						{
+							Query = "UPDATE stats_gamelist SET map = '" + EscMap + "', gamename = '" + EscGameName + "', ownername = '" + EscOwnerName + "', creatorname = '" + EscCreatorName + "', slotstaken = '" + UTIL_ToString( players ) + "', slotstotal = '" + UTIL_ToString( slotsTotal ) + "', usernames = '" + EscUsernames + "', totalplayers = '" + UTIL_ToString( totalPlayers ) + "', lobby = " + ( lobby ? "1" : "0" ) + ", age = NOW(), eventtime = NOW() WHERE botid='" + UTIL_ToString( botid ) + "' AND id = '" + UTIL_ToString( id ) + "'";
+						}
+						else
+						{
+							Query = "UPDATE stats_gamelist SET map = '" + EscMap + "', gamename = '" + EscGameName + "', ownername = '" + EscOwnerName + "', creatorname = '" + EscCreatorName + "', slotstaken = '" + UTIL_ToString( players ) + "', slotstotal = '" + UTIL_ToString( slotsTotal ) + "', usernames = '" + EscUsernames + "', totalplayers = '" + UTIL_ToString( totalPlayers ) + "', lobby = " + ( lobby ? "1" : "0" ) + ", age = NOW() WHERE botid='" + UTIL_ToString( botid ) + "' AND id = '" + UTIL_ToString( id ) + "'";
+						}
+					}
+			
+					mysql_free_result( Result );
+				}
+			}
+			else
+			{
+				*error = mysql_error( (MYSQL *)conn );
+				return 0;
+			}
+
+			if( !Exists )
+				id = 0;
+		}
 	}
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
@@ -1124,6 +1283,95 @@ uint32_t MySQLGameUpdate( void *conn, string *error, uint32_t botid, uint32_t id
 		return mysql_insert_id( (MYSQL *)conn );
 	else
 		return 0;
+}
+
+void MySQLStreamGameUpdate( void *conn, string *error, uint32_t botid, string gamename, string map, uint32_t mapcrc, uint32_t mapflags, uint32_t port )
+{
+	string EscGameName = MySQLEscapeString( conn, gamename );
+	string EscMap = MySQLEscapeString( conn, map );
+	string Query = "SELECT COUNT(*) FROM stream_games WHERE gamename = '" + EscGameName + "'";
+
+	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) == 0 )
+	{
+		MYSQL_RES *Result = mysql_store_result( (MYSQL *)conn );
+		
+		if( Result )
+		{
+			vector<string> Row = MySQLFetchRow( Result );
+			
+			if( !Row.empty( ) )
+			{
+				if( Row[0] == "0" )
+				{
+					Query = "INSERT INTO stream_games (gamename, mappath, mapcrc, mapflags, port, botid, last_update) VALUES ('" + EscGameName + "', '" + EscMap + "', '" + UTIL_ToString( mapcrc ) + "', '" + UTIL_ToString( mapflags ) + "', '" + UTIL_ToString( port ) + "', '" + UTIL_ToString( botid ) + "', CURRENT_TIMESTAMP())";
+					
+					if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
+						*error = mysql_error( (MYSQL *)conn );
+				}
+				else
+				{
+					string SetMap = ", mappath = '" + EscMap + "', mapcrc = '" + UTIL_ToString( mapcrc ) + "', mapflags = '" + UTIL_ToString( mapflags ) + "'";
+					
+					if( EscMap.empty( ) )
+						SetMap = "";
+					
+					Query = "UPDATE stream_games SET port = '" + UTIL_ToString( port ) + "', botid = '" + UTIL_ToString( botid ) + "'" + SetMap + ", last_update = CURRENT_TIMESTAMP() WHERE gamename = '" + EscGameName + "'";
+					
+					if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
+						*error = mysql_error( (MYSQL *)conn );
+				}
+			}
+			
+			mysql_free_result( Result );
+		}
+	}
+	else
+		*error = mysql_error( (MYSQL *)conn );
+	
+	Query = "DELETE FROM stream_games WHERE last_update < DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL 70 SECOND)";
+	mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) );
+}
+
+void MySQLStreamPlayerUpdate( void *conn, string *error, uint32_t botid, string name, string gamename )
+{
+	string EscName = MySQLEscapeString( conn, name );
+	string EscGameName = MySQLEscapeString( conn, gamename );
+	string Query = "SELECT COUNT(*) FROM stream_players WHERE name = '" + EscName + "'";
+
+	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) == 0 )
+	{
+		MYSQL_RES *Result = mysql_store_result( (MYSQL *)conn );
+		
+		if( Result )
+		{
+			vector<string> Row = MySQLFetchRow( Result );
+			
+			if( !Row.empty( ) )
+			{
+				if( Row[0] == "0" )
+				{
+					Query = "INSERT INTO stream_players (name, gamename, last_update) VALUES ('" + EscName + "', '" + EscGameName + "', CURRENT_TIMESTAMP())";
+					
+					if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
+						*error = mysql_error( (MYSQL *)conn );
+				}
+				else
+				{
+					Query = "UPDATE stream_players SET gamename = '" + EscGameName + "', last_update = CURRENT_TIMESTAMP() WHERE name = '" + EscName + "'";
+					
+					if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
+						*error = mysql_error( (MYSQL *)conn );
+				}
+			}
+			
+			mysql_free_result( Result );
+		}
+	}
+	else
+		*error = mysql_error( (MYSQL *)conn );
+	
+	Query = "DELETE FROM stream_players WHERE last_update < DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL 70 SECOND)";
+	mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) );
 }
 
 uint32_t MySQLGamePlayerAdd( void *conn, string *error, uint32_t botid, uint32_t gameid, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t reserved, uint32_t loadingtime, uint32_t left, string leftreason, uint32_t team, uint32_t colour, string savetype )
@@ -1156,8 +1404,7 @@ CDBGamePlayerSummary *MySQLGamePlayerSummaryCheck( void *conn, string *error, ui
 	string EscName = MySQLEscapeString( conn, name );
 	string EscRealm = MySQLEscapeString( conn, realm );
 	CDBGamePlayerSummary *GamePlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(num_games), 0), (IFNULL(SUM(total_leftpercent), 1) / IFNULL(SUM(num_games), 1) * 100), ROUND(playingtime / 3600) FROM gametrack WHERE name='" + EscName + "'";
-	
+	string Query = "SELECT IFNULL(SUM(num_games), 0), (IFNULL(SUM(total_leftpercent), 1) / IFNULL(SUM(num_games), 1) * 100), ROUND(SUM(playingtime) / 3600) FROM gametrack WHERE name='" + EscName + "'";
 	if( !realm.empty( ) )
 		Query += " AND realm = '" + EscRealm + "'";
 
@@ -1467,8 +1714,17 @@ uint32_t MySQLDotAGameAdd( void *conn, string *error, uint32_t botid, uint32_t g
 	
 	string table = "stats_dotagames";
 	
-    if( saveType == "dota_solomm" )
+  if( saveType == "dota_solomm" )
         table = "stats_dotagames_solomm";
+
+	else if( saveType == "lod" )
+		table = "lodgames";
+	else if( saveType == "dota2" )
+		table = "dota2games";
+	else if( saveType == "eihl" )
+		table = "eihlgames";
+	else if( saveType == "uxtourney" )
+		table = "uxtourney_res_dotagames";
 	
 	string Query = "INSERT INTO " + table + " ( botid, gameid, winner, min, sec ) VALUES ( " + UTIL_ToString( botid ) + ", " + UTIL_ToString( gameid ) + ", " + UTIL_ToString( winner ) + ", " + UTIL_ToString( min ) + ", " + UTIL_ToString( sec ) + " )";
 
@@ -1492,9 +1748,18 @@ uint32_t MySQLDotAPlayerAdd( void *conn, string *error, uint32_t botid, uint32_t
 	string EscHero = MySQLEscapeString( conn, hero );
 	
 	string table = "stats_dotaplayers";
-	
+
     if( saveType == "dota_solomm" )
-        table = "stats_dotaplayers_solomm";
+        table = "stats_dotaplayers_solomm";	
+	else if( saveType == "lod" )
+		table = "lodplayers";
+	else if( saveType == "dota2" )
+		table = "dota2players";
+	else if( saveType == "eihl" )
+		table = "eihlplayers";
+	else if( saveType == "uxtourney" )
+		table = "uxtourney_res_dotaplayers";
+	
 	
 	string Query = "INSERT INTO " + table + " ( botid, gameid, colour, kills, deaths, creepkills, creepdenies, assists, gold, neutralkills, item1, item2, item3, item4, item5, item6, hero, newcolour, towerkills, raxkills, courierkills, level, suicides, 2k, 3k, 4k, 5k, fb, fd, ks, d, mk, u, ws, mok, g, bg, ms ) VALUES ( " + UTIL_ToString( botid ) + ", " + UTIL_ToString( gameid ) + ", " + UTIL_ToString( colour ) + ", " + UTIL_ToString( kills ) + ", " + UTIL_ToString( deaths ) + ", " + UTIL_ToString( creepkills ) + ", " + UTIL_ToString( creepdenies ) + ", " + UTIL_ToString( assists ) + ", " + UTIL_ToString( gold ) + ", " + UTIL_ToString( neutralkills ) + ", '" + EscItem1 + "', '" + EscItem2 + "', '" + EscItem3 + "', '" + EscItem4 + "', '" + EscItem5 + "', '" + EscItem6 + "', '" + EscHero + "', " + UTIL_ToString( newcolour ) + ", " + UTIL_ToString( towerkills ) + ", " + UTIL_ToString( raxkills ) + ", " + UTIL_ToString( courierkills ) + ", " + UTIL_ToString( level ) + ", " + UTIL_ToString( s ) + ", " + UTIL_ToString( twk) + ", " + UTIL_ToString( trk ) + ", " + UTIL_ToString( qk ) + ", " + UTIL_ToString( rk ) + ", " + (fb ? "1" : "0") + ", " + (fd ? "1" : "0")+ ", " + UTIL_ToString( ks ) + ", " + UTIL_ToString( d ) + ", " + UTIL_ToString( mk ) + ", " + UTIL_ToString( u ) + ", " + UTIL_ToString( ws ) + ", " + UTIL_ToString( mok ) + ", " + UTIL_ToString( g ) + ", " + UTIL_ToString( bg ) + ", " + UTIL_ToString( ms ) + ")";
 
@@ -1512,18 +1777,23 @@ CDBDotAPlayerSummary *MySQLDotAPlayerSummaryCheck( void *conn, string *error, ui
 	string EscName = MySQLEscapeString( conn, name );
 	string EscRealm = MySQLEscapeString( conn, realm );
 	
-	string Query = string( );
-	CDBDotAPlayerSummary *DotAPlayerSummary = NULL;
-	
-    string table = "stats_dota_elo_scores";
+	string table = "stats_dota_elo_scores";
+
 
     if( saveType == "dota_solomm" )
-        table = "stats_dota_elo_scores_solomm";
-
-    Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(kills), 0), IFNULL(SUM(deaths), 0), IFNULL(SUM(creepkills), 0), IFNULL(SUM(creepdenies), 0), IFNULL(SUM(assists), 0), IFNULL(SUM(neutralkills), 0), IFNULL(SUM(towerkills), 0), IFNULL(SUM(raxkills), 0), IFNULL(SUM(courierkills), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM " + table + " WHERE name='" + EscName + "'";
-
-    if( !realm.empty( ) )
-        Query += " AND server = '" + EscRealm + "'";
+        table = "stats_dota_elo_scores_solomm";	
+	else if( saveType == "lod" )
+		table = "lod_elo_scores";
+	else if( saveType == "dota2" )
+		table = "dota2_elo_scores";
+	else if( saveType == "eihl" )
+		table = "eihl_elo_scores";
+	
+	CDBDotAPlayerSummary *DotAPlayerSummary = NULL;
+	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(kills), 0), IFNULL(SUM(deaths), 0), IFNULL(SUM(creepkills), 0), IFNULL(SUM(creepdenies), 0), IFNULL(SUM(assists), 0), IFNULL(SUM(neutralkills), 0), IFNULL(SUM(towerkills), 0), IFNULL(SUM(raxkills), 0), IFNULL(SUM(courierkills), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM " + table + " WHERE name='" + EscName + "'";
+	
+	if( !realm.empty( ) )
+		Query += " AND server = '" + EscRealm + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -1624,6 +1894,59 @@ CDBTreePlayerSummary *MySQLTreePlayerSummaryCheck( void *conn, string *error, ui
 	return TreePlayerSummary;
 }
 
+CDBIslandPlayerSummary *MySQLIslandPlayerSummaryCheck( void *conn, string *error, uint32_t botid, string name, string realm )
+{
+	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
+	string EscName = MySQLEscapeString( conn, name );
+	string EscRealm = MySQLEscapeString( conn, realm );
+	CDBIslandPlayerSummary *IslandPlayerSummary = NULL;
+	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(intstats2), 0), IFNULL(SUM(intstats3), 0), IFNULL(SUM(intstats4), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'islanddefense'";
+	
+	if( !realm.empty( ) )
+		Query += " AND server = '" + EscRealm + "'";
+
+	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
+		*error = mysql_error( (MYSQL *)conn );
+	else
+	{
+		MYSQL_RES *Result = mysql_store_result( (MYSQL *)conn );
+
+		if( Result )
+		{
+			vector<string> Row = MySQLFetchRow( Result );
+			uint32_t TotalGames = UTIL_ToUInt32( Row[0] );
+
+			if( Row.size( ) == 9 )
+			{
+				uint32_t TotalGames = UTIL_ToUInt32( Row[0] );
+				
+				if( TotalGames > 0 )
+				{
+					uint32_t TotalWins = UTIL_ToUInt32( Row[6] );
+					uint32_t TotalLosses = UTIL_ToUInt32( Row[7] );
+					uint32_t TotalGames = UTIL_ToUInt32( Row[0] );
+					uint32_t BuilderGames = UTIL_ToUInt32( Row[1] );
+		            uint32_t TitanGames = UTIL_ToUInt32( Row[2] );
+					uint32_t BuilderKills = UTIL_ToUInt32( Row[4] );
+					uint32_t BuilderDeaths = UTIL_ToUInt32( Row[5] );
+		            uint32_t BuilderAfk = UTIL_ToUInt32( Row[3] );
+					double Score = UTIL_ToDouble( Row[8] );
+
+					// done
+
+					IslandPlayerSummary = new CDBIslandPlayerSummary( realm, name, TotalGames, TotalWins, TotalLosses, BuilderGames, TitanGames, BuilderKills, BuilderDeaths, BuilderAfk, Score );
+				}
+			}
+
+			mysql_free_result( Result );
+		}
+		else
+			*error = mysql_error( (MYSQL *)conn );
+	}
+
+	return IslandPlayerSummary;
+}
+
 CDBShipsPlayerSummary *MySQLShipsPlayerSummaryCheck( void *conn, string *error, uint32_t botid, string name, string realm )
 {
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
@@ -1670,6 +1993,51 @@ CDBShipsPlayerSummary *MySQLShipsPlayerSummaryCheck( void *conn, string *error, 
 	}
 
 	return ShipsPlayerSummary;
+}
+
+CDBRVSPlayerSummary *MySQLRVSPlayerSummaryCheck( void *conn, string *error, uint32_t botid, string name, string realm )
+{
+	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
+	string EscName = MySQLEscapeString( conn, name );
+	string EscRealm = MySQLEscapeString( conn, realm );
+	CDBRVSPlayerSummary *RVSPlayerSummary = NULL;
+	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'rvs'";
+	
+	if( !realm.empty( ) )
+		Query += " AND server = '" + EscRealm + "'";
+
+	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
+		*error = mysql_error( (MYSQL *)conn );
+	else
+	{
+		MYSQL_RES *Result = mysql_store_result( (MYSQL *)conn );
+
+		if( Result )
+		{
+			vector<string> Row = MySQLFetchRow( Result );
+
+			if( Row.size( ) == 5 )
+			{
+				uint32_t TotalGames = UTIL_ToUInt32( Row[0] );
+				
+				if( TotalGames > 0 )
+				{
+					uint32_t TotalWins = UTIL_ToUInt32( Row[2] );
+					uint32_t TotalLosses = UTIL_ToUInt32( Row[3] );
+					uint32_t TotalKills = UTIL_ToUInt32( Row[1] );
+					double Score = UTIL_ToDouble( Row[4] );
+
+					RVSPlayerSummary = new CDBRVSPlayerSummary( realm, name, TotalGames, TotalWins, TotalLosses, TotalKills, Score );
+				}
+			}
+
+			mysql_free_result( Result );
+		}
+		else
+			*error = mysql_error( (MYSQL *)conn );
+	}
+
+	return RVSPlayerSummary;
 }
 
 CDBSnipePlayerSummary *MySQLSnipePlayerSummaryCheck( void *conn, string *error, uint32_t botid, string name, string realm )
@@ -1727,7 +2095,7 @@ CDBW3MMDPlayerSummary *MySQLW3MMDPlayerSummaryCheck( void *conn, string *error, 
 	string EscRealm = MySQLEscapeString( conn, realm );
 	string EscCategory = MySQLEscapeString( conn, category );
 	CDBW3MMDPlayerSummary *W3MMDPlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0), (SELECT COUNT(*) FROM stats_w3mmd_elo_scores AS s2 WHERE s2.score > IFNULL(MAX(stats_w3mmd_elo_scores.score), 0) AND s2.category = stats_w3mmd_elo_scores.category) + 1 FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = '" + EscCategory + "'";
+	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = '" + EscCategory + "'";
 	
 	if( !realm.empty( ) )
 		Query += " AND server = '" + EscRealm + "'";
@@ -1742,7 +2110,7 @@ CDBW3MMDPlayerSummary *MySQLW3MMDPlayerSummaryCheck( void *conn, string *error, 
 		{
 			vector<string> Row = MySQLFetchRow( Result );
 			
-			if( Row.size( ) == 5 )
+			if( Row.size( ) == 4 )
 			{
 				uint32_t TotalGames = UTIL_ToUInt32( Row[0] );
 				
@@ -1751,11 +2119,10 @@ CDBW3MMDPlayerSummary *MySQLW3MMDPlayerSummaryCheck( void *conn, string *error, 
 					uint32_t TotalWins = UTIL_ToUInt32( Row[1] );
 					uint32_t TotalLosses = UTIL_ToUInt32( Row[2] );
 					double Score = UTIL_ToDouble( Row[3] );
-					int Rank = UTIL_ToUInt32( Row[4] );
 					
 					// done
 
-					W3MMDPlayerSummary = new CDBW3MMDPlayerSummary( realm, name, category, TotalGames, TotalWins, TotalLosses, Score, Rank );
+					W3MMDPlayerSummary = new CDBW3MMDPlayerSummary( realm, name, category, TotalGames, TotalWins, TotalLosses, Score );
 				}
 			}
 
@@ -1798,19 +2165,63 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
     Score[0] = 0;
     Score[1] = 0;
 	
-    string Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='" + EscCategory + "' AND name='" + EscName + "'";
+	string Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='" + EscCategory + "' AND name='" + EscName + "' AND server='" + EscServer + "'";
 	string Query2 = "SELECT -100000.0;";
-
+	
 	if( category == "dota" )
 	{
-        Query = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "'";
-        Query2 = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "'";
+		Query = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 5";
+		Query2 = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 5";
 	}
     else if( category == "dota_solomm" )
     {
         Query = "SELECT score FROM stats_dota_elo_scores_solomm WHERE name='" + EscName + "'";
         Query2 = "SELECT score FROM stats_dota_elo_scores_solomm WHERE name='" + EscName + "'";
 	}
+	else if (category == "dota2" ) // dota2 checks normal DotA stats
+	{
+		Query = "SELECT dota_elo_scores.score FROM dota_elo_scores, gametrack WHERE dota_elo_scores.name='" + EscName + "' AND dota_elo_scores.server='" + EscServer + "' AND gametrack.name = dota_elo_scores.name AND gametrack.realm = dota_elo_scores.server AND dota_elo_scores.wins >= 20 AND ( (total_leftpercent / num_games)*100 > 90 OR (num_autoban / num_games)*100 < 5)";
+		Query2 = "SELECT -100000.0;";
+	}
+	else if( category == "castlefight2" ) // castlefight2 checks castlefight stats
+	{
+		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='castlefight' AND name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 15";
+		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='castlefight2' AND name='" + EscName + "' AND server='" + EscServer + "'";
+	}
+	else if( category == "legionmegaone2" ) // legionmegaone2 is really legionmegaone but with score restrictoin
+	{
+		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='legionmegaone' AND name='" + EscName + "' AND server='" + EscServer + "'";
+		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='legionmegaone' AND name='" + EscName + "' AND server='" + EscServer + "'";
+	}
+	
+	else if( category == "lod" )
+	{
+		Query = "SELECT score FROM lod_elo_scores WHERE name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 10";
+		Query2 = "SELECT score FROM lod_elo_scores WHERE name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 10";
+	}
+	else if( category == "legionmega" )
+	{
+		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='legionmega' AND name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 5";
+		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='legionmega' AND name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 5";
+	}
+	else if( category == "cfone" )
+	{
+		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='cfone' AND name='" + EscName + "' AND server='" + EscServer + "'";
+		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='cfone' AND name='" + EscName + "' AND server='" + EscServer + "'";
+	}
+	else if( category == "nwuih" )
+	{
+		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='nwuih' AND name='" + EscName + "' AND server='" + EscServer + "'";
+		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='nwuih' AND name='" + EscName + "' AND server='" + EscServer + "'";
+	}
+	else if( category == "battleships" )
+	{
+		Score[0] = 1000.0;
+		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='battleships' AND name='" + EscName + "' AND server='" + EscServer + "'";
+		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='battleships' AND name='" + EscName + "' AND server='" + EscServer + "'";
+	}
+	else
+		CONSOLE_Print( "[MYSQL] Requested score check on invalid category: " + category );
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -1824,6 +2235,8 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
 
 			if( Row.size( ) == 1 )
 				Score[0] = UTIL_ToDouble( Row[0] );
+			/* else
+				*error = "error checking score [" + category + " : " + name + " : " + server + "] - row doesn't have 1 column"; */
 
 			mysql_free_result( Result );
 		}
@@ -1842,7 +2255,9 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
 			vector<string> Row = MySQLFetchRow( Result );
 
 			if( Row.size( ) == 1 )
-                Score[1] = UTIL_ToDouble( Row[0] );
+				Score[1] = UTIL_ToDouble( Row[0] );
+			/* else
+				*error = "error checking score [" + category + " : " + name + " : " + server + "] - row doesn't have 1 column"; */
 
 			mysql_free_result( Result );
 		}
@@ -2070,12 +2485,28 @@ void MySQLTournamentUpdate( void *conn, string *error, uint32_t botid, uint32_t 
 		*error = mysql_error( (MYSQL *)conn );
 }
 
+void MySQLAdminCommand( void *conn, string *error, uint32_t botid, string admin, string command, string description, string gamename )
+{
+	string EscAdmin = MySQLEscapeString( conn, admin );
+	string EscCommand = MySQLEscapeString( conn, command + " (in-game)" );
+	
+	time_t Now = time( NULL );
+	string Time = asctime( localtime( &Now ) );
+	Time.erase( Time.size( ) - 1 );
+	
+	string EscDescription = MySQLEscapeString( conn, "[" + Time + "]: " + admin + " used " + command + ": " + description + " (in " + gamename + ")" );
+	string Query = "INSERT INTO admin_actions (action, `desc`, admin) VALUES ('" + EscCommand + "', '" + EscDescription + "', '" + EscAdmin + "')";
+
+	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
+		*error = mysql_error( (MYSQL *)conn );
+}
+
 bool MySQLConnectCheck( void *conn, string *error, uint32_t botid, string name, uint32_t sessionkey )
 {
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 	string EscName = MySQLEscapeString( conn, name );
 	bool Check = false;
-	string Query = "SELECT sessionkey FROM wc3connect WHERE username='" + EscName + "' AND TIMESTAMPDIFF(HOUR, time, NOW()) < 10";
+	string Query = "SELECT sessionkey FROM entconnect WHERE username='" + EscName + "' AND TIMESTAMPDIFF(HOUR, time, NOW()) < 10";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -2112,6 +2543,9 @@ uint32_t MySQLW3MMDPlayerAdd( void *conn, string *error, uint32_t botid, string 
 	
 	string TargetTable = "stats_w3mmdplayers";
 	
+	if( saveType == "uxtourney" )
+		TargetTable = "uxtourney_res_w3mmdplayers";
+	
 	string Query = "INSERT INTO " + TargetTable + " ( botid, category, gameid, pid, name, flag, leaver, practicing ) VALUES ( " + UTIL_ToString( botid ) + ", '" + EscCategory + "', " + UTIL_ToString( gameid ) + ", " + UTIL_ToString( pid ) + ", '" + EscName + "', '" + EscFlag + "', " + UTIL_ToString( leaver ) + ", " + UTIL_ToString( practicing ) + " )";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
@@ -2131,6 +2565,9 @@ bool MySQLW3MMDVarAdd( void *conn, string *error, uint32_t botid, uint32_t gamei
 	string Query;
 	
 	string TargetTable = "stats_w3mmdvars";
+	
+	if( saveType == "uxtourney" )
+		TargetTable = "uxtourney_res_w3mmdvars";
 
         for( map<VarP,int32_t> :: iterator i = var_ints.begin( ); i != var_ints.end( ); ++i )
 	{
@@ -2158,7 +2595,10 @@ bool MySQLW3MMDVarAdd( void *conn, string *error, uint32_t botid, uint32_t gamei
 	bool Success = false;
 	string Query;
 	
-	string TargetTable = "stats_w3mmdvars";
+	string TargetTable = "w3mmdvars";
+	
+	if( saveType == "uxtourney" )
+		TargetTable = "uxtourney_res_w3mmdvars";
 
         for( map<VarP,double> :: iterator i = var_reals.begin( ); i != var_reals.end( ); ++i )
 	{
@@ -2186,7 +2626,10 @@ bool MySQLW3MMDVarAdd( void *conn, string *error, uint32_t botid, uint32_t gamei
 	bool Success = false;
 	string Query;
 	
-    string TargetTable = "stats_w3mmdvars";
+	string TargetTable = "stats_w3mmdvars";
+	
+	if( saveType == "uxtourney" )
+		TargetTable = "uxtourney_res_w3mmdvars";
 
         for( map<VarP,string> :: iterator i = var_strings.begin( ); i != var_strings.end( ); ++i )
 	{
@@ -2206,7 +2649,6 @@ bool MySQLW3MMDVarAdd( void *conn, string *error, uint32_t botid, uint32_t gamei
 
 	return Success;
 }
-
 uint32_t MySQLVerifyUser( void *conn, string *error, uint32_t botid, string name, string token, string realm )
 {
 	uint32_t result = 0;
@@ -2245,7 +2687,7 @@ void CMySQLCallable :: Init( )
 		// try again to get idle connection
 		for( unsigned int i = 0; i < 3 && !m_Connection; i++ )
 		{
-			CONSOLE_Print( "[MYSQL] No connection yet, trying again (" + UTIL_ToString( i + 1 ) + ")" );
+			//CONSOLE_Print( "[MYSQL] No connection yet, trying again (" + UTIL_ToString( i + 1 ) + ")" );
 			MILLISLEEP( rand() % 1000 + 300 );
 			m_Connection = m_DB->GetIdleConnection( );
 		}
@@ -2290,6 +2732,16 @@ void CMySQLCallableAdminCheck :: operator( )( )
 
 	if( m_Error.empty( ) )
 		m_Result = MySQLAdminCheck( m_Connection, &m_Error, m_SQLBotID, m_Server, m_User );
+
+	Close( );
+}
+
+void CMySQLCallableAliasCheck :: operator( )( )
+{
+	Init( );
+
+	if( m_Error.empty( ) )
+		m_Result = MySQLAliasCheck( m_Connection, &m_Error, m_SQLBotID, m_IP );
 
 	Close( );
 }
@@ -2399,6 +2851,7 @@ void CMySQLCallableCommandList :: operator( )( )
 	Close( );
 }
 
+
 void CMySQLCallableGameAdd :: operator( )( )
 {
 	Init( );
@@ -2414,7 +2867,27 @@ void CMySQLCallableGameUpdate :: operator( )( )
 	Init( );
 
 	if( m_Error.empty( ) )
-		m_Result = MySQLGameUpdate( m_Connection, &m_Error, m_SQLBotID, m_ID, m_Map, m_GameName, m_OwnerName, m_CreatorName, m_Players, m_Usernames, m_SlotsTotal, m_TotalGames, m_TotalPlayers, m_Add );
+		m_Result = MySQLGameUpdate( m_Connection, &m_Error, m_SQLBotID, m_ID, m_Map, m_GameName, m_OwnerName, m_CreatorName, m_Players, m_Usernames, m_SlotsTotal, m_TotalPlayers, m_Lobby, m_Add );
+
+	Close( );
+}
+
+void CMySQLCallableStreamGameUpdate :: operator( )( )
+{
+	Init( );
+
+	if( m_Error.empty( ) )
+		MySQLStreamGameUpdate( m_Connection, &m_Error, m_SQLBotID, m_GameName, m_Map, m_MapCRC, m_MapFlags, m_Port );
+
+	Close( );
+}
+
+void CMySQLCallableStreamPlayerUpdate :: operator( )( )
+{
+	Init( );
+
+	if( m_Error.empty( ) )
+		MySQLStreamPlayerUpdate( m_Connection, &m_Error, m_SQLBotID, m_Name, m_GameName );
 
 	Close( );
 }
@@ -2489,6 +2962,16 @@ void CMySQLCallableTreePlayerSummaryCheck :: operator( )( )
 	Close( );
 }
 
+void CMySQLCallableIslandPlayerSummaryCheck :: operator( )( )
+{
+	Init( );
+
+	if( m_Error.empty( ) )
+		m_Result = MySQLIslandPlayerSummaryCheck( m_Connection, &m_Error, m_SQLBotID, m_Name, m_Realm );
+
+	Close( );
+}
+
 void CMySQLCallableSnipePlayerSummaryCheck :: operator( )( )
 {
 	Init( );
@@ -2505,6 +2988,16 @@ void CMySQLCallableShipsPlayerSummaryCheck :: operator( )( )
 
 	if( m_Error.empty( ) )
 		m_Result = MySQLShipsPlayerSummaryCheck( m_Connection, &m_Error, m_SQLBotID, m_Name, m_Realm );
+
+	Close( );
+}
+
+void CMySQLCallableRVSPlayerSummaryCheck :: operator( )( )
+{
+	Init( );
+
+	if( m_Error.empty( ) )
+		m_Result = MySQLRVSPlayerSummaryCheck( m_Connection, &m_Error, m_SQLBotID, m_Name, m_Realm );
 
 	Close( );
 }
@@ -2575,6 +3068,16 @@ void CMySQLCallableTournamentUpdate :: operator( )( )
 
 	if( m_Error.empty( ) )
 		MySQLTournamentUpdate( m_Connection, &m_Error, m_SQLBotID, m_MatchID, m_GameName, m_Status );
+
+	Close( );
+}
+
+void CMySQLCallableAdminCommand :: operator( )( )
+{
+	Init( );
+
+	if( m_Error.empty( ) )
+		MySQLAdminCommand( m_Connection, &m_Error, m_SQLBotID, m_Admin, m_Command, m_Description, m_GameName );
 
 	Close( );
 }

@@ -36,12 +36,12 @@
 // CStatsDOTA
 //
 
-CStatsDOTA :: CStatsDOTA( CBaseGame *nGame, string nConditions, string nSaveType ) : CStats( nGame ), m_SaveType( nSaveType ), m_Winner( 0 ), m_Min( 0 ), m_Sec( 0 ), m_TowerLimit( false ), m_KillLimit( 0 ), m_TimeLimit( 0 ), m_SentinelTowers( 0 ), m_ScourgeTowers( 0 ), m_SentinelKills( 0 ), m_ScourgeKills( 0 ), m_LastCreepTime( 0 )
+CStatsDOTA :: CStatsDOTA( CBaseGame *nGame, string nConditions, string nSaveType ) : CStats( nGame ), m_SaveType( nSaveType ), m_Winner( 0 ), m_Min( 0 ), m_Sec( 0 ), m_TowerLimit( false ), m_KillLimit( 0 ), m_TimeLimit( 0 ), m_SentinelTowers( 0 ), m_ScourgeTowers( 0 ), m_SentinelKills( 0 ), m_ScourgeKills( 0 ), m_LastCreepTime( 0 ), m_FakeWinner( 0 )
 {
 	CONSOLE_Print( "[STATSDOTA] using dota stats" );
 
     for( unsigned int i = 0; i < 12; ++i ) {
-        m_Players[i] = NULL;
+		m_Players[i] = NULL;
         m_LatestKill[i] = 0;
          m_KillCounter[i] = 0;
         m_KillStreakCounter[i] = 0;
@@ -276,7 +276,7 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
                                 if(m_KillStreakCounter[ValueInt] >  m_Players[ValueInt]->GetMS()) {
                                      m_Players[ValueInt]->SetMS((m_KillStreakCounter[ValueInt]));
                                 }
-
+								
 								if( Killer && Victim )
 								{
 									if( ( ValueInt >= 1 && ValueInt <= 5 ) || ( ValueInt >= 7 && ValueInt <= 11 ) )
@@ -296,7 +296,7 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 												m_Players[ValueInt]->SetKills( m_Players[ValueInt]->GetKills() + 1 );
 											else 
 												m_Players[ValueInt]->incS();
-		
+											
 											if( ValueInt >= 1 && ValueInt <= 5 )
 												m_SentinelKills++;
 											else
@@ -324,6 +324,7 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 											m_Players[VictimColour] = new CDBDotAPlayer( );
 	
 										m_KillStreakCounter[VictimColour] = 0;	
+			
 										m_Players[VictimColour]->SetDeaths( m_Players[VictimColour]->GetDeaths() + 1 );
 									}
 									
@@ -569,6 +570,12 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 								// the frozen throne got hurt
 
 								CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the Frozen Throne is now at " + UTIL_ToString( ValueInt ) + "% HP" );
+								
+								if( ValueInt <= 25 )
+								{
+									// in case something weird happens, set this as the "fake" winner
+									m_FakeWinner = 1;
+								}
                                 Event event;
                                 event.event = "throne";
                                 event.time = m_Game->GetGameTicks();
@@ -585,7 +592,12 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 								// the world tree got hurt
 
 								CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the World Tree is now at " + UTIL_ToString( ValueInt ) + "% HP" );
-
+								
+								if( ValueInt <= 25 )
+								{
+									// in case something weird happens, set this as the "fake" winner
+									m_FakeWinner = 2;
+								}
                                 Event event;
                                 event.event = "tree";
                                 event.time = m_Game->GetGameTicks();
@@ -597,7 +609,7 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
                                 event.additional4 = "";
                                 m_Events.push_back(event);
 
-							}
+								}
 							else if( KeyString.size( ) >= 2 && KeyString.substr( 0, 2 ) == "CK" )
 							{
 								// a player disconnected
@@ -786,7 +798,6 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 									else
 										m_Players[ID]->SetNewColour( ValueInt );
 								}
-
 							}
 						}
 
@@ -902,6 +913,9 @@ void CStatsDOTA :: Save( CGHost *GHost, CGHostDB *DB, uint32_t GameID )
 		// save the dotagame
 		// no need to ask for lock on callables mutex: we already have it from CGame
 		
+		if( m_Winner == 0 && m_FakeWinner != 0 )
+			m_Winner = m_FakeWinner;
+		
 		GHost->m_Callables.push_back( DB->ThreadedDotAGameAdd( GameID, m_Winner, m_Min, m_Sec, m_SaveType, m_Events ) );
 
 		// check for invalid colours and duplicates
@@ -939,7 +953,7 @@ void CStatsDOTA :: Save( CGHost *GHost, CGHostDB *DB, uint32_t GameID )
 		{
 			if( m_Players[i] )
 			{
-				GHost->m_Callables.push_back( DB->ThreadedDotAPlayerAdd( GameID, m_Players[i]->GetColour( ), m_Players[i]->GetKills( ), m_Players[i]->GetDeaths( ), m_Players[i]->GetCreepKills( ), m_Players[i]->GetCreepDenies( ), m_Players[i]->GetAssists( ), m_Players[i]->GetGold( ), m_Players[i]->GetNeutralKills( ), m_Players[i]->GetItem( 0 ), m_Players[i]->GetItem( 1 ), m_Players[i]->GetItem( 2 ), m_Players[i]->GetItem( 3 ), m_Players[i]->GetItem( 4 ), m_Players[i]->GetItem( 5 ), m_Players[i]->GetHero( ), m_Players[i]->GetNewColour( ), m_Players[i]->GetTowerKills( ), m_Players[i]->GetRaxKills( ), m_Players[i]->GetCourierKills( ), m_SaveType, m_Players[i]->GetLevel(),  m_Players[i]->GetS(),  m_Players[i]->Get2K(),  m_Players[i]->Get3K(),  m_Players[i]->Get4K(),  m_Players[i]->Get5K(),  m_Players[i]->GetFB(),  m_Players[i]->GetFD(),  m_Players[i]->GetKS(),  m_Players[i]->GetD(),  m_Players[i]->GetMK(),  m_Players[i]->GetU(),  m_Players[i]->GetWS(),  m_Players[i]->GetMOK(),  m_Players[i]->GetG(),  m_Players[i]->GetBG(),  m_Players[i]->GetMS()));
+				GHost->m_Callables.push_back( DB->ThreadedDotAPlayerAdd( GameID, m_Players[i]->GetNewColour( ), m_Players[i]->GetKills( ), m_Players[i]->GetDeaths( ), m_Players[i]->GetCreepKills( ), m_Players[i]->GetCreepDenies( ), m_Players[i]->GetAssists( ), m_Players[i]->GetGold( ), m_Players[i]->GetNeutralKills( ), m_Players[i]->GetItem( 0 ), m_Players[i]->GetItem( 1 ), m_Players[i]->GetItem( 2 ), m_Players[i]->GetItem( 3 ), m_Players[i]->GetItem( 4 ), m_Players[i]->GetItem( 5 ), m_Players[i]->GetHero( ), m_Players[i]->GetNewColour( ), m_Players[i]->GetTowerKills( ), m_Players[i]->GetRaxKills( ), m_Players[i]->GetCourierKills( ), m_SaveType, m_Players[i]->GetLevel(),  m_Players[i]->GetS(),  m_Players[i]->Get2K(),  m_Players[i]->Get3K(),  m_Players[i]->Get4K(),  m_Players[i]->Get5K(),  m_Players[i]->GetFB(),  m_Players[i]->GetFD(),  m_Players[i]->GetKS(),  m_Players[i]->GetD(),  m_Players[i]->GetMK(),  m_Players[i]->GetU(),  m_Players[i]->GetWS(),  m_Players[i]->GetMOK(),  m_Players[i]->GetG(),  m_Players[i]->GetBG(),  m_Players[i]->GetMS()));
                                 ++Players;
 			}
 		}

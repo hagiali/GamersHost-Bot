@@ -36,6 +36,7 @@ class CStatsDOTA : public CStats
 {
 private:
 	CDBDotAPlayer *m_Players[12];
+	uint32_t m_FakeWinner;
 	uint32_t m_Winner;
 	uint32_t m_Min;
 	uint32_t m_Sec;
@@ -52,7 +53,7 @@ private:
 	uint32_t m_ScourgeKills;
 	uint32_t m_LastCreepTime; // last time we received creep stats, for the time limit win condition
 
-    	uint32_t m_LatestKill[12];
+    uint32_t m_LatestKill[12];
 	uint32_t m_KillCounter[12];
 	uint32_t m_KillStreakCounter[12];
 	bool m_FirstBlood;
