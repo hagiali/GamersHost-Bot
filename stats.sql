@@ -656,6 +656,28 @@ CREATE TABLE IF NOT EXISTS `stats_items` (
 -- --------------------------------------------------------
 
 --
+--
+-- Table structure for table `stats_scoredgames`
+--
+
+CREATE TABLE IF NOT EXISTS `stats_scoredgames` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gameid` int(20) NOT NULL,
+  `rowids` int(11) NOT NULL,
+  `names` int(11) NOT NULL,
+  `servers` int(11) NOT NULL,
+  `colours` int(11) NOT NULL,
+  `winners` int(11) NOT NULL,
+  `player_ratings` int(11) NOT NULL,
+  `kills` int(11) NOT NULL,
+  `deaths` int(11) NOT NULL,
+  `assists` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `stats_spoof`
 --
 
