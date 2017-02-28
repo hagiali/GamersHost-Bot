@@ -1799,7 +1799,7 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
     Score[1] = 0;
 	
     string Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='" + EscCategory + "' AND name='" + EscName + "'";
-	string Query2 = "SELECT -100000.0;";
+	string Query2 = "SELECT 1000.0;";
 
 	if( category == "dota" )
 	{

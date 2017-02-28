@@ -1372,6 +1372,7 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_DisableBot = CFG->GetInt( "bot_disable", 0 ) == 0 ? false : true;
 	m_CloseSinglePlayer = CFG->GetInt( "bot_closesingleplayer", 1 ) == 0 ? false : true;
 	m_ShowScoreOnJoin = CFG->GetInt( "bot_scoreonjoin", 0 ) == 0 ? false : true;
+	m_Gamelist = CFG->GetInt( "bot_gamelist", 0 ) == 0 ? false : true;
 }
 
 void CGHost :: ExtractScripts( )
