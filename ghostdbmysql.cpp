@@ -1806,11 +1806,6 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
         Query = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "'";
         Query2 = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "'";
 	}
-    else if( category == "dota_solomm" )
-    {
-        Query = "SELECT score FROM stats_dota_elo_scores_solomm WHERE name='" + EscName + "'";
-        Query2 = "SELECT score FROM stats_dota_elo_scores_solomm WHERE name='" + EscName + "'";
-	}
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );

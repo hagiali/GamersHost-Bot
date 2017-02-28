@@ -181,6 +181,7 @@ public:
 	bool m_StatsOnJoin;						// config value: attempt to show stats on join?
 	bool m_AllowAnyConnect;					// config value: allow any wc3connect users to join? (don't check session)
 	
+	bool m_ShowScoreOnJoin;
     string m_LocalIPs;						// config value: list of local IP's (which Garena is allowed from)
 	vector<string> m_FlameTriggers;			// triggers for antiflame system
 	uint32_t m_LastDenyCleanTime;			// last time we cleaned the deny table
