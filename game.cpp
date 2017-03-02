@@ -983,7 +983,7 @@ for( vector<PairedVerifyUserCheck> :: iterator i = m_PairedVerifyUserChecks.begi
 	}
 	
 	// update gamelist every 5 seconds if in lobby, or every 45 seconds otherwise
-	if( !m_CallableGameUpdate && m_GHost->m_Gamelist && ( m_LastGameUpdateTime == 0 || GetTime( ) - m_LastGameUpdateTime >= 30 || ( !m_GameLoaded && !m_GameLoading && GetTime( ) - m_LastGameUpdateTime >= 5 ) ) )
+	if( !m_CallableGameUpdate && ( m_LastGameUpdateTime == 0 || GetTime( ) - m_LastGameUpdateTime >= 30 || ( !m_GameLoaded && !m_GameLoading && GetTime( ) - m_LastGameUpdateTime >= 5 ) ) )
 	{
 		m_LastGameUpdateTime = GetTime( );
 		m_CallableGameUpdate =  m_GHost->m_DB->ThreadedGameUpdate( m_GameUpdateID, GetMapName( ), GetGameName( ), GetOwnerName( ), GetCreatorName( ), GetNumHumanPlayers( ), GetPlayerList( ), GetNumHumanPlayers( ) + GetSlotsOpen(), GetNumHumanPlayers( ), !( m_GameLoading || m_GameLoaded ), true );

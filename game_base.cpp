@@ -2361,11 +2361,6 @@ CGamePlayer *CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncom
 		}
 	}
 
-        if(m_GHost->m_ShowScoreOnJoin && score == NULL) {
-                 m_ScoreChecks.push_back( m_GHost->m_DB->ThreadedScoreCheck( m_Map->GetMapMatchMakingCategory( ), joinPlayer->GetName( ), JoinedRealm ) );
-                 return NULL;
-        }	
-	
 	if( m_MatchMaking && m_AutoStartPlayers != 0 && !m_Map->GetMapMatchMakingCategory( ).empty( ) && m_Map->GetMapOptions( ) & MAPOPT_FIXEDPLAYERSETTINGS && score == NULL )
 	{
 		// matchmaking is enabled
@@ -2689,9 +2684,6 @@ CGamePlayer *CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncom
 	// send virtual host info and fake player info (if present) to the new player
 
 	SendVirtualHostPlayerInfo( Player );
-		if(m_GHost->m_ShowScoreOnJoin) {
- 		SendAllChat("Player [" + Player->GetName( ) + "@" + JoinedRealm + "] with a score of [" + UTIL_ToString(score[0], 2)+"]");
- 	}
 	SendFakePlayerInfo( Player );
 
 	BYTEARRAY BlankIP;

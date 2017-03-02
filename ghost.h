@@ -176,9 +176,6 @@ public:
 	boost::mutex m_ReconnectMutex;
     uint32_t m_MapGameType;
     bool m_FastReconnect;					// config value: whether this is a fast reconnect bot
-	
-	bool m_Gamelist;
-	bool m_ShowScoreOnJoin;
     string m_LocalIPs;						// config value: list of local IP's (which Garena is allowed from)
     
     vector<string> m_FlameTriggers;			// triggers for antiflame system
