@@ -2166,17 +2166,12 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
     Score[1] = 0;
 	
 	string Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='" + EscCategory + "' AND name='" + EscName + "' AND server='" + EscServer + "'";
-	string Query2 = "SELECT -100000.0;";
+	string Query2 = "SELECT 1000.0;";
 	
 	if( category == "dota" )
 	{
 		Query = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 5";
 		Query2 = "SELECT score FROM stats_dota_elo_scores WHERE name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 5";
-	}
-    else if( category == "dota_solomm" )
-    {
-        Query = "SELECT score FROM stats_dota_elo_scores_solomm WHERE name='" + EscName + "'";
-        Query2 = "SELECT score FROM stats_dota_elo_scores_solomm WHERE name='" + EscName + "'";
 	}
 	else if (category == "dota2" ) // dota2 checks normal DotA stats
 	{
