@@ -554,7 +554,7 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_CHAT_FROM_HOST( unsigned char fromPID, BYTE
 	return packet;
 }
 
-BYTEARRAY CGameProtocol :: SEND_W3GS_START_LAG( vector<CGamePlayer *> players, bool loadInGame )
+BYTEARRAY CGameProtocol :: SEND_W3GS_START_LAG( vector<CGamePlayer *> players, uint32_t gameTicks )
 {
 	BYTEARRAY packet;
 
@@ -562,7 +562,7 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_START_LAG( vector<CGamePlayer *> players, b
 
 	for( vector<CGamePlayer *> :: iterator i = players.begin( ); i != players.end( ); i++ )
 	{
-		if( loadInGame )
+		if( gameTicks == 0 )
 		{
 			if( !(*i)->GetFinishedLoading( ) )
                                 ++NumLaggers;
@@ -584,7 +584,7 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_START_LAG( vector<CGamePlayer *> players, b
 
 		for( vector<CGamePlayer *> :: iterator i = players.begin( ); i != players.end( ); i++ )
 		{
-			if( loadInGame )
+			if( gameTicks == 0 )
 			{
 				if( !(*i)->GetFinishedLoading( ) )
 				{
@@ -597,7 +597,7 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_START_LAG( vector<CGamePlayer *> players, b
 				if( (*i)->GetLagging( ) )
 				{
 					packet.push_back( (*i)->GetPID( ) );
-					UTIL_AppendByteArray( packet, GetTicks( ) - (*i)->GetStartedLaggingTicks( ), false );
+					UTIL_AppendByteArray( packet, (*i)->GetTotalLaggingTicks( ), false );
 				}
 			}
 		}
@@ -714,19 +714,6 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_GAMEINFO( bool TFT, unsigned char war3Versi
 
 	// DEBUG_Print( "SENT W3GS_GAMEINFO" );
 	// DEBUG_Print( packet );
-	return packet;
-}
-
-BYTEARRAY CGameProtocol :: SEND_CUSTOM_GAMELIST( string username, string gamename, string owner, uint32_t slotsTaken, uint32_t slotsTotal )
-{
-	BYTEARRAY packet;
-	packet.push_back( 3 );
-	packet.push_back( 4 );
-	UTIL_AppendByteArrayFast( packet, username );
-	UTIL_AppendByteArrayFast( packet, gamename );
-	UTIL_AppendByteArrayFast( packet, owner );
-	UTIL_AppendByteArray( packet, slotsTaken, false );
-	UTIL_AppendByteArray( packet, slotsTotal, false );
 	return packet;
 }
 

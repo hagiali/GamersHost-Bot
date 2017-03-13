@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.4deb1
--- https://www.phpmyadmin.net/
+-- version 4.1.14
+-- http://www.phpmyadmin.net
 --
--- Host: localhost:3306
--- Erstellungszeit: 21. Feb 2017 um 10:56
--- Server-Version: 5.7.17-0ubuntu0.16.10.1
--- PHP-Version: 7.0.13-0ubuntu0.16.10.1
+-- Host: 127.0.0.1
+-- Generation Time: Feb 23, 2017 at 05:23 PM
+-- Server version: 5.6.17
+-- PHP Version: 5.5.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,33 +14,349 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 
 --
--- Datenbank: `stats`
+-- Database: `ghost`
 --
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_admins`
+-- Table structure for table `admin_actions`
 --
 
-CREATE TABLE `stats_admins` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
-  `botid` tinyint(4) DEFAULT NULL,
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `server` enum('europe.battle.net','useast.battle.net','uswest.battle.net','asia.battle.net') COLLATE utf8mb4_unicode_ci DEFAULT NULL
+CREATE TABLE IF NOT EXISTS `admin_actions` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
+  `action` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `desc` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admin` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dota2games`
+--
+
+CREATE TABLE IF NOT EXISTS `dota2games` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `botid` int(11) NOT NULL,
+  `gameid` int(11) NOT NULL,
+  `winner` int(11) NOT NULL,
+  `min` int(11) NOT NULL,
+  `sec` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`),
+  KEY `winner` (`winner`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dota2players`
+--
+
+CREATE TABLE IF NOT EXISTS `dota2players` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `botid` int(11) NOT NULL,
+  `gameid` int(11) NOT NULL,
+  `colour` int(11) NOT NULL,
+  `kills` int(11) NOT NULL,
+  `deaths` int(11) NOT NULL,
+  `creepkills` int(11) NOT NULL,
+  `creepdenies` int(11) NOT NULL,
+  `assists` int(11) NOT NULL,
+  `gold` int(11) NOT NULL,
+  `neutralkills` int(11) NOT NULL,
+  `item1` char(4) NOT NULL,
+  `item2` char(4) NOT NULL,
+  `item3` char(4) NOT NULL,
+  `item4` char(4) NOT NULL,
+  `item5` char(4) NOT NULL,
+  `item6` char(4) NOT NULL,
+  `hero` char(4) NOT NULL,
+  `newcolour` int(11) NOT NULL,
+  `towerkills` int(11) NOT NULL,
+  `raxkills` int(11) NOT NULL,
+  `courierkills` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`,`colour`),
+  KEY `colour` (`colour`),
+  KEY `newcolour` (`newcolour`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dota2_elo_games_scored`
+--
+
+CREATE TABLE IF NOT EXISTS `dota2_elo_games_scored` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gameid` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dota2_elo_scores`
+--
+
+CREATE TABLE IF NOT EXISTS `dota2_elo_scores` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(15) NOT NULL,
+  `server` varchar(100) NOT NULL,
+  `score` double NOT NULL,
+  `games` int(11) NOT NULL,
+  `wins` int(11) NOT NULL,
+  `losses` int(11) NOT NULL,
+  `kills` int(11) NOT NULL,
+  `deaths` int(11) NOT NULL,
+  `creepkills` int(11) NOT NULL,
+  `creepdenies` int(11) NOT NULL,
+  `assists` int(11) NOT NULL,
+  `neutralkills` int(11) NOT NULL,
+  `towerkills` int(11) NOT NULL,
+  `raxkills` int(11) NOT NULL,
+  `courierkills` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eihlgames`
+--
+
+CREATE TABLE IF NOT EXISTS `eihlgames` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `botid` int(11) NOT NULL,
+  `gameid` int(11) NOT NULL,
+  `winner` int(11) NOT NULL,
+  `min` int(11) NOT NULL,
+  `sec` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`),
+  KEY `winner` (`winner`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eihlplayers`
+--
+
+CREATE TABLE IF NOT EXISTS `eihlplayers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `botid` int(11) NOT NULL,
+  `gameid` int(11) NOT NULL,
+  `colour` int(11) NOT NULL,
+  `kills` int(11) NOT NULL,
+  `deaths` int(11) NOT NULL,
+  `creepkills` int(11) NOT NULL,
+  `creepdenies` int(11) NOT NULL,
+  `assists` int(11) NOT NULL,
+  `gold` int(11) NOT NULL,
+  `neutralkills` int(11) NOT NULL,
+  `item1` char(4) NOT NULL,
+  `item2` char(4) NOT NULL,
+  `item3` char(4) NOT NULL,
+  `item4` char(4) NOT NULL,
+  `item5` char(4) NOT NULL,
+  `item6` char(4) NOT NULL,
+  `hero` char(4) NOT NULL,
+  `newcolour` int(11) NOT NULL,
+  `towerkills` int(11) NOT NULL,
+  `raxkills` int(11) NOT NULL,
+  `courierkills` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`,`colour`),
+  KEY `colour` (`colour`),
+  KEY `newcolour` (`newcolour`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eihl_elo_games_scored`
+--
+
+CREATE TABLE IF NOT EXISTS `eihl_elo_games_scored` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gameid` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eihl_elo_scores`
+--
+
+CREATE TABLE IF NOT EXISTS `eihl_elo_scores` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(15) NOT NULL,
+  `server` varchar(100) NOT NULL,
+  `score` double NOT NULL,
+  `games` int(11) NOT NULL,
+  `wins` int(11) NOT NULL,
+  `losses` int(11) NOT NULL,
+  `kills` int(11) NOT NULL,
+  `deaths` int(11) NOT NULL,
+  `creepkills` int(11) NOT NULL,
+  `creepdenies` int(11) NOT NULL,
+  `assists` int(11) NOT NULL,
+  `neutralkills` int(11) NOT NULL,
+  `towerkills` int(11) NOT NULL,
+  `raxkills` int(11) NOT NULL,
+  `courierkills` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gametrack`
+--
+
+CREATE TABLE IF NOT EXISTS `gametrack` (
+  `name` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `realm` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bots` varchar(40) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lastgames` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `total_leftpercent` double DEFAULT NULL,
+  `num_leftpercent` int(11) DEFAULT NULL,
+  `num_games` int(11) DEFAULT NULL,
+  `time_created` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `time_active` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `playingtime` int(11) DEFAULT NULL,
+  KEY `name` (`name`),
+  KEY `realm` (`realm`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_banhistory`
+-- Table structure for table `lodgames`
 --
 
-CREATE TABLE `stats_banhistory` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `lodgames` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `botid` int(11) NOT NULL,
+  `gameid` int(11) NOT NULL,
+  `winner` int(11) NOT NULL,
+  `min` int(11) NOT NULL,
+  `sec` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`),
+  KEY `winner` (`winner`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lodplayers`
+--
+
+CREATE TABLE IF NOT EXISTS `lodplayers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `botid` int(11) NOT NULL,
+  `gameid` int(11) NOT NULL,
+  `colour` int(11) NOT NULL,
+  `kills` int(11) NOT NULL,
+  `deaths` int(11) NOT NULL,
+  `creepkills` int(11) NOT NULL,
+  `creepdenies` int(11) NOT NULL,
+  `assists` int(11) NOT NULL,
+  `gold` int(11) NOT NULL,
+  `neutralkills` int(11) NOT NULL,
+  `item1` char(4) NOT NULL,
+  `item2` char(4) NOT NULL,
+  `item3` char(4) NOT NULL,
+  `item4` char(4) NOT NULL,
+  `item5` char(4) NOT NULL,
+  `item6` char(4) NOT NULL,
+  `hero` char(4) NOT NULL,
+  `newcolour` int(11) NOT NULL,
+  `towerkills` int(11) NOT NULL,
+  `raxkills` int(11) NOT NULL,
+  `courierkills` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`,`colour`),
+  KEY `colour` (`colour`),
+  KEY `newcolour` (`newcolour`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lod_elo_games_scored`
+--
+
+CREATE TABLE IF NOT EXISTS `lod_elo_games_scored` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gameid` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lod_elo_scores`
+--
+
+CREATE TABLE IF NOT EXISTS `lod_elo_scores` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(15) NOT NULL,
+  `server` varchar(100) NOT NULL,
+  `score` double NOT NULL,
+  `games` int(11) NOT NULL,
+  `wins` int(11) NOT NULL,
+  `losses` int(11) NOT NULL,
+  `kills` int(11) NOT NULL,
+  `deaths` int(11) NOT NULL,
+  `creepkills` int(11) NOT NULL,
+  `creepdenies` int(11) NOT NULL,
+  `assists` int(11) NOT NULL,
+  `neutralkills` int(11) NOT NULL,
+  `towerkills` int(11) NOT NULL,
+  `raxkills` int(11) NOT NULL,
+  `courierkills` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stats_admins`
+--
+
+CREATE TABLE IF NOT EXISTS `stats_admins` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
+  `botid` tinyint(4) DEFAULT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `server` enum('europe.battle.net','useast.battle.net','uswest.battle.net','asia.battle.net') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `botid` (`botid`,`name`,`server`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stats_banhistory`
+--
+
+CREATE TABLE IF NOT EXISTS `stats_banhistory` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ip` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `server` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -50,17 +366,18 @@ CREATE TABLE `stats_banhistory` (
   `date` datetime DEFAULT NULL,
   `expiredate` datetime DEFAULT NULL,
   `context` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `warn` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `warn` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_bans`
+-- Table structure for table `stats_bans`
 --
 
-CREATE TABLE `stats_bans` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_bans` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
   `server` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -71,44 +388,50 @@ CREATE TABLE `stats_bans` (
   `reason` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `context` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `expiredate` timestamp NULL DEFAULT NULL,
-  `warn` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `warn` int(11) NOT NULL DEFAULT '0',
+  `processed` int(11) NOT NULL,
+  `targetbot` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_commands`
+-- Table structure for table `stats_commands`
 --
 
-CREATE TABLE `stats_commands` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_commands` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
-  `command` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `command` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_dotagames`
+-- Table structure for table `stats_dotagames`
 --
 
-CREATE TABLE `stats_dotagames` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_dotagames` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
   `gameid` bigint(20) NOT NULL DEFAULT '0',
   `winner` tinyint(4) NOT NULL DEFAULT '0',
   `min` int(11) NOT NULL DEFAULT '0',
-  `sec` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `sec` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `def` (`gameid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_dotaplayers`
+-- Table structure for table `stats_dotaplayers`
 --
 
-CREATE TABLE `stats_dotaplayers` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_dotaplayers` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
   `gameid` bigint(20) NOT NULL DEFAULT '0',
   `colour` int(11) NOT NULL DEFAULT '0',
@@ -146,28 +469,34 @@ CREATE TABLE `stats_dotaplayers` (
   `mok` int(11) NOT NULL DEFAULT '0',
   `g` int(11) NOT NULL DEFAULT '0',
   `bg` int(11) NOT NULL DEFAULT '0',
-  `ms` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `ms` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `dp_newcolour` (`newcolour`),
+  KEY `dp_gameid` (`gameid`),
+  KEY `gp_select` (`newcolour`,`gameid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_dota_elo_games_scored`
+-- Table structure for table `stats_dota_elo_games_scored`
 --
 
-CREATE TABLE `stats_dota_elo_games_scored` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
-  `gameid` bigint(20) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `stats_dota_elo_games_scored` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
+  `gameid` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `def` (`gameid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_dota_elo_scores`
+-- Table structure for table `stats_dota_elo_scores`
 --
 
-CREATE TABLE `stats_dota_elo_scores` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_dota_elo_scores` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `server` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `score` decimal(10,0) NOT NULL DEFAULT '0',
@@ -187,17 +516,19 @@ CREATE TABLE `stats_dota_elo_scores` (
   `maxstreak` int(11) NOT NULL DEFAULT '0',
   `lossstreak` int(11) NOT NULL DEFAULT '0',
   `maxlossstreak` int(11) NOT NULL DEFAULT '0',
-  `zerodeaths` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `zerodeaths` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `def` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_gamelist`
+-- Table structure for table `stats_gamelist`
 --
 
-CREATE TABLE `stats_gamelist` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_gamelist` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
   `gamename` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `ownername` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -208,17 +539,20 @@ CREATE TABLE `stats_gamelist` (
   `usernames` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `totalgames` tinyint(4) NOT NULL DEFAULT '0',
   `totalplayers` int(11) NOT NULL DEFAULT '0',
-  `age` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `eventtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `age` datetime DEFAULT NULL,
+  `lobby` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`)
+) ENGINE=MEMORY  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_gameplayers`
+-- Table structure for table `stats_gameplayers`
 --
 
-CREATE TABLE `stats_gameplayers` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_gameplayers` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
   `gameid` bigint(20) NOT NULL DEFAULT '0',
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -230,17 +564,21 @@ CREATE TABLE `stats_gameplayers` (
   `leftreason` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `team` int(11) NOT NULL DEFAULT '0',
   `colour` int(11) NOT NULL DEFAULT '0',
-  `spoofedrealm` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `spoofedrealm` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `gp_gameid` (`gameid`),
+  KEY `gp_name_game` (`name`(171),`gameid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_games`
+-- Table structure for table `stats_games`
 --
 
-CREATE TABLE `stats_games` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_games` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `botid` tinyint(4) NOT NULL DEFAULT '0',
   `server` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `map` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -252,34 +590,37 @@ CREATE TABLE `stats_games` (
   `creatorname` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `creatorserver` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `stats` tinyint(1) DEFAULT '0',
-  `views` int(11) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `views` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_game_chatevents`
+-- Table structure for table `stats_game_chatevents`
 --
 
-CREATE TABLE `stats_game_chatevents` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_game_chatevents` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `gameid` int(11) NOT NULL DEFAULT '0',
   `time` int(11) NOT NULL DEFAULT '0',
   `playercolour` int(11) NOT NULL DEFAULT '0',
   `playername` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `chatmessage` text COLLATE utf8mb4_unicode_ci,
   `side` tinyint(4) NOT NULL DEFAULT '0',
-  `lobby` bit(1) NOT NULL DEFAULT b'0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `lobby` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`),
+  KEY `gamid` (`gameid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_game_events`
+-- Table structure for table `stats_game_events`
 --
 
-CREATE TABLE `stats_game_events` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_game_events` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `gameid` int(11) NOT NULL DEFAULT '0',
   `event` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `time` int(11) NOT NULL DEFAULT '0',
@@ -288,16 +629,18 @@ CREATE TABLE `stats_game_events` (
   `additional1` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `additional2` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `additional3` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `additional4` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `additional4` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_items`
+-- Table structure for table `stats_items`
 --
 
-CREATE TABLE `stats_items` (
+CREATE TABLE IF NOT EXISTS `stats_items` (
   `itemid` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `playcount` int(11) DEFAULT '0',
   `code` smallint(10) NOT NULL DEFAULT '0',
@@ -306,29 +649,53 @@ CREATE TABLE `stats_items` (
   `item_info` mediumblob,
   `price` smallint(6) NOT NULL DEFAULT '0',
   `type` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `icon` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `icon` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`itemid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_spoof`
+--
+-- Table structure for table `stats_scoredgames`
 --
 
-CREATE TABLE `stats_spoof` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_scoredgames` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gameid` int(20) NOT NULL,
+  `rowids` int(11) NOT NULL,
+  `names` int(11) NOT NULL,
+  `servers` int(11) NOT NULL,
+  `colours` int(11) NOT NULL,
+  `winners` int(11) NOT NULL,
+  `player_ratings` int(11) NOT NULL,
+  `kills` int(11) NOT NULL,
+  `deaths` int(11) NOT NULL,
+  `assists` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stats_spoof`
+--
+
+CREATE TABLE IF NOT EXISTS `stats_spoof` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `spoof` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `spoof` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_w3mmdplayers`
+-- Table structure for table `stats_w3mmdplayers`
 --
 
-CREATE TABLE `stats_w3mmdplayers` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_w3mmdplayers` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `botid` int(11) NOT NULL DEFAULT '0',
   `category` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `gameid` int(11) NOT NULL DEFAULT '0',
@@ -336,45 +703,52 @@ CREATE TABLE `stats_w3mmdplayers` (
   `name` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `flag` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `leaver` int(11) NOT NULL DEFAULT '0',
-  `practicing` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `practicing` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `category` (`category`),
+  KEY `gameid` (`gameid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_w3mmdvars`
+-- Table structure for table `stats_w3mmdvars`
 --
 
-CREATE TABLE `stats_w3mmdvars` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_w3mmdvars` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `botid` int(11) NOT NULL DEFAULT '0',
   `gameid` int(11) NOT NULL DEFAULT '0',
   `pid` int(11) NOT NULL DEFAULT '0',
   `varname` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `value_int` int(11) DEFAULT NULL,
   `value_real` decimal(10,2) DEFAULT NULL,
-  `value_string` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `value_string` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`),
+  KEY `select` (`gameid`,`pid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_w3mmd_elo_games_scored`
+-- Table structure for table `stats_w3mmd_elo_games_scored`
 --
 
-CREATE TABLE `stats_w3mmd_elo_games_scored` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
-  `gameid` bigint(20) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `stats_w3mmd_elo_games_scored` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
+  `gameid` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_w3mmd_elo_scores`
+-- Table structure for table `stats_w3mmd_elo_scores`
 --
 
-CREATE TABLE `stats_w3mmd_elo_scores` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
+CREATE TABLE IF NOT EXISTS `stats_w3mmd_elo_scores` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
   `name` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `category` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `server` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -393,261 +767,77 @@ CREATE TABLE `stats_w3mmd_elo_scores` (
   `doublestats0` decimal(10,2) NOT NULL DEFAULT '0.00',
   `doublestats1` decimal(10,2) NOT NULL DEFAULT '0.00',
   `doublestats2` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `doublestats3` decimal(10,2) NOT NULL DEFAULT '0.00'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `doublestats3` decimal(10,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `category` (`category`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `stats_whitelist`
+-- Table structure for table `stats_whitelist`
 --
 
-CREATE TABLE `stats_whitelist` (
-  `id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID Number',
-  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS `stats_whitelist` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
--- Indizes der exportierten Tabellen
+-- Table structure for table `stream_games`
 --
 
---
--- Indizes für die Tabelle `stats_admins`
---
-ALTER TABLE `stats_admins`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `botid` (`botid`,`name`,`server`);
+CREATE TABLE IF NOT EXISTS `stream_games` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
+  `gamename` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mappath` varchar(181) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mapcrc` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mapflags` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `port` int(10) NOT NULL,
+  `botid` int(10) NOT NULL,
+  `last_update` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
+
+
+
+
+
+
+
+
+
 
 --
--- Indizes für die Tabelle `stats_banhistory`
---
-ALTER TABLE `stats_banhistory`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indizes für die Tabelle `stats_bans`
---
-ALTER TABLE `stats_bans`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indizes für die Tabelle `stats_commands`
---
-ALTER TABLE `stats_commands`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indizes für die Tabelle `stats_dotagames`
---
-ALTER TABLE `stats_dotagames`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `def` (`gameid`);
-
---
--- Indizes für die Tabelle `stats_dotaplayers`
---
-ALTER TABLE `stats_dotaplayers`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `dp_newcolour` (`newcolour`),
-  ADD KEY `dp_gameid` (`gameid`),
-  ADD KEY `gp_select` (`newcolour`,`gameid`);
-
---
--- Indizes für die Tabelle `stats_dota_elo_games_scored`
---
-ALTER TABLE `stats_dota_elo_games_scored`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `def` (`gameid`);
-
---
--- Indizes für die Tabelle `stats_dota_elo_scores`
---
-ALTER TABLE `stats_dota_elo_scores`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `def` (`name`(191));
-
---
--- Indizes für die Tabelle `stats_gamelist`
---
-ALTER TABLE `stats_gamelist`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indizes für die Tabelle `stats_gameplayers`
---
-ALTER TABLE `stats_gameplayers`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `name` (`name`(191)),
-  ADD KEY `gp_gameid` (`gameid`),
-  ADD KEY `gp_name_game` (`name`(171),`gameid`);
-
---
--- Indizes für die Tabelle `stats_games`
---
-ALTER TABLE `stats_games`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indizes für die Tabelle `stats_game_chatevents`
---
-ALTER TABLE `stats_game_chatevents`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `gamid` (`gameid`);
-
---
--- Indizes für die Tabelle `stats_game_events`
---
-ALTER TABLE `stats_game_events`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `gameid` (`gameid`);
-
---
--- Indizes für die Tabelle `stats_items`
---
-ALTER TABLE `stats_items`
-  ADD PRIMARY KEY (`itemid`);
-
---
--- Indizes für die Tabelle `stats_spoof`
---
-ALTER TABLE `stats_spoof`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indizes für die Tabelle `stats_w3mmdplayers`
---
-ALTER TABLE `stats_w3mmdplayers`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `category` (`category`),
-  ADD KEY `gameid` (`gameid`);
-
---
--- Indizes für die Tabelle `stats_w3mmdvars`
---
-ALTER TABLE `stats_w3mmdvars`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `gameid` (`gameid`),
-  ADD KEY `select` (`gameid`,`pid`);
-
---
--- Indizes für die Tabelle `stats_w3mmd_elo_games_scored`
---
-ALTER TABLE `stats_w3mmd_elo_games_scored`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indizes für die Tabelle `stats_w3mmd_elo_scores`
---
-ALTER TABLE `stats_w3mmd_elo_scores`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `name` (`name`),
-  ADD KEY `category` (`category`);
-
---
--- Indizes für die Tabelle `stats_whitelist`
---
-ALTER TABLE `stats_whitelist`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT für exportierte Tabellen
+-- Table structure for table `stream_players`
 --
 
+CREATE TABLE IF NOT EXISTS `stream_players` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID Number',
+  `name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gamename` varchar(181) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_update` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
+
+
+
+
 --
--- AUTO_INCREMENT für Tabelle `stats_admins`
+-- Table structure for table `w3mmd_elo_games_scored`
 --
-ALTER TABLE `stats_admins`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_banhistory`
---
-ALTER TABLE `stats_banhistory`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_bans`
---
-ALTER TABLE `stats_bans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_commands`
---
-ALTER TABLE `stats_commands`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number';
---
--- AUTO_INCREMENT für Tabelle `stats_dotagames`
---
-ALTER TABLE `stats_dotagames`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_dotaplayers`
---
-ALTER TABLE `stats_dotaplayers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_dota_elo_games_scored`
---
-ALTER TABLE `stats_dota_elo_games_scored`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_dota_elo_scores`
---
-ALTER TABLE `stats_dota_elo_scores`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_gamelist`
---
-ALTER TABLE `stats_gamelist`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_gameplayers`
---
-ALTER TABLE `stats_gameplayers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_games`
---
-ALTER TABLE `stats_games`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_game_chatevents`
---
-ALTER TABLE `stats_game_chatevents`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_game_events`
---
-ALTER TABLE `stats_game_events`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_spoof`
---
-ALTER TABLE `stats_spoof`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number';
---
--- AUTO_INCREMENT für Tabelle `stats_w3mmdplayers`
---
-ALTER TABLE `stats_w3mmdplayers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
---
--- AUTO_INCREMENT für Tabelle `stats_w3mmdvars`
---
-ALTER TABLE `stats_w3mmdvars`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number';
---
--- AUTO_INCREMENT für Tabelle `stats_w3mmd_elo_games_scored`
---
-ALTER TABLE `stats_w3mmd_elo_games_scored`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number';
---
--- AUTO_INCREMENT für Tabelle `stats_w3mmd_elo_scores`
---
-ALTER TABLE `stats_w3mmd_elo_scores`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number';
---
--- AUTO_INCREMENT für Tabelle `stats_whitelist`
---
-ALTER TABLE `stats_whitelist`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number';
+
+CREATE TABLE IF NOT EXISTS `w3mmd_elo_games_scored` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gameid` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `gameid` (`gameid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

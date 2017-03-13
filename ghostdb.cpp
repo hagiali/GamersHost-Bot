@@ -68,6 +68,11 @@ bool CGHostDB :: AdminCheck( string server, string user )
 	return false;
 }
 
+bool CGHostDB :: AliasCheck( string ip )
+{
+	return false;
+}
+
 bool CGHostDB :: AdminAdd( string server, string user )
 {
 	return false;
@@ -128,9 +133,20 @@ uint32_t CGHostDB :: GameAdd( string server, string map, string gamename, string
 	return 0;
 }
 
-uint32_t CGHostDB :: GameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalGames, uint32_t totalPlayers, bool add )
+uint32_t CGHostDB :: GameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalPlayers, bool lobby, bool add )
 {
 	return 0;
+}
+
+
+void CGHostDB :: StreamGameUpdate( string gamename, string map, uint32_t mapcrc, uint32_t mapflags, uint32_t port )
+{
+
+}
+
+void CGHostDB :: StreamPlayerUpdate( string name, string gamename )
+{
+
 }
 
 uint32_t CGHostDB :: GamePlayerAdd( uint32_t gameid, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t reserved, uint32_t loadingtime, uint32_t left, string leftreason, uint32_t team, uint32_t colour, string savetype )
@@ -178,7 +194,17 @@ CDBTreePlayerSummary *CGHostDB :: TreePlayerSummaryCheck( string name, string re
 	return NULL;
 }
 
+CDBIslandPlayerSummary *CGHostDB :: IslandPlayerSummaryCheck( string name, string realm )
+{
+	return NULL;
+}
+
 CDBShipsPlayerSummary *CGHostDB :: ShipsPlayerSummaryCheck( string name, string realm )
+{
+	return NULL;
+}
+
+CDBRVSPlayerSummary *CGHostDB :: RVSPlayerSummaryCheck( string name, string realm )
 {
 	return NULL;
 }
@@ -248,6 +274,11 @@ CCallableAdminCheck *CGHostDB :: ThreadedAdminCheck( string server, string user 
 	return NULL;
 }
 
+CCallableAliasCheck *CGHostDB :: ThreadedAliasCheck( string ip )
+{
+	return NULL;
+}
+
 CCallableAdminAdd *CGHostDB :: ThreadedAdminAdd( string server, string user )
 {
 	return NULL;
@@ -308,7 +339,17 @@ CCallableGameAdd *CGHostDB :: ThreadedGameAdd( string server, string map, string
 	return NULL;
 }
 
-CCallableGameUpdate *CGHostDB :: ThreadedGameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalGames, uint32_t totalPlayers, bool add )
+CCallableGameUpdate *CGHostDB :: ThreadedGameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalPlayers, bool lobby, bool add )
+{
+	return NULL;
+}
+
+CCallableStreamGameUpdate *CGHostDB :: ThreadedStreamGameUpdate( string gamename, string map, uint32_t mapcrc, uint32_t mapflags, uint32_t port )
+{
+	return NULL;
+}
+
+CCallableStreamPlayerUpdate *CGHostDB :: ThreadedStreamPlayerUpdate( string name, string gamename )
 {
 	return NULL;
 }
@@ -348,7 +389,17 @@ CCallableTreePlayerSummaryCheck *CGHostDB :: ThreadedTreePlayerSummaryCheck( str
 	return NULL;
 }
 
+CCallableIslandPlayerSummaryCheck *CGHostDB :: ThreadedIslandPlayerSummaryCheck( string name, string realm )
+{
+	return NULL;
+}
+
 CCallableShipsPlayerSummaryCheck *CGHostDB :: ThreadedShipsPlayerSummaryCheck( string name, string realm )
+{
+	return NULL;
+}
+
+CCallableRVSPlayerSummaryCheck *CGHostDB :: ThreadedRVSPlayerSummaryCheck( string name, string realm )
 {
 	return NULL;
 }
@@ -389,6 +440,11 @@ CCallableTournamentChat *CGHostDB :: ThreadedTournamentChat( uint32_t chatid, st
 }
 
 CCallableTournamentUpdate *CGHostDB :: ThreadedTournamentUpdate( uint32_t matchid, string gamename, uint32_t status )
+{
+	return NULL;
+}
+
+CCallableAdminCommand *CGHostDB :: ThreadedAdminCommand( string admin, string command, string description, string gamename )
 {
 	return NULL;
 }
@@ -444,6 +500,11 @@ CCallableAdminCount :: ~CCallableAdminCount( )
 }
 
 CCallableAdminCheck :: ~CCallableAdminCheck( )
+{
+
+}
+
+CCallableAliasCheck :: ~CCallableAliasCheck( )
 {
 
 }
@@ -508,6 +569,16 @@ CCallableGameUpdate :: ~CCallableGameUpdate( )
 
 }
 
+CCallableStreamGameUpdate :: ~CCallableStreamGameUpdate( )
+{
+
+}
+
+CCallableStreamPlayerUpdate :: ~CCallableStreamPlayerUpdate( )
+{
+
+}
+
 CCallableGamePlayerAdd :: ~CCallableGamePlayerAdd( )
 {
 
@@ -543,7 +614,17 @@ CCallableTreePlayerSummaryCheck :: ~CCallableTreePlayerSummaryCheck( )
 	delete m_Result;
 }
 
+CCallableIslandPlayerSummaryCheck :: ~CCallableIslandPlayerSummaryCheck( )
+{
+	delete m_Result;
+}
+
 CCallableShipsPlayerSummaryCheck :: ~CCallableShipsPlayerSummaryCheck( )
+{
+	delete m_Result;
+}
+
+CCallableRVSPlayerSummaryCheck :: ~CCallableRVSPlayerSummaryCheck( )
 {
 	delete m_Result;
 }
@@ -584,6 +665,11 @@ CCallableTournamentChat :: ~CCallableTournamentChat( )
 }
 
 CCallableTournamentUpdate :: ~CCallableTournamentUpdate( )
+{
+
+}
+
+CCallableAdminCommand :: ~CCallableAdminCommand( )
 {
 
 }
@@ -779,12 +865,32 @@ CDBTreePlayerSummary :: ~CDBTreePlayerSummary( )
 
 }
 
+CDBIslandPlayerSummary :: CDBIslandPlayerSummary( string nServer, string nName, uint32_t nTotalGames, uint32_t nTotalWins, uint32_t nTotalLosses, uint32_t nBuilderGames, uint32_t nTitanGames, uint32_t nBuilderKills, uint32_t nBuilderDeaths, uint32_t nBuilderAfk, double nScore ) : m_Server( nServer ), m_Name( nName ), m_TotalGames( nTotalGames ), m_TotalWins( nTotalWins ), m_TotalLosses( nTotalLosses ), m_BuilderGames( nBuilderGames ), m_TitanGames( nTitanGames ), m_BuilderKills( nBuilderKills), m_BuilderDeaths( nBuilderDeaths ), m_BuilderAfk( nBuilderAfk ), m_Score( nScore )
+{
+
+}
+
+CDBIslandPlayerSummary :: ~CDBIslandPlayerSummary( )
+{
+
+}
+
 CDBShipsPlayerSummary :: CDBShipsPlayerSummary( string nServer, string nName, uint32_t nTotalGames, uint32_t nTotalWins, uint32_t nTotalLosses, uint32_t nTotalKills, uint32_t nTotalDeaths, double nScore ) : m_Server( nServer ), m_Name( nName ), m_TotalGames( nTotalGames ), m_TotalWins( nTotalWins ), m_TotalLosses( nTotalLosses ), m_TotalKills( nTotalKills ), m_TotalDeaths( nTotalDeaths ), m_Score( nScore )
 {
 
 }
 
 CDBShipsPlayerSummary :: ~CDBShipsPlayerSummary( )
+{
+
+}
+
+CDBRVSPlayerSummary :: CDBRVSPlayerSummary( string nServer, string nName, uint32_t nTotalGames, uint32_t nTotalWins, uint32_t nTotalLosses, uint32_t nTotalKills, double nScore ) : m_Server( nServer ), m_Name( nName ), m_TotalGames( nTotalGames ), m_TotalWins( nTotalWins ), m_TotalLosses( nTotalLosses ), m_TotalKills( nTotalKills ), m_Score( nScore )
+{
+
+}
+
+CDBRVSPlayerSummary :: ~CDBRVSPlayerSummary( )
 {
 
 }
@@ -799,7 +905,7 @@ CDBSnipePlayerSummary :: ~CDBSnipePlayerSummary( )
 
 }
 
-CDBW3MMDPlayerSummary :: CDBW3MMDPlayerSummary( string nServer, string nName, string nCategory, uint32_t nTotalGames, uint32_t nTotalWins, uint32_t nTotalLosses, double nScore, uint32_t nRank ) : m_Server( nServer ), m_Name( nName ), m_Category( nCategory ), m_TotalGames( nTotalGames ), m_TotalWins( nTotalWins ), m_TotalLosses( nTotalLosses ), m_Score( nScore ), m_Rank( nRank )
+CDBW3MMDPlayerSummary :: CDBW3MMDPlayerSummary( string nServer, string nName, string nCategory, uint32_t nTotalGames, uint32_t nTotalWins, uint32_t nTotalLosses, double nScore ) : m_Server( nServer ), m_Name( nName ), m_Category( nCategory ), m_TotalGames( nTotalGames ), m_TotalWins( nTotalWins ), m_TotalLosses( nTotalLosses ), m_Score( nScore )
 {
 
 }
