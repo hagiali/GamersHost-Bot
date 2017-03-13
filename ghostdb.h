@@ -33,6 +33,7 @@
 class CBaseCallable;
 class CCallableAdminCount;
 class CCallableAdminCheck;
+class CCallableAliasCheck;
 class CCallableAdminAdd;
 class CCallableAdminRemove;
 class CCallableAdminList;
@@ -45,6 +46,8 @@ class CCallableReconUpdate;
 class CCallableCommandList;
 class CCallableGameAdd;
 class CCallableGameUpdate;
+class CCallableStreamGameUpdate;
+class CCallableStreamPlayerUpdate;
 class CCallableGamePlayerAdd;
 class CCallableGamePlayerSummaryCheck;
 class CCallableDotAGameAdd;
@@ -52,7 +55,9 @@ class CCallableDotAPlayerAdd;
 class CCallableDotAPlayerSummaryCheck;
 class CCallableVampPlayerSummaryCheck;
 class CCallableTreePlayerSummaryCheck;
+class CCallableIslandPlayerSummaryCheck;
 class CCallableShipsPlayerSummaryCheck;
+class CCallableRVSPlayerSummaryCheck;
 class CCallableSnipePlayerSummaryCheck;
 class CCallableW3MMDPlayerSummaryCheck;
 class CCallableDownloadAdd;
@@ -61,6 +66,7 @@ class CCallableLeagueCheck;
 class CCallableGetTournament;
 class CCallableTournamentChat;
 class CCallableTournamentUpdate;
+class CCallableAdminCommand;
 class CCallableConnectCheck;
 class CCallableW3MMDPlayerAdd;
 class CCallableW3MMDVarAdd;
@@ -72,7 +78,9 @@ class CDBGamePlayerSummary;
 class CDBDotAPlayerSummary;
 class CDBVampPlayerSummary;
 class CDBTreePlayerSummary;
+class CDBIslandPlayerSummary;
 class CDBShipsPlayerSummary;
+class CDBRVSPlayerSummary;
 class CDBSnipePlayerSummary;
 class CDBW3MMDPlayerSummary;
 class CBNET;
@@ -122,6 +130,7 @@ public:
 	virtual bool Commit( );
 	virtual uint32_t AdminCount( string server );
 	virtual bool AdminCheck( string server, string user );
+	virtual bool AliasCheck( string ip );
 	virtual bool AdminAdd( string server, string user );
 	virtual bool AdminRemove( string server, string user );
 	virtual vector<string> AdminList( string server );
@@ -134,7 +143,9 @@ public:
 	virtual void ReconUpdate( uint32_t hostcounter, uint32_t seconds );
 	virtual vector<string> CommandList(  );
 	virtual uint32_t GameAdd( string server, string map, string gamename, string ownername, uint32_t duration, uint32_t gamestate, string creatorname, string creatorserver, string savetype, vector<ChatEvent> lobbylog, vector<ChatEvent> gamelog );
-	virtual uint32_t GameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalGames, uint32_t totalPlayers, bool add );
+	virtual uint32_t GameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalPlayers, bool lobby, bool add );
+	virtual void StreamGameUpdate( string gamename, string map, uint32_t mapcrc, uint32_t mapflags, uint32_t port );
+	virtual void StreamPlayerUpdate( string name, string gamename );
 	virtual uint32_t GamePlayerAdd( uint32_t gameid, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t reserved, uint32_t loadingtime, uint32_t left, string leftreason, uint32_t team, uint32_t colour, string savetype );
 	virtual uint32_t GamePlayerCount( string name );
 	virtual CDBGamePlayerSummary *GamePlayerSummaryCheck( string name, string realm );
@@ -144,7 +155,9 @@ public:
 	virtual uint32_t DotAPlayerCount( string name );
 	virtual CDBDotAPlayerSummary *DotAPlayerSummaryCheck( string name, string realm, string saveType );
 	virtual CDBTreePlayerSummary *TreePlayerSummaryCheck( string name, string realm );
+	virtual CDBIslandPlayerSummary *IslandPlayerSummaryCheck( string name, string realm );
 	virtual CDBShipsPlayerSummary *ShipsPlayerSummaryCheck( string name, string realm );
+	virtual CDBRVSPlayerSummary *RVSPlayerSummaryCheck( string name, string realm );
 	virtual CDBSnipePlayerSummary *SnipePlayerSummaryCheck( string name, string realm );
 	virtual CDBW3MMDPlayerSummary *W3MMDPlayerSummaryCheck( string name, string realm, string category );
 	virtual string FromCheck( uint32_t ip );
@@ -161,6 +174,7 @@ public:
 	virtual void CreateThread( CBaseCallable *callable );
 	virtual CCallableAdminCount *ThreadedAdminCount( string server );
 	virtual CCallableAdminCheck *ThreadedAdminCheck( string server, string user );
+	virtual CCallableAliasCheck *ThreadedAliasCheck( string ip );
 	virtual CCallableAdminAdd *ThreadedAdminAdd( string server, string user );
 	virtual CCallableAdminRemove *ThreadedAdminRemove( string server, string user );
 	virtual CCallableAdminList *ThreadedAdminList( string server );
@@ -173,7 +187,9 @@ public:
 	virtual CCallableReconUpdate *ThreadedReconUpdate( uint32_t hostcounter, uint32_t seconds );
 	virtual CCallableCommandList *ThreadedCommandList( );
 	virtual CCallableGameAdd *ThreadedGameAdd( string server, string map, string gamename, string ownername, uint32_t duration, uint32_t gamestate, string creatorname, string creatorserver, string savetype, vector<ChatEvent> lobbylog, vector<ChatEvent> gamelog );
-	virtual CCallableGameUpdate *ThreadedGameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalGames, uint32_t totalPlayers, bool add );
+	virtual CCallableGameUpdate *ThreadedGameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalPlayers, bool lobby, bool add );
+	virtual CCallableStreamGameUpdate *ThreadedStreamGameUpdate( string gamename, string map, uint32_t mapcrc, uint32_t mapflags, uint32_t port );
+	virtual CCallableStreamPlayerUpdate *ThreadedStreamPlayerUpdate( string name, string gamename );
 	virtual CCallableGamePlayerAdd *ThreadedGamePlayerAdd( uint32_t gameid, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t reserved, uint32_t loadingtime, uint32_t left, string leftreason, uint32_t team, uint32_t colour, string savetype );
 	virtual CCallableGamePlayerSummaryCheck *ThreadedGamePlayerSummaryCheck( string name, string realm );
 	virtual CCallableVampPlayerSummaryCheck *ThreadedVampPlayerSummaryCheck( string name );
@@ -181,7 +197,9 @@ public:
 	virtual CCallableDotAPlayerAdd *ThreadedDotAPlayerAdd( uint32_t gameid, uint32_t colour, uint32_t kills, uint32_t deaths, uint32_t creepkills, uint32_t creepdenies, uint32_t assists, uint32_t gold, uint32_t neutralkills, string item1, string item2, string item3, string item4, string item5, string item6, string hero, uint32_t newcolour, uint32_t towerkills, uint32_t raxkills, uint32_t courierkills, string saveType, uint32_t level, uint32_t s, uint32_t twk, uint32_t trk, uint32_t qk, uint32_t rk, bool fb, bool fd, uint32_t ks, uint32_t d, uint32_t mk, uint32_t u, uint32_t ws, uint32_t mok, uint32_t g, uint32_t bg, uint32_t ms );
 	virtual CCallableDotAPlayerSummaryCheck *ThreadedDotAPlayerSummaryCheck( string name, string realm, string saveType );
 	virtual CCallableTreePlayerSummaryCheck *ThreadedTreePlayerSummaryCheck( string name, string realm );
+	virtual CCallableIslandPlayerSummaryCheck *ThreadedIslandPlayerSummaryCheck( string name, string realm );
 	virtual CCallableShipsPlayerSummaryCheck *ThreadedShipsPlayerSummaryCheck( string name, string realm );
+	virtual CCallableRVSPlayerSummaryCheck *ThreadedRVSPlayerSummaryCheck( string name, string realm );
 	virtual CCallableSnipePlayerSummaryCheck *ThreadedSnipePlayerSummaryCheck( string name, string realm );
 	virtual CCallableW3MMDPlayerSummaryCheck *ThreadedW3MMDPlayerSummaryCheck( string name, string realm, string category );
 	virtual CCallableDownloadAdd *ThreadedDownloadAdd( string map, uint32_t mapsize, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t downloadtime );
@@ -190,6 +208,7 @@ public:
 	virtual CCallableGetTournament *ThreadedGetTournament( string gamename );
 	virtual CCallableTournamentChat *ThreadedTournamentChat( uint32_t chatid, string message );
 	virtual CCallableTournamentUpdate *ThreadedTournamentUpdate( uint32_t matchid, string gamename, uint32_t status );
+	virtual CCallableAdminCommand *ThreadedAdminCommand( string admin, string command, string description, string gamename );
 	virtual CCallableConnectCheck *ThreadedConnectCheck( string name, uint32_t sessionkey );
 	virtual CCallableW3MMDPlayerAdd *ThreadedW3MMDPlayerAdd( string category, uint32_t gameid, uint32_t pid, string name, string flag, uint32_t leaver, uint32_t practicing, string saveType );
 	virtual CCallableW3MMDVarAdd *ThreadedW3MMDVarAdd( uint32_t gameid, map<VarP,int32_t> var_ints, string saveType );
@@ -274,6 +293,21 @@ public:
 	virtual string GetUser( )				{ return m_User; }
 	virtual bool GetResult( )				{ return m_Result; }
 	virtual void SetResult( bool nResult )	{ m_Result = nResult; }
+};
+
+class CCallableAliasCheck : virtual public CBaseCallable
+{
+protected:
+	string m_IP;
+	string m_Result;
+
+public:
+	CCallableAliasCheck( string nIP ) : CBaseCallable( ), m_IP( nIP ) { }
+	virtual ~CCallableAliasCheck( );
+
+	virtual string GetIP( )					{ return m_IP; }
+	virtual string GetResult( )				{ return m_Result; }
+	virtual void SetResult( string nResult )	{ m_Result = nResult; }
 };
 
 class CCallableAdminAdd : virtual public CBaseCallable
@@ -475,23 +509,49 @@ class CCallableGameUpdate : virtual public CBaseCallable
 {
 protected:
 	uint32_t m_ID;
-    string m_Map;
-    string m_GameName;
-    string m_OwnerName;
-    string m_CreatorName;
-    bool m_Add;
-    uint32_t m_Players;
-    string m_Usernames;
-    uint32_t m_SlotsTotal;
-    uint32_t m_TotalGames;
-    uint32_t m_TotalPlayers;
-    uint32_t m_Result;
+	string m_Map;
+	string m_GameName;
+	string m_OwnerName;
+	string m_CreatorName;
+	bool m_Add;
+	uint32_t m_Players;
+	string m_Usernames;
+	uint32_t m_SlotsTotal;
+//  uint32_t m_TotalGames; // replaced by m_Lobby
+	uint32_t m_TotalPlayers;
+	bool m_Lobby;
+	uint32_t m_Result;
 public:
- CCallableGameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalGames, uint32_t totalPlayers, bool add ) : CBaseCallable( ), m_ID( id ), m_Map(map), m_GameName(gamename), m_OwnerName(ownername), m_CreatorName(creatorname), m_Add(add), m_Players(players), m_Usernames(usernames), m_SlotsTotal(slotsTotal), m_TotalGames(totalGames), m_TotalPlayers(totalPlayers) { }
+ CCallableGameUpdate( uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalPlayers, bool lobby, bool add ) : CBaseCallable( ), m_ID( id ), m_Map(map), m_GameName(gamename), m_OwnerName(ownername), m_CreatorName(creatorname), m_Add(add), m_Players(players), m_Usernames(usernames), m_SlotsTotal(slotsTotal), m_TotalPlayers(totalPlayers), m_Lobby( lobby ) { }
 	virtual ~CCallableGameUpdate( );
 
 	virtual uint32_t GetResult( )				{ return m_Result; }
 	virtual void SetResult( uint32_t nResult )	{ m_Result = nResult; }
+};
+
+class CCallableStreamGameUpdate : virtual public CBaseCallable
+{
+protected:
+    string m_GameName;
+    string m_Map;
+    uint32_t m_MapCRC;
+    uint32_t m_MapFlags;
+    uint32_t m_Port;
+    
+public:
+	CCallableStreamGameUpdate( string gamename, string map, uint32_t mapcrc, uint32_t mapflags, uint32_t port ) : CBaseCallable( ), m_GameName( gamename ), m_Map( map ), m_MapCRC( mapcrc ), m_MapFlags( mapflags ), m_Port( port ) { }
+	virtual ~CCallableStreamGameUpdate( );
+};
+
+class CCallableStreamPlayerUpdate : virtual public CBaseCallable
+{
+protected:
+	string m_Name;
+    string m_GameName;
+  
+public:
+	CCallableStreamPlayerUpdate( string name, string gamename ) : CBaseCallable( ), m_Name( name ), m_GameName(gamename) { }
+	virtual ~CCallableStreamPlayerUpdate( );
 };
 
 class CCallableGamePlayerAdd : virtual public CBaseCallable
@@ -659,6 +719,23 @@ public:
 	virtual void SetResult( CDBTreePlayerSummary *nResult )	{ m_Result = nResult; }
 };
 
+class CCallableIslandPlayerSummaryCheck : virtual public CBaseCallable
+{
+protected:
+	string m_Name;
+	string m_Realm;
+	CDBIslandPlayerSummary *m_Result;
+
+public:
+	CCallableIslandPlayerSummaryCheck( string nName, string nRealm ) : CBaseCallable( ), m_Name( nName ), m_Realm( nRealm ), m_Result( NULL ) { }
+	virtual ~CCallableIslandPlayerSummaryCheck( );
+
+	virtual string GetName( )								{ return m_Name; }
+	virtual string GetRealm( )								{ return m_Realm; }
+	virtual CDBIslandPlayerSummary *GetResult( )				{ return m_Result; }
+	virtual void SetResult( CDBIslandPlayerSummary *nResult )	{ m_Result = nResult; }
+};
+
 class CCallableShipsPlayerSummaryCheck : virtual public CBaseCallable
 {
 protected:
@@ -674,6 +751,23 @@ public:
 	virtual string GetRealm( )								{ return m_Realm; }
 	virtual CDBShipsPlayerSummary *GetResult( )				{ return m_Result; }
 	virtual void SetResult( CDBShipsPlayerSummary *nResult )	{ m_Result = nResult; }
+};
+
+class CCallableRVSPlayerSummaryCheck : virtual public CBaseCallable
+{
+protected:
+	string m_Name;
+	string m_Realm;
+	CDBRVSPlayerSummary *m_Result;
+
+public:
+	CCallableRVSPlayerSummaryCheck( string nName, string nRealm ) : CBaseCallable( ), m_Name( nName ), m_Realm( nRealm ), m_Result( NULL ) { }
+	virtual ~CCallableRVSPlayerSummaryCheck( );
+
+	virtual string GetName( )								{ return m_Name; }
+	virtual string GetRealm( )								{ return m_Realm; }
+	virtual CDBRVSPlayerSummary *GetResult( )				{ return m_Result; }
+	virtual void SetResult( CDBRVSPlayerSummary *nResult )	{ m_Result = nResult; }
 };
 
 class CCallableSnipePlayerSummaryCheck : virtual public CBaseCallable
@@ -802,6 +896,19 @@ protected:
 public:
 	CCallableTournamentUpdate( uint32_t nMatchID, string nGameName, uint32_t nStatus ) : CBaseCallable( ), m_MatchID( nMatchID ), m_GameName( nGameName), m_Status( nStatus ) { }
 	virtual ~CCallableTournamentUpdate( );
+};
+
+class CCallableAdminCommand : virtual public CBaseCallable
+{
+protected:
+	string m_Admin;
+	string m_Command;
+	string m_Description;
+	string m_GameName;
+
+public:
+	CCallableAdminCommand( string nAdmin, string nCommand, string nDescription, string nGameName ) : CBaseCallable( ), m_Admin( nAdmin ), m_Command( nCommand ), m_Description( nDescription ), m_GameName( nGameName ) { }
+	virtual ~CCallableAdminCommand( );
 };
 
 class CCallableConnectCheck : virtual public CBaseCallable
@@ -1312,6 +1419,46 @@ public:
 };
 
 //
+// CDBIslandPlayerSummary
+//
+
+class CDBIslandPlayerSummary
+{
+private:
+	string m_Server;
+	string m_Name;
+	uint32_t m_TotalGames;			// total number of dota games played
+	uint32_t m_TotalWins;			// total number of dota games won
+	uint32_t m_TotalLosses;			// total number of dota games lost
+	uint32_t m_BuilderGames;
+	uint32_t m_TitanGames;
+	uint32_t m_BuilderKills;
+	uint32_t m_BuilderDeaths;
+	uint32_t m_BuilderAfk;
+    double m_Score;
+
+public:
+	CDBIslandPlayerSummary( string nServer, string nName, uint32_t nTotalGames, uint32_t nTotalWins, uint32_t nTotalLosses, uint32_t nBuilderGames, uint32_t nTitanGames, uint32_t nBuilderKills, uint32_t nBuilderDeaths, uint32_t nBuilderAfk, double nScore );
+	~CDBIslandPlayerSummary( );
+
+	string GetServer( )					{ return m_Server; }
+	string GetName( )					{ return m_Name; }
+	uint32_t GetTotalGames( )			{ return m_TotalGames; }
+	uint32_t GetTotalWins( )			{ return m_TotalWins; }
+	uint32_t GetTotalLosses( )			{ return m_TotalLosses; }
+	uint32_t GetBuilderGames( )			{ return m_BuilderGames; }
+	uint32_t GetTitanGames( )			{ return m_TitanGames; }
+	uint32_t GetBuilderKills( )			{ return m_BuilderKills; }
+	uint32_t GetBuilderDeaths( )			{ return m_BuilderDeaths; }
+	uint32_t GetBuilderAfk( )			{ return m_BuilderAfk; }
+    double GetScore( )					{ return m_Score; }
+
+	float GetAvgKills( )				{ return m_BuilderGames > 0 ? (float)m_BuilderKills / m_BuilderGames : 0; }
+	float GetAvgDeaths( )				{ return m_BuilderGames > 0 ? (float)m_BuilderDeaths / m_BuilderGames : 0; }
+	float GetAvgAfk( )					{ return m_BuilderGames > 0 ? (float)m_BuilderAfk / m_BuilderGames : 0; }
+};
+
+//
 // CDBShipsPlayerSummary
 //
 
@@ -1342,6 +1489,36 @@ public:
 
 	float GetAvgKills( )				{ return m_TotalGames > 0 ? (float)m_TotalKills / m_TotalGames : 0; }
 	float GetAvgDeaths( )				{ return m_TotalGames > 0 ? (float)m_TotalDeaths / m_TotalGames : 0; }
+};
+
+//
+// CDBRVSPlayerSummary
+//
+
+class CDBRVSPlayerSummary
+{
+private:
+	string m_Server;
+	string m_Name;
+	uint32_t m_TotalGames;			// total number of dota games played
+	uint32_t m_TotalWins;			// total number of dota games won
+	uint32_t m_TotalLosses;			// total number of dota games lost
+	uint32_t m_TotalKills;			// total number of rabbit/sheep kills
+	double m_Score;
+
+public:
+	CDBRVSPlayerSummary( string nServer, string nName, uint32_t nTotalGames, uint32_t nTotalWins, uint32_t nTotalLosses, uint32_t nTotalKills, double nScore );
+	~CDBRVSPlayerSummary( );
+
+	string GetServer( )					{ return m_Server; }
+	string GetName( )					{ return m_Name; }
+	uint32_t GetTotalGames( )			{ return m_TotalGames; }
+	uint32_t GetTotalWins( )			{ return m_TotalWins; }
+	uint32_t GetTotalLosses( )			{ return m_TotalLosses; }
+	uint32_t GetTotalKills( )			{ return m_TotalKills; }
+	double GetScore( )					{ return m_Score; }
+
+	float GetAvgKills( )				{ return m_TotalGames > 0 ? (float)m_TotalKills / m_TotalGames : 0; }
 };
 
 //
@@ -1391,10 +1568,9 @@ private:
 	uint32_t m_TotalWins;			// total number of dota games won
 	uint32_t m_TotalLosses;			// total number of dota games lost
 	double m_Score;
-	uint32_t m_Rank;
 
 public:
-	CDBW3MMDPlayerSummary( string nServer, string nName, string nCategory, uint32_t nTotalGames, uint32_t nTotalWins, uint32_t nTotalLosses, double nScore, uint32_t m_Rank );
+	CDBW3MMDPlayerSummary( string nServer, string nName, string nCategory, uint32_t nTotalGames, uint32_t nTotalWins, uint32_t nTotalLosses, double nScore );
 	~CDBW3MMDPlayerSummary( );
 
 	string GetServer( )					{ return m_Server; }
@@ -1404,7 +1580,6 @@ public:
 	uint32_t GetTotalWins( )			{ return m_TotalWins; }
 	uint32_t GetTotalLosses( )			{ return m_TotalLosses; }
 	double GetScore( )					{ return m_Score; }
-	int GetRank( )						{ return m_Rank; }
 };
 
 #endif

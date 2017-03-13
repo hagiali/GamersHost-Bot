@@ -44,22 +44,19 @@ class CCallableAdminCount;
 class CCallableAdminAdd;
 class CCallableAdminRemove;
 class CCallableAdminList;
-class CCallableBanAdd;
-class CCallableBanRemove;
 class CCallableGamePlayerSummaryCheck;
 class CCallableDotAPlayerSummaryCheck;
 class CCallableVampPlayerSummaryCheck;
+class CCallableGameUpdate;
 class CCallableVerifyUser;
-class CDBBan;
 
 typedef pair<string,CCallableAdminCount *> PairedAdminCount;
 typedef pair<string,CCallableAdminAdd *> PairedAdminAdd;
 typedef pair<string,CCallableAdminRemove *> PairedAdminRemove;
-typedef pair<string,CCallableBanAdd *> PairedBanAdd;
-typedef pair<string,CCallableBanRemove *> PairedBanRemove;
 typedef pair<string,CCallableGamePlayerSummaryCheck *> PairedGPSCheck;
 typedef pair<string,CCallableDotAPlayerSummaryCheck *> PairedDPSCheck;
 typedef pair<string,CCallableVampPlayerSummaryCheck *> PairedVPSCheck;
+typedef pair<string,CCallableGameUpdate *> PairedGameUpdate;
 typedef pair<string,CCallableVerifyUser *> PairedVerifyUserCheck;
 
 class CBNET
@@ -80,11 +77,10 @@ private:
 	vector<PairedAdminCount> m_PairedAdminCounts;	// vector of paired threaded database admin counts in progress
 	vector<PairedAdminAdd> m_PairedAdminAdds;		// vector of paired threaded database admin adds in progress
 	vector<PairedAdminRemove> m_PairedAdminRemoves;	// vector of paired threaded database admin removes in progress
-	vector<PairedBanAdd> m_PairedBanAdds;			// vector of paired threaded database ban adds in progress
-	vector<PairedBanRemove> m_PairedBanRemoves;		// vector of paired threaded database ban removes in progress
 	vector<PairedGPSCheck> m_PairedGPSChecks;		// vector of paired threaded database game player summary checks in progress
 	vector<PairedDPSCheck> m_PairedDPSChecks;		// vector of paired threaded database DotA player summary checks in progress
 	vector<PairedVPSCheck> m_PairedVPSChecks;		// vector of paired threaded database vamp player summary checks in progress
+	vector<PairedGameUpdate> m_PairedGameUpdates;	// vector of paired threaded database gamelist query checks in progress
 	vector<PairedVerifyUserCheck> m_PairedVerifyUserChecks;
 	CCallableAdminList *m_CallableAdminList;		// threaded database admin list in progress
 	vector<string> m_Admins;						// vector of cached admins
@@ -93,7 +89,7 @@ private:
 	string m_ServerIP;								// battle.net server to connect to (the IP address so we don't have to resolve it every time we connect)
 	string m_ServerAlias;							// battle.net server alias (short name, e.g. "USEast")
 	uint32_t m_ServerReconnectCount;				// counts how many times we have reconnected to the server and failed; when it's high, we resolve ServerIP again
-	uint32_t m_AuthFailCount;						// counts how many times we have disconnected from server with auth fail
+	uint32_t m_CDKeyUseCount;						// counts how many times we have disconnected from server due to cd key usage
 	string m_BNLSServer;							// BNLS server to connect to (for warden handling)
 	uint16_t m_BNLSPort;							// BNLS port
 	uint32_t m_BNLSWardenCookie;					// BNLS warden cookie
@@ -121,6 +117,8 @@ private:
 	uint32_t m_LastNullTime;						// GetTime when the last null packet was sent for detecting disconnects
 	uint32_t m_LastOutPacketTicks;					// GetTicks when the last packet was sent for the m_OutPackets queue
 	uint32_t m_LastOutPacketSize;
+	uint32_t m_LastPacketReceivedTicks;				// GetTicks when we last received a packet from the bnet server
+	uint32_t m_LastCommandTicks;					// GetTicks when we last sent a command that should receive a response
 	uint32_t m_LastAdminRefreshTime;				// GetTime when the admin list was last refreshed from the database
 	bool m_FirstConnect;							// if we haven't tried to connect to battle.net yet
 	bool m_WaitingToConnect;						// if we're waiting to reconnect to battle.net after being disconnected
