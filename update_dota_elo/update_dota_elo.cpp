@@ -270,7 +270,7 @@ int main( int argc, char **argv )
 
                                 				if( Row.size( ) == 9 )
                                 				{
-                                        				string InQ = "INSERT INTO stats_scoredgames VALUE (NULL, "+UTIL_ToString(GameID)+", "+Row[0]+", '"+Row[1]+"', '"+Row[2]+"', '"+Row[3]+"', "+Row[4]+", "+Row[5]+", "+Row[6]+", "+Row[7]+", "+Row[8]+")";
+                                        				string InQ = "INSERT INTO stats_scoredgames VALUES (NULL, "+UTIL_ToString(GameID)+", "+Row[0]+", '"+Row[1]+"', '"+Row[2]+"', '"+Row[3]+"', "+Row[4]+", "+Row[5]+", "+Row[6]+", "+Row[7]+", "+Row[8]+")";
                                         				if( mysql_real_query( Connection, InQ.c_str( ), InQ.size( ) ) != 0 )
                                         				{
                                                 				cout << "error: " << mysql_error( Connection ) << endl;
@@ -306,7 +306,7 @@ int main( int argc, char **argv )
 
                                                                 if( Row.size( ) == 9 )
                                                                 {
-                                                                        string InQ = "INSERT INTO stats_scoredgames VALUE (NULL, "+UTIL_ToString(GameID)+", "+Row[0]+", '"+Row[1]+"', '"+Row[2]+"', '"+Row[3]+"', "+Row[4]+", "+Row[5]+", "+Row[6]+", "+Row[7]+", "+Row[8]+")";
+                                                                        string InQ = "INSERT INTO stats_scoredgames VALUES (NULL, "+UTIL_ToString(GameID)+", "+Row[0]+", '"+Row[1]+"', '"+Row[2]+"', '"+Row[3]+"', "+Row[4]+", "+Row[5]+", "+Row[6]+", "+Row[7]+", "+Row[8]+")";
                                                                         if( mysql_real_query( Connection, InQ.c_str( ), InQ.size( ) ) != 0 )
                                                                         {
                                                                                 cout << "error: " << mysql_error( Connection ) << endl;
@@ -471,7 +471,7 @@ int main( int argc, char **argv )
 
                                 if( Row.size( ) == 9 )
                                 {
-					string InQ = "INSERT INTO stats_scoredgames VALUE (NULL, "+UTIL_ToString(GameID)+", "+Row[0]+", '"+Row[1]+"', '"+Row[2]+"', '"+Row[3]+"', "+Row[4]+", "+Row[5]+", "+Row[6]+", "+Row[7]+", "+Row[8]+")";
+					string InQ = "INSERT INTO stats_scoredgames VALUES (NULL, "+UTIL_ToString(GameID)+", "+Row[0]+", '"+Row[1]+"', '"+Row[2]+"', '"+Row[3]+"', "+Row[4]+", "+Row[5]+", "+Row[6]+", "+Row[7]+", "+Row[8]+")";
 					if( mysql_real_query( Connection, InQ.c_str( ), InQ.size( ) ) != 0 )
 			                {
                         			cout << "error: " << mysql_error( Connection ) << endl;
