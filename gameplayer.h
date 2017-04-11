@@ -167,6 +167,7 @@ private:
 	uint32_t m_LastAMHPingTime;				// last time we sent an AMH ping to the user
 	uint32_t m_LastAMHPongTime;				// last time we received an AMH pong from the user
 	queue<BYTEARRAY> m_NextAMHResponse;			// next expected AMH response(s) to receive; queue size is limited to 2
+    bool m_ForcedMute;
 
 public:
 	CGamePlayer( CGameProtocol *nProtocol, CBaseGame *nGame, CTCPSocket *nSocket, unsigned char nPID, string nJoinedRealm, string nName, BYTEARRAY nInternalIP, bool nReserved );
@@ -225,6 +226,7 @@ public:
 	bool GetGProxyDisconnectNoticeSent( )		{ return m_GProxyDisconnectNoticeSent; }
 	uint32_t GetGProxyReconnectKey( )			{ return m_GProxyReconnectKey; }
 	bool GetFun( )								{ return m_Fun; }
+    bool getForcedMute( )                       { return m_ForcedMute; }
 
 	void SetFriendlyName( string nFriendlyName )									{ m_FriendlyName = nFriendlyName; }
 	void SetLeftReason( string nLeftReason )										{ m_LeftReason = nLeftReason; }
@@ -263,6 +265,7 @@ public:
 	void SetLeftMessageSent( bool nLeftMessageSent )								{ m_LeftMessageSent = nLeftMessageSent; }
 	void SetGProxyDisconnectNoticeSent( bool nGProxyDisconnectNoticeSent )			{ m_GProxyDisconnectNoticeSent = nGProxyDisconnectNoticeSent; }
 	void SetFun( bool nFun )														{ m_Fun = nFun; }
+    void SetForcedMute( bool nForcedMute )                                          { m_ForcedMute = nForcedMute; }
 
 	string GetNameTerminated( );
 	uint32_t GetPing( bool LCPing );
