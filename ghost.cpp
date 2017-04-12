@@ -740,6 +740,13 @@ CGHost :: CGHost( CConfig *CFG )
 	m_FlameTriggers.push_back("faggot");
 	m_FlameTriggers.push_back("dick");
 	m_FlameTriggers.push_back("raizen");
+
+
+	CONSOLE_Print( "[GHOST] Loading GeoIP data" );
+	m_GeoIP = GeoIP_open( m_GeoIPFile.c_str( ), GEOIP_STANDARD | GEOIP_CHECK_CACHE );
+
+	if( m_GeoIP == NULL )
+		CONSOLE_Print( "[GHOST] GeoIP: error opening database" );
 	
 	// clear the gamelist for this bot, in case there's residual entries
 	m_Callables.push_back( m_DB->ThreadedGameUpdate(0, "", "", "", "", 0, "", 0, 0, false, false) );
