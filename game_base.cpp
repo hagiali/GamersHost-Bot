@@ -5191,7 +5191,7 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 	{
 		// check if enough players are present
 
-		if( GetNumHumanNonObservers( ) < m_AutoStartPlayers )
+        if( GetNumHumanNonObservers( ) < m_AutoStartPlayers && m_GHost->m_ShowWaitingMessage)
 		{
 			m_AutoHostPlayerCycle++;
 

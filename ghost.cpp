@@ -1773,6 +1773,7 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_ShowScoreOnJoin = CFG->GetInt( "bot_scoreonjoin", 0 ) == 0 ? false : true;
 	m_Gamelist = CFG->GetInt( "bot_gamelist", 0 ) == 0 ? false : true;
     m_Stage = CFG->GetInt( "bot_stage", 0 ) == 0 ? false : true;
+    m_ShowWaitingMessage = CFG->GetInt( "bot_showwaitingmessage", 0) == 0 ? false : true;
 }
 
 void CGHost :: ExtractScripts( )

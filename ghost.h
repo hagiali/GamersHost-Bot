@@ -222,6 +222,8 @@ public:
 	deque<HostNameInfo> m_HostNameCache;	// host name lookup cache
 	boost::mutex m_HostNameCacheMutex;
 
+    bool m_ShowWaitingMessage;
+
 	CGHost( CConfig *CFG );
 	~CGHost( );
 
