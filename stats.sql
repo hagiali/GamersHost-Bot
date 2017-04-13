@@ -541,7 +541,7 @@ CREATE TABLE IF NOT EXISTS `stats_gamelist` (
   `totalplayers` int(11) NOT NULL DEFAULT '0',
   `eventtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `age` datetime DEFAULT NULL,
-  `lobby` bit(1) NOT NULL DEFAULT b'0',
+  `lobby` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MEMORY  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
 

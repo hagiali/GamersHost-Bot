@@ -1201,10 +1201,6 @@ uint32_t MySQLGameAdd( void *conn, string *error, uint32_t botid, string server,
 
 uint32_t MySQLGameUpdate( void *conn, string *error, uint32_t botid, uint32_t id, string map, string gamename, string ownername, string creatorname, uint32_t players, string usernames, uint32_t slotsTotal, uint32_t totalPlayers, bool lobby, bool add )
 {
-
-// uint32_t totalGames is replaced by 'bool lobby' and the querry remaded.
-
-
 	//housekeeping
 	string Query = "DELETE FROM stats_gamelist WHERE age IS NULL OR age < DATE_SUB(NOW(), INTERVAL 5 MINUTE)";
 	mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) );
