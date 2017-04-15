@@ -292,7 +292,7 @@ void CPotentialPlayer :: SendBannedInfo( CDBBan *Ban, string type )
 		IP.push_back( 0 );
 		IP.push_back( 0 );
 	
-		m_Socket->PutBytes( m_Protocol->SEND_W3GS_PLAYERINFO( 1, "ENTGAMING.NET", IP, IP ) );
+        m_Socket->PutBytes( m_Protocol->SEND_W3GS_PLAYERINFO( 1, "DotA Vision", IP, IP ) );
 	
 		// send a map check packet to the new player
 	
@@ -305,8 +305,8 @@ void CPotentialPlayer :: SendBannedInfo( CDBBan *Ban, string type )
 			m_Socket->PutBytes( m_Protocol->SEND_W3GS_CHAT_FROM_HOST( 1, UTIL_CreateByteArray( 2 ), 16, BYTEARRAY( ), "    Admin: " + Ban->GetAdmin( ) ) );
 			m_Socket->PutBytes( m_Protocol->SEND_W3GS_CHAT_FROM_HOST( 1, UTIL_CreateByteArray( 2 ), 16, BYTEARRAY( ), "    Reason: " + Ban->GetReason( ) ) );
 			m_Socket->PutBytes( m_Protocol->SEND_W3GS_CHAT_FROM_HOST( 1, UTIL_CreateByteArray( 2 ), 16, BYTEARRAY( ), "    Gamename: " + Ban->GetGameName( ) ) );
-			m_Socket->PutBytes( m_Protocol->SEND_W3GS_CHAT_FROM_HOST( 1, UTIL_CreateByteArray( 2 ), 16, BYTEARRAY( ), "Most bans are temporary; register on entgaming.net and validate your account for more details on your ban." ) );
-			m_Socket->PutBytes( m_Protocol->SEND_W3GS_CHAT_FROM_HOST( 1, UTIL_CreateByteArray( 2 ), 16, BYTEARRAY( ), "You can also appeal your ban on entgaming.net." ) );
+            m_Socket->PutBytes( m_Protocol->SEND_W3GS_CHAT_FROM_HOST( 1, UTIL_CreateByteArray( 2 ), 16, BYTEARRAY( ), "Most bans are temporary; register on dota.vision and connect your account for more details on your ban." ) );
+            m_Socket->PutBytes( m_Protocol->SEND_W3GS_CHAT_FROM_HOST( 1, UTIL_CreateByteArray( 2 ), 16, BYTEARRAY( ), "You can also appeal your ban on dota.vision." ) );
 		}
 		else if(type == "score") {
 		

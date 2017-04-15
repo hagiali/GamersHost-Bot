@@ -3641,7 +3641,9 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 
 	else if( Command == "votekick" && m_GHost->m_VoteKickAllowed && !Payload.empty( ) )
 	{
-		if( !m_KickVotePlayer.empty( ) )
+        if( !m_GameLoaded)
+            SendChat( player, 'You cannot votekick unless the game has been started.');
+        else if( !m_KickVotePlayer.empty( ) )
 			SendChat( player, m_GHost->m_Language->UnableToVoteKickAlreadyInProgress( ) );
 		else if( m_Players.size( ) <= 3 )
 			SendChat( player, m_GHost->m_Language->UnableToVoteKickNotEnoughPlayers( ) );
