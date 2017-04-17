@@ -1842,7 +1842,7 @@ CDBTreePlayerSummary *MySQLTreePlayerSummaryCheck( void *conn, string *error, ui
 	string EscName = MySQLEscapeString( conn, name );
 	string EscRealm = MySQLEscapeString( conn, realm );
 	CDBTreePlayerSummary *TreePlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(intstats2), 0), IFNULL(SUM(intstats3), 0), IFNULL(SUM(intstats4), 0), IFNULL(SUM(intstats5), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'treetag'";
+    string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(intstats2), 0), IFNULL(SUM(intstats3), 0), IFNULL(SUM(intstats4), 0), IFNULL(SUM(intstats5), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'treetag'";
 	
 	if( !realm.empty( ) )
 		Query += " AND server = '" + EscRealm + "'";
@@ -1895,7 +1895,7 @@ CDBIslandPlayerSummary *MySQLIslandPlayerSummaryCheck( void *conn, string *error
 	string EscName = MySQLEscapeString( conn, name );
 	string EscRealm = MySQLEscapeString( conn, realm );
 	CDBIslandPlayerSummary *IslandPlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(intstats2), 0), IFNULL(SUM(intstats3), 0), IFNULL(SUM(intstats4), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'islanddefense'";
+    string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(intstats2), 0), IFNULL(SUM(intstats3), 0), IFNULL(SUM(intstats4), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'islanddefense'";
 	
 	if( !realm.empty( ) )
 		Query += " AND server = '" + EscRealm + "'";
@@ -1948,7 +1948,7 @@ CDBShipsPlayerSummary *MySQLShipsPlayerSummaryCheck( void *conn, string *error, 
 	string EscName = MySQLEscapeString( conn, name );
 	string EscRealm = MySQLEscapeString( conn, realm );
 	CDBShipsPlayerSummary *ShipsPlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'battleships'";
+    string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'battleships'";
 	
 	if( !realm.empty( ) )
 		Query += " AND server = '" + EscRealm + "'";
@@ -1996,7 +1996,7 @@ CDBRVSPlayerSummary *MySQLRVSPlayerSummaryCheck( void *conn, string *error, uint
 	string EscName = MySQLEscapeString( conn, name );
 	string EscRealm = MySQLEscapeString( conn, realm );
 	CDBRVSPlayerSummary *RVSPlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'rvs'";
+    string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'rvs'";
 	
 	if( !realm.empty( ) )
 		Query += " AND server = '" + EscRealm + "'";
@@ -2041,7 +2041,7 @@ CDBSnipePlayerSummary *MySQLSnipePlayerSummaryCheck( void *conn, string *error, 
 	string EscName = MySQLEscapeString( conn, name );
 	string EscRealm = MySQLEscapeString( conn, realm );
 	CDBSnipePlayerSummary *SnipePlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'elitesnipers'";
+    string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(intstats0), 0), IFNULL(SUM(intstats1), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = 'elitesnipers'";
 	
 	if( !realm.empty( ) )
 		Query += " AND server = '" + EscRealm + "'";
@@ -2090,7 +2090,7 @@ CDBW3MMDPlayerSummary *MySQLW3MMDPlayerSummaryCheck( void *conn, string *error, 
 	string EscRealm = MySQLEscapeString( conn, realm );
 	string EscCategory = MySQLEscapeString( conn, category );
 	CDBW3MMDPlayerSummary *W3MMDPlayerSummary = NULL;
-	string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = '" + EscCategory + "'";
+    string Query = "SELECT IFNULL(SUM(games), 0), IFNULL(SUM(wins), 0), IFNULL(SUM(losses), 0), IFNULL(MAX(score), 0) FROM stats_w3mmd_elo_scores WHERE name='" + EscName + "' AND category = '" + EscCategory + "'";
 	
 	if( !realm.empty( ) )
 		Query += " AND server = '" + EscRealm + "'";
@@ -2175,13 +2175,13 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
 	}
 	else if( category == "castlefight2" ) // castlefight2 checks castlefight stats
 	{
-		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='castlefight' AND name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 15";
-		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='castlefight2' AND name='" + EscName + "' AND server='" + EscServer + "'";
+        Query = "SELECT score FROM  WHERE category='castlefight' AND name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 15";
+        Query2 = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='castlefight2' AND name='" + EscName + "' AND server='" + EscServer + "'";
 	}
 	else if( category == "legionmegaone2" ) // legionmegaone2 is really legionmegaone but with score restrictoin
 	{
-		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='legionmegaone' AND name='" + EscName + "' AND server='" + EscServer + "'";
-		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='legionmegaone' AND name='" + EscName + "' AND server='" + EscServer + "'";
+        Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='legionmegaone' AND name='" + EscName + "' AND server='" + EscServer + "'";
+        Query2 = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='legionmegaone' AND name='" + EscName + "' AND server='" + EscServer + "'";
 	}
 	
 	else if( category == "lod" )
@@ -2191,24 +2191,24 @@ double *MySQLScoreCheck( void *conn, string *error, uint32_t botid, string categ
 	}
 	else if( category == "legionmega" )
 	{
-		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='legionmega' AND name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 5";
-		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='legionmega' AND name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 5";
+        Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='legionmega' AND name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 5";
+        Query2 = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='legionmega' AND name='" + EscName + "' AND server='" + EscServer + "' AND wins >= 5";
 	}
 	else if( category == "cfone" )
 	{
-		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='cfone' AND name='" + EscName + "' AND server='" + EscServer + "'";
-		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='cfone' AND name='" + EscName + "' AND server='" + EscServer + "'";
+        Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='cfone' AND name='" + EscName + "' AND server='" + EscServer + "'";
+        Query2 = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='cfone' AND name='" + EscName + "' AND server='" + EscServer + "'";
 	}
 	else if( category == "nwuih" )
 	{
-		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='nwuih' AND name='" + EscName + "' AND server='" + EscServer + "'";
-		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='nwuih' AND name='" + EscName + "' AND server='" + EscServer + "'";
+        Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='nwuih' AND name='" + EscName + "' AND server='" + EscServer + "'";
+        Query2 = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='nwuih' AND name='" + EscName + "' AND server='" + EscServer + "'";
 	}
 	else if( category == "battleships" )
 	{
 		Score[0] = 1000.0;
-		Query = "SELECT score FROM w3mmd_elo_scores WHERE category='battleships' AND name='" + EscName + "' AND server='" + EscServer + "'";
-		Query2 = "SELECT score FROM w3mmd_elo_scores WHERE category='battleships' AND name='" + EscName + "' AND server='" + EscServer + "'";
+        Query = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='battleships' AND name='" + EscName + "' AND server='" + EscServer + "'";
+        Query2 = "SELECT score FROM stats_w3mmd_elo_scores WHERE category='battleships' AND name='" + EscName + "' AND server='" + EscServer + "'";
 	}
 	else
 		CONSOLE_Print( "[MYSQL] Requested score check on invalid category: " + category );
