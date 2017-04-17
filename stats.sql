@@ -667,7 +667,7 @@ CREATE TABLE IF NOT EXISTS `stats_scoredgames` (
   `names` int(11) NOT NULL,
   `servers` int(11) NOT NULL,
   `colours` int(11) NOT NULL,
-  `winners` int(11) NOT NULL,
+  `winner` int(11) NOT NULL,
   `player_ratings` int(11) NOT NULL,
   `kills` int(11) NOT NULL,
   `deaths` int(11) NOT NULL,
