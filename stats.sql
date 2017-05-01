@@ -50,7 +50,7 @@ CREATE TABLE `gametrack` (
   `time_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `time_active` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `playingtime` int(11) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -73,7 +73,7 @@ CREATE TABLE `league_games` (
   `p10` float NOT NULL,
   `sentWin` float NOT NULL,
   `scouWin` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -129,7 +129,7 @@ CREATE TABLE `stats_appeals` (
   `admin_member_id` int(11) DEFAULT NULL,
   `replied` datetime DEFAULT NULL,
   `identifier` varchar(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -399,7 +399,7 @@ CREATE TABLE `stats_forum_connections` (
   `changed` datetime DEFAULT NULL,
   `status` varchar(25) NOT NULL,
   `active` bit(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -541,7 +541,7 @@ CREATE TABLE `stats_reports` (
   `last_reply` datetime DEFAULT NULL,
   `solved_date` datetime DEFAULT NULL,
   `identifier` varchar(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -555,7 +555,7 @@ CREATE TABLE `stats_report_comments` (
   `member_id` int(11) NOT NULL,
   `comment` longtext NOT NULL,
   `created` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1016,72 +1016,72 @@ ALTER TABLE `stats_whitelist`
 -- AUTO_INCREMENT für Tabelle `admin_actions`
 --
 ALTER TABLE `admin_actions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=139;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `league_games`
 --
 ALTER TABLE `league_games`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `league_players`
 --
 ALTER TABLE `league_players`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=502;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_admins`
 --
 ALTER TABLE `stats_admins`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=22;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_appeals`
 --
 ALTER TABLE `stats_appeals`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=147;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_banhistory`
 --
 ALTER TABLE `stats_banhistory`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=23560;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_bans`
 --
 ALTER TABLE `stats_bans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=23567;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_commands`
 --
 ALTER TABLE `stats_commands`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_dotagames`
 --
 ALTER TABLE `stats_dotagames`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=25036;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_dotagames_solomm`
 --
 ALTER TABLE `stats_dotagames_solomm`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_dotaplayers`
 --
 ALTER TABLE `stats_dotaplayers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=249581;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_dotaplayers_solomm`
 --
 ALTER TABLE `stats_dotaplayers_solomm`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_dota_elo_games_scored`
 --
 ALTER TABLE `stats_dota_elo_games_scored`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=25036;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_dota_elo_scores`
 --
 ALTER TABLE `stats_dota_elo_scores`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=15469;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_dota_elo_scores_solomm`
 --
@@ -1091,57 +1091,57 @@ ALTER TABLE `stats_dota_elo_scores_solomm`
 -- AUTO_INCREMENT für Tabelle `stats_forum_connections`
 --
 ALTER TABLE `stats_forum_connections`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=274;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_gamelist`
 --
 ALTER TABLE `stats_gamelist`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=6000;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_gameplayers`
 --
 ALTER TABLE `stats_gameplayers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=277043;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_games`
 --
 ALTER TABLE `stats_games`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=31306;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_game_chatevents`
 --
 ALTER TABLE `stats_game_chatevents`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=8756273;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_game_events`
 --
 ALTER TABLE `stats_game_events`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=2131779;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_reports`
 --
 ALTER TABLE `stats_reports`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=311;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_report_comments`
 --
 ALTER TABLE `stats_report_comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=521;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_scoredgames`
 --
 ALTER TABLE `stats_scoredgames`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=25565;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_scored_dota`
 --
 ALTER TABLE `stats_scored_dota`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=16234;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_scored_games`
 --
 ALTER TABLE `stats_scored_games`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=25680;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_scored_players`
 --
@@ -1151,17 +1151,17 @@ ALTER TABLE `stats_scored_players`
 -- AUTO_INCREMENT für Tabelle `stats_spoof`
 --
 ALTER TABLE `stats_spoof`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_w3mmdplayers`
 --
 ALTER TABLE `stats_w3mmdplayers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=15371;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_w3mmdvars`
 --
 ALTER TABLE `stats_w3mmdvars`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=29499;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT für Tabelle `stats_w3mmd_elo_games_scored`
 --
@@ -1176,7 +1176,7 @@ ALTER TABLE `stats_w3mmd_elo_scores`
 -- AUTO_INCREMENT für Tabelle `stats_whitelist`
 --
 ALTER TABLE `stats_whitelist`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID Number', AUTO_INCREMENT=1;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
