@@ -975,7 +975,7 @@ CDBBan *MySQLBanCheck( void *conn, string *error, uint32_t botid, string server,
 	}
 	
 	CDBBan *Ban = NULL;
-	Query = "SELECT id, name, ip, date, gamename, admin, reason, expiredate, context FROM stats_bans WHERE ( context = 'ttr.cloud' OR context = '" + EscOwnerName + "' ) AND (admin != 'autoban' OR processed = 1) AND (targetbot = 0 OR targetbot = " + UTIL_ToString( botid ) + ") AND ((server='" + EscServer + "' AND name='" + EscUser + "')";
+    Query = "SELECT id, name, ip, date, gamename, admin, reason, expiredate, context FROM stats_bans WHERE ((server='" + EscServer + "' AND name='" + EscUser + "')";
 	
 	if( !ip.empty( ) && !WhiteList )
 	{
@@ -989,7 +989,7 @@ CDBBan *MySQLBanCheck( void *conn, string *error, uint32_t botid, string server,
 	if( !hostname.empty( ) && !WhiteList )
 		Query += " OR (LENGTH(ip) >= 3 AND SUBSTR(ip, 1, 2) = ':h' AND LOCATE(SUBSTR(ip, 3), '" + EscHostName + "') > 0)";
 
-	Query += ") LIMIT 1";
+    Query += ") LIMIT 1";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
 		*error = mysql_error( (MYSQL *)conn );
@@ -1002,9 +1002,7 @@ CDBBan *MySQLBanCheck( void *conn, string *error, uint32_t botid, string server,
 			vector<string> Row = MySQLFetchRow( Result );
 
 			if( Row.size( ) == 9 )
-				Ban = new CDBBan( UTIL_ToUInt32( Row[0] ), server, Row[1], Row[2], Row[3], Row[4], Row[5], Row[6], Row[7], Row[8], 0 );
-			/* else
-				*error = "error checking ban [" + server + " : " + user + "] - row doesn't have 9 columns"; */
+                Ban = new CDBBan( UTIL_ToUInt32( Row[0] ), server, Row[1], Row[2], Row[3], Row[4], Row[5], Row[6], Row[7], Row[8], 0 );
 
 			mysql_free_result( Result );
 		}
