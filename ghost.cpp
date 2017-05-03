@@ -158,14 +158,14 @@ void handler()
 
 void CONSOLE_Print( string message )
 {
-	boost::mutex::scoped_lock printLock( PrintMutex );
+    boost::mutex::scoped_lock printLock( PrintMutex );
 	gLogQueue.push_back( message );
 	printLock.unlock( );
 }
 
 void CONSOLE_Flush( )
 {
-	vector<string> logQueue;
+    vector<string> logQueue;
 	boost::mutex::scoped_lock printLock( PrintMutex );
 	gLogQueue.swap( logQueue );
 	printLock.unlock( );
@@ -234,23 +234,20 @@ void DEBUG_Print( BYTEARRAY b )
 //
 // main
 //
-
 int main( int argc, char **argv )
 {
-	srand( time( NULL ) );
-
-	gCFGFile = "ghost.cfg";
-
-	if( argc > 1 && argv[1] )
-		gCFGFile = argv[1];
-
-	// read config file
+    CONSOLE_Print("*******************************************************************");
+    CONSOLE_Print("***                                                            ****");
+    CONSOLE_Print("***                 GriefNetwork-Bot v1.0                      ****");
+    CONSOLE_Print("***        https://github.com/Grief-Code/GriefNetwork-Bot      ****");
+    CONSOLE_Print("***                                                            ****");
+    CONSOLE_Print("*******************************************************************");
+    srand( time( NULL ) );
 
 	CConfig CFG;
-	CFG.Read( "default.cfg" );
-	CFG.Read( gCFGFile );
+    CFG.Read( "default.cfg" );
 	gLogFile = CFG.GetString( "bot_log", string( ) );
-	gLogMethod = CFG.GetInt( "bot_logmethod", 1 );
+    gLogMethod = CFG.GetInt( "bot_logmethod", 1 );
 
 	if( !gLogFile.empty( ) )
 	{
@@ -369,6 +366,7 @@ int main( int argc, char **argv )
 	// shutdown ghost
 
 	CONSOLE_Print( "[GHOST] shutting down" );
+    CONSOLE_Flush();
 	delete gGHost;
 	gGHost = NULL;
 
@@ -1751,7 +1749,7 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_MOTDFile = CFG->GetString( "bot_motdfile", "motd.txt" );
 	m_GameLoadedFile = CFG->GetString( "bot_gameloadedfile", "gameloaded.txt" );
 	m_GameOverFile = CFG->GetString( "bot_gameoverfile", "gameover.txt" );
-	m_GeoIPFile = CFG->GetString( "bot_geoipfile", "geoip.dat" );
+    m_GeoIPFile = CFG->GetString( "bot_geoipfile", "GeoIP.dat" );
 	m_LocalAdminMessages = CFG->GetInt( "bot_localadminmessages", 1 ) == 0 ? false : true;
 	m_TCPNoDelay = CFG->GetInt( "tcp_nodelay", 0 ) == 0 ? false : true;
 	m_MatchMakingMethod = CFG->GetInt( "bot_matchmakingmethod", 1 );
