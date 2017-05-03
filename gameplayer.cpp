@@ -325,6 +325,11 @@ void CPotentialPlayer :: SendBannedInfo( CDBBan *Ban, string type )
 CGamePlayer :: CGamePlayer( CGameProtocol *nProtocol, CBaseGame *nGame, CTCPSocket *nSocket, unsigned char nPID, string nJoinedRealm, string nName, BYTEARRAY nInternalIP, bool nReserved ) : CPotentialPlayer( nProtocol, nGame, nSocket ), m_PID( nPID ), m_Name( nName ), m_InternalIP( nInternalIP ), m_JoinedRealm( nJoinedRealm ), m_TotalPacketsSent( 0 ), m_TotalPacketsReceived( 0 ), m_LeftCode( PLAYERLEAVE_LOBBY ), m_SyncCounter( 0 ), m_JoinTime( GetTime( ) ), m_LastMapPartSent( 0 ), m_LastMapPartAcked( 0 ), m_StartedDownloadingTicks( 0 ), m_FinishedLoadingTicks( 0 ), m_StartedLaggingTicks( 0 ), m_TotalLaggingTicks( 0 ), m_LastLaggingTicks( 0 ), m_StatsSentTime( 0 ), m_StatsDotASentTime( 0 ), m_KickVoteTime( 0 ), m_LastGProxyWaitNoticeSentTime( 0 ), m_Score( -100000.0 ), m_Spoofed( false ), m_Reserved( nReserved ), m_WhoisShouldBeSent( false ), m_WhoisSent( false ), m_DownloadAllowed( false ), m_DownloadStarted( false ), m_DownloadFinished( false ), m_FinishedLoading( false ), m_Lagging( false ), m_DropVote( false ), m_KickVote( false ), m_StartVote( false ), m_Muted( false ), m_LeftMessageSent( false ), m_GProxy( false ), m_GProxyDisconnectNoticeSent( false ), m_GProxyReconnectKey( rand( ) ), m_LastGProxyAckTime( 0 ), m_Autoban( false ), m_ForfeitVote( false ), m_ForfeitVoteTime( 0 ), m_FriendlyName( nName ), m_DrawVote( false ), m_DrawVoteTime( 0 ), m_Fun( false ), m_LastAMHPingTime( 0 ), m_LastAMHPongTime( 0 ), m_AMHInitSent( false ), m_ForcedMute( false )
 {
     m_ConnectionState = 1;
+	m_GProxyExtended = false;
+	m_GProxyVersion = 0;
+	m_TotalDisconnectTime = 0;
+	m_LastDisconnectTime = 0;
+	m_Disconnected = false;
 }
 
 CGamePlayer :: CGamePlayer( CPotentialPlayer *potential, unsigned char nPID, string nJoinedRealm, string nName, BYTEARRAY nInternalIP, bool nReserved ) : CPotentialPlayer( potential->m_Protocol, potential->m_Game, potential->GetSocket( ) ), m_PID( nPID ), m_Name( nName ), m_InternalIP( nInternalIP ), m_JoinedRealm( nJoinedRealm ), m_TotalPacketsSent( 0 ), m_TotalPacketsReceived( 1 ), m_LeftCode( PLAYERLEAVE_LOBBY ), m_Cookies( 0 ), m_SyncCounter( 0 ), m_JoinTime( GetTime( ) ), m_LastMapPartSent( 0 ), m_LastMapPartAcked( 0 ), m_StartedDownloadingTicks( 0 ), m_FinishedLoadingTicks( 0 ), m_StartedLaggingTicks( 0 ), m_TotalLaggingTicks( 0 ), m_LastLaggingTicks( 0 ), m_StatsSentTime( 0 ), m_StatsDotASentTime( 0 ), m_LastGProxyWaitNoticeSentTime( 0 ), m_Score( -100000.0 ), m_Spoofed( false ), m_Reserved( nReserved ), m_WhoisShouldBeSent( false ), m_WhoisSent( false ), m_DownloadAllowed( false ), m_DownloadStarted( false ), m_DownloadFinished( false ), m_FinishedLoading( false ), m_Lagging( false ), m_DropVote( false ), m_KickVote( false ), m_StartVote( false ), m_Muted( false ), m_LeftMessageSent( false ), m_GProxy( false ), m_GProxyDisconnectNoticeSent( false ), m_GProxyReconnectKey( rand( ) ), m_LastGProxyAckTime( 0 ), m_Autoban( false ), m_ForfeitVote( false ), m_ForfeitVoteTime( 0 ), m_FriendlyName( nName ), m_DrawVote( false ), m_DrawVoteTime( 0 ), m_Fun( false ), m_LastAMHPingTime( 0 ), m_LastAMHPongTime( 0 ), m_AMHInitSent( false ), m_ForcedMute( false )
@@ -341,6 +346,11 @@ CGamePlayer :: CGamePlayer( CPotentialPlayer *potential, unsigned char nPID, str
     m_ConnectionState = 1;
     
     m_IncomingGarenaUser = potential->GetGarenaUser( );
+	m_GProxyExtended = false;
+	m_GProxyVersion = 0;
+	m_TotalDisconnectTime = 0;
+	m_LastDisconnectTime = 0;
+	m_Disconnected = false;
 }
 
 CGamePlayer :: CGamePlayer( CStagePlayer *potential, CGameProtocol *nProtocol, CBaseGame *nGame, unsigned char nPID, string nJoinedRealm, string nName, BYTEARRAY nInternalIP, bool nReserved ) : CPotentialPlayer( nProtocol, nGame, potential->GetSocket( ) ), m_PID( nPID ), m_Name( nName ), m_InternalIP( nInternalIP ), m_JoinedRealm( nJoinedRealm ), m_TotalPacketsSent( 0 ), m_TotalPacketsReceived( 1 ), m_LeftCode( PLAYERLEAVE_LOBBY ), m_Cookies( 0 ), m_SyncCounter( 0 ), m_JoinTime( GetTime( ) ), m_LastMapPartSent( 0 ), m_LastMapPartAcked( 0 ), m_StartedDownloadingTicks( 0 ), m_FinishedLoadingTicks( 0 ), m_StartedLaggingTicks( 0 ), m_TotalLaggingTicks( 0 ), m_LastLaggingTicks( 0 ), m_StatsSentTime( 0 ), m_StatsDotASentTime( 0 ), m_LastGProxyWaitNoticeSentTime( 0 ), m_Score( -100000.0 ), m_Spoofed( false ), m_Reserved( nReserved ), m_WhoisShouldBeSent( false ), m_WhoisSent( false ), m_DownloadAllowed( false ), m_DownloadStarted( false ), m_DownloadFinished( false ), m_FinishedLoading( false ), m_Lagging( false ), m_DropVote( false ), m_KickVote( false ), m_StartVote( false ), m_Muted( false ), m_LeftMessageSent( false ), m_GProxy( false ), m_GProxyDisconnectNoticeSent( false ), m_GProxyReconnectKey( rand( ) ), m_LastGProxyAckTime( 0 ), m_Autoban( false ), m_ForfeitVote( false ), m_ForfeitVoteTime( 0 ), m_FriendlyName( nName ), m_DrawVote( false ), m_DrawVoteTime( 0 ), m_Fun( false ), m_LastAMHPingTime( 0 ), m_LastAMHPongTime( 0 ), m_AMHInitSent( false ), m_ForcedMute( false )
@@ -355,6 +365,11 @@ CGamePlayer :: CGamePlayer( CStagePlayer *potential, CGameProtocol *nProtocol, C
 	// note: we must make sure we never send a packet to a CPotentialPlayer otherwise the send counter will be incorrect too! what a mess this is...
 	// that said, the packet counters are only used for managing GProxy++ reconnections
     m_ConnectionState = 1;
+	m_GProxyExtended = false;
+	m_GProxyVersion = 0;
+	m_TotalDisconnectTime = 0;
+	m_LastDisconnectTime = 0;
+	m_Disconnected = false;
 }
 
 CGamePlayer :: ~CGamePlayer( )
@@ -469,7 +484,14 @@ bool CGamePlayer :: Update( void *fd )
 	// and in the game the Warcraft 3 client sends keepalives frequently (at least once per second it looks like)
 
 	if( m_Socket && GetTime( ) - m_Socket->GetLastRecv( ) >= 30 )
+	{
+		if( !m_Disconnected )
+			m_LastDisconnectTime = GetTime( );
+
+		m_Disconnected = true;
 		m_Game->EventPlayerDisconnectTimedOut( this );
+		m_Socket->Reset( );
+	}
 	
 	// make sure we're not waiting too long for the first MAPSIZE packet
 	
@@ -574,6 +596,11 @@ bool CGamePlayer :: Update( void *fd )
 	if( m_Error )
 	{
 		m_Game->m_GHost->DenyIP( GetExternalIPString( ), 180000, "player error" );
+
+		if( !m_Disconnected )
+			m_LastDisconnectTime = GetTime( );
+
+		m_Disconnected = true;
 		m_Game->EventPlayerDisconnectPlayerError( this );
 		m_Socket->Reset( );
 		return Deleting;
@@ -583,12 +610,23 @@ bool CGamePlayer :: Update( void *fd )
 	{
 		if( m_Socket->HasError( ) )
 		{
+			if( !m_Disconnected )
+				m_LastDisconnectTime = GetTime( );
+
+			m_Disconnected = true;
 			m_Game->EventPlayerDisconnectSocketError( this );
-			m_Game->m_GHost->DenyIP( GetExternalIPString( ), 20000, "socket error" );
+
+			if( !m_GProxy && !m_GProxyExtended )
+				m_Game->m_GHost->DenyIP( GetExternalIPString( ), 20000, "socket error" );
+
 			m_Socket->Reset( );
 		}
 		else if( !m_Socket->GetConnected( ) )
 		{
+			if( !m_Disconnected )
+				m_LastDisconnectTime = GetTime( );
+
+			m_Disconnected = true;
 			m_Game->EventPlayerDisconnectConnectionClosed( this );
 			m_Socket->Reset( );
 		}
@@ -836,8 +874,12 @@ void CGamePlayer :: ProcessPackets( )
 				if( m_Game->m_GHost->m_Reconnect )
 				{
 					m_GProxy = true;
+					m_GProxyVersion = UTIL_ByteArrayToUInt32( Data, false, 4 );
 					m_Socket->PutBytes( m_Game->m_GHost->m_GPSProtocol->SEND_GPSS_INIT( m_Game->m_GHost->m_ReconnectPort, m_PID, m_GProxyReconnectKey, m_Game->GetGProxyEmptyActions( ) ) );
 					CONSOLE_Print( "[GAME: " + m_Game->GetGameName( ) + "] player [" + m_Name + "] is using GProxy++" );
+
+					if( m_Game->m_GHost->m_ReconnectExtendedTime > 0 && m_GProxyVersion >= 2 )
+						m_Socket->PutBytes( m_Game->m_GHost->m_GPSProtocol->SEND_GPSS_SUPPORT_EXTENDED( m_Game->m_GHost->m_ReconnectExtendedTime * 60 ) );
 				}
 				else
 				{
@@ -868,6 +910,12 @@ void CGamePlayer :: ProcessPackets( )
                                                 --PacketsToUnqueue;
 					}
 				}
+			}
+			else if( Packet->GetID( ) == CGPSProtocol :: GPS_SUPPORT_EXTENDED )
+			{
+				uint32_t seconds = UTIL_ByteArrayToUInt32( Data, false, 4 );
+				m_GProxyExtended = true;
+				CONSOLE_Print( "[GAME: " + m_Game->GetGameName( ) + "] player [" + m_Name + "] is using GProxy Extended" );
 			}
 		}
 		else if( Packet->GetPacketType( ) == AMH_HEADER_CONSTANT && m_Game->m_GHost->m_AMH )
@@ -929,7 +977,8 @@ void CGamePlayer :: Send( BYTEARRAY data )
 	if( m_GProxy && m_Game->GetGameLoaded( ) )
 		m_GProxyBuffer.push( data );
 
-	CPotentialPlayer :: Send( data );
+	if( !m_Disconnected )
+		CPotentialPlayer :: Send( data );
 }
 
 void CGamePlayer :: EventGProxyReconnect( CTCPSocket *NewSocket, uint32_t LastPacket )
@@ -967,6 +1016,19 @@ void CGamePlayer :: EventGProxyReconnect( CTCPSocket *NewSocket, uint32_t LastPa
 
 	m_GProxyBuffer = TempBuffer;
 	m_GProxyDisconnectNoticeSent = false;
+	m_Disconnected = false;
+
+	if( m_LastDisconnectTime > 0 )
+		m_TotalDisconnectTime += GetTime( ) - m_LastDisconnectTime;
+
 	m_Game->SendAllChat( m_Game->m_GHost->m_Language->PlayerReconnectedWithGProxy( m_Name ) );
 	m_CachedIP = m_Socket->GetIPString( );
+}
+
+uint32_t CGamePlayer :: GetTotalDisconnectTime( )
+{
+	if( !m_Disconnected || !m_LastDisconnectTime )
+		return m_TotalDisconnectTime;
+	else
+		return m_TotalDisconnectTime + GetTime( ) - m_LastDisconnectTime;
 }

@@ -42,7 +42,8 @@ public:
 		GPS_INIT				= 1,
 		GPS_RECONNECT			= 2,
 		GPS_ACK					= 3,
-		GPS_REJECT				= 4
+		GPS_REJECT				= 4,
+		GPS_SUPPORT_EXTENDED	= 50	// added by h3rmit
 	};
 
 	CGPSProtocol( );
@@ -60,6 +61,7 @@ public:
 	BYTEARRAY SEND_GPSS_RECONNECT( uint32_t lastPacket );
 	BYTEARRAY SEND_GPSS_ACK( uint32_t lastPacket );
 	BYTEARRAY SEND_GPSS_REJECT( uint32_t reason );
+	BYTEARRAY SEND_GPSS_SUPPORT_EXTENDED( uint32_t seconds ); // added by h3rmit
 
 	// other functions
 

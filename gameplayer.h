@@ -158,6 +158,8 @@ private:
 	bool m_LeftMessageSent;						// if the playerleave message has been sent or not
 	bool m_GProxy;								// if the player is using GProxy++
 	bool m_GProxyDisconnectNoticeSent;			// if a disconnection notice has been sent or not when using GProxy++
+	uint32_t m_GProxyVersion;					// the version of GProxy++ that the player is using
+	bool m_GProxyExtended; 
 	queue<BYTEARRAY> m_GProxyBuffer;
 	uint32_t m_GProxyReconnectKey;
 	uint32_t m_LastGProxyAckTime;
@@ -168,6 +170,9 @@ private:
 	uint32_t m_LastAMHPongTime;				// last time we received an AMH pong from the user
 	queue<BYTEARRAY> m_NextAMHResponse;			// next expected AMH response(s) to receive; queue size is limited to 2
     bool m_ForcedMute;
+	bool m_Disconnected;						// if the player is disconnected
+	uint32_t m_TotalDisconnectTime;				// the total amount of time the player has been disconnected
+	uint32_t m_LastDisconnectTime;				// GetTime when the player was last disconnected
 
 public:
 	CGamePlayer( CGameProtocol *nProtocol, CBaseGame *nGame, CTCPSocket *nSocket, unsigned char nPID, string nJoinedRealm, string nName, BYTEARRAY nInternalIP, bool nReserved );
@@ -225,6 +230,11 @@ public:
 	bool GetGProxy( )							{ return m_GProxy; }
 	bool GetGProxyDisconnectNoticeSent( )		{ return m_GProxyDisconnectNoticeSent; }
 	uint32_t GetGProxyReconnectKey( )			{ return m_GProxyReconnectKey; }
+	uint32_t GetGProxyVersion( )				{ return m_GProxyVersion; }
+	bool GetGProxyExtended( )					{ return m_GProxyExtended; }
+	bool GetDisconnected( )						{ return m_Disconnected; }
+	uint32_t GetLastDisconnectTime( )			{ return m_LastDisconnectTime; }
+	uint32_t GetTotalDisconnectTime( );
 	bool GetFun( )								{ return m_Fun; }
     bool getForcedMute( )                       { return m_ForcedMute; }
 

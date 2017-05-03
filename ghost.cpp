@@ -1696,6 +1696,7 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_Warcraft3Path = UTIL_AddPathSeperator( CFG->GetString( "bot_war3path", "C:\\Program Files\\Warcraft III\\" ) );
 	m_BindAddress = CFG->GetString( "bot_bindaddress", string( ) );
 	m_ReconnectWaitTime = CFG->GetInt( "bot_reconnectwaittime", 3 );
+	m_ReconnectExtendedTime = CFG->GetInt( "bot_reconnectextendedtime", 5 );
 	m_MaxGames = CFG->GetInt( "bot_maxgames", 5 );
 	string BotCommandTrigger = CFG->GetString( "bot_commandtrigger", "!" );
 
