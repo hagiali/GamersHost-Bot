@@ -981,7 +981,7 @@ for( vector<PairedVerifyUserCheck> :: iterator i = m_PairedVerifyUserChecks.begi
 		delete m_CallableGetTournament;
 		m_CallableGetTournament = NULL;
 	}
-	
+
 	// update gamelist every 5 seconds if in lobby, or every 45 seconds otherwise
 	if( !m_CallableGameUpdate && m_GHost->m_Gamelist && ( m_LastGameUpdateTime == 0 || GetTime( ) - m_LastGameUpdateTime >= 30 || ( !m_GameLoaded && !m_GameLoading && GetTime( ) - m_LastGameUpdateTime >= 5 ) ) )
 	{
@@ -1222,7 +1222,7 @@ void CGame :: EventPlayerDeleted( CGamePlayer *player )
 		if( m_MapType == "legionmega" || m_MapType == "lihl" || m_MapType == "legionmega_nc" )
 			DrawTicks = 1000 * 80; //1:20 before 
 		else if( m_MapType == "dota" || m_MapType == "dotaab" || m_MapType == "eihl" )
-			DrawTicks = 1000 * 60 * 2; //two minute, before game starts
+            DrawTicks = 1000 * 60 * 5; //five minute, before game starts
 
 		if( !m_SoftGameOver && !m_MapType.empty( ) && m_Stats && m_GameOverTime == 0 && !m_Stats->IsWinner( ) && Team != 12 && m_NumTeams == 2 && !m_SoloTeam && m_GameTicks < DrawTicks && m_StartPlayers > 6 && m_MapType != "treetag" && m_MapType != "battleships"  )
 		{
@@ -2326,6 +2326,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				{
 					SendAllChat( m_GHost->m_Language->MutedPlayer( LastMatch->GetName( ), User ) );
 					LastMatch->SetMuted( true );
+                    LastMatch->SetForcedMute( true );
 					
 					if( AdminCheck || RootAdminCheck )
 						m_GHost->m_Callables.push_back( m_GHost->m_DB->ThreadedAdminCommand( player->GetName( ), "!mute", "muted player [" + LastMatch->GetName( ) + "]", m_GameName ) );
@@ -2830,6 +2831,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				{
 					SendAllChat( m_GHost->m_Language->UnmutedPlayer( LastMatch->GetName( ), User ) );
 					LastMatch->SetMuted( false );
+                    LastMatch->SetForcedMute( false );
 				}
 				else
 					SendAllChat( m_GHost->m_Language->UnableToMuteFoundMoreThanOneMatch( Payload ) );
@@ -3639,7 +3641,9 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 
 	else if( Command == "votekick" && m_GHost->m_VoteKickAllowed && !Payload.empty( ) )
 	{
-		if( !m_KickVotePlayer.empty( ) )
+        if( !m_GameLoaded)
+            SendChat( player, "You cannot votekick unless the game has been started.");
+        else if( !m_KickVotePlayer.empty( ) )
 			SendChat( player, m_GHost->m_Language->UnableToVoteKickAlreadyInProgress( ) );
 		else if( m_Players.size( ) <= 3 )
 			SendChat( player, m_GHost->m_Language->UnableToVoteKickNotEnoughPlayers( ) );
@@ -3656,29 +3660,30 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			{
 				//see if the player is the only one left on his team
 				unsigned char SID = GetSIDFromPID( LastMatch->GetPID( ) );
-				bool OnlyPlayer = false;
+                bool OnlyPlayer = false;
+                uint32_t teamCount = 0;
 
 				if( m_GameLoaded && SID < m_Slots.size( ) )
 				{
 					unsigned char Team = m_Slots[SID].GetTeam( );
 					OnlyPlayer = true;
-					char sid, team;
+                    char sid, team;
 					
 					for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); i++)
-					{
+                    {
 						if( *i && LastMatch != *i && !(*i)->GetLeftMessageSent( ) )
 						{
 							sid = GetSIDFromPID( (*i)->GetPID( ) );
+                            team = m_Slots[sid].GetTeam( );
 							if( sid != 255 )
-							{
-								team = m_Slots[sid].GetTeam( );
+                            {
 								if( team == Team )
 								{
-									OnlyPlayer = false;
-									break;
+                                    OnlyPlayer = false;
+                                    ++teamCount;
 								}
 							}			
-						}
+                        }
 					}
 				}
 				
@@ -3686,6 +3691,8 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 					SendChat( player, "Unable to votekick player [" + LastMatch->GetName( ) + "]: cannot votekick when there is only one player on victim's team." );
 				else if( LastMatch == player )
 					SendChat( player, "You cannot votekick yourself!" );
+                else if( m_Slots[GetSIDFromPID( LastMatch->GetPID( ) )].GetTeam( ) != m_Slots[GetSIDFromPID( player->GetPID( ) )].GetTeam( ))
+                    SendChat( player, "You cannot votekick a player from another team!" );
 				else
 				{
 					m_KickVotePlayer = LastMatch->GetName( );
@@ -3697,7 +3704,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 					player->SetKickVote( true );
 					player->SetKickVoteTime( GetTime( ) );
 					CONSOLE_Print( "[GAME: " + m_GameName + "] votekick against player [" + m_KickVotePlayer + "] started by player [" + User + "]" );
-					SendAllChat( m_GHost->m_Language->StartedVoteKick( LastMatch->GetName( ), User, UTIL_ToString( (uint32_t)ceil( ( GetNumHumanPlayers( ) - 1 ) * (float)m_GHost->m_VoteKickPercentage / 100 ) - 1 ) ) );
+                    SendAllChat( m_GHost->m_Language->StartedVoteKick( LastMatch->GetName( ), User, UTIL_ToString( teamCount - 1) ) );
 					SendAllChat( m_GHost->m_Language->TypeYesToVote( string( 1, m_GHost->m_CommandTrigger ) ) );
 					SendAllChat( "** Note: !votekick should only be used to kick players breaking a rule. You should not votekick players new to the game!" );
 				}
@@ -3732,7 +3739,6 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				}
 
 				player->SetStartVote(true);
-				
 				uint32_t VotesNeeded = GetNumHumanPlayers( ) - 1;
 				
 				if( VotesNeeded < 2 )
@@ -3766,45 +3772,68 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 
 	else if( Command == "yes" && !m_KickVotePlayer.empty( ) && player->GetName( ) != m_KickVotePlayer && !player->GetKickVote( ) )
 	{
-		player->SetKickVote( true );
-		uint32_t VotesNeeded = (uint32_t)ceil( ( GetNumHumanPlayers( ) - 1 ) * (float)m_GHost->m_VoteKickPercentage / 100 );
-		uint32_t Votes = 0;
+        CGamePlayer *Victim = GetPlayerFromName( m_KickVotePlayer, true );
+        if(Victim) {
+            if( m_Slots[GetSIDFromPID( Victim->GetPID( ) )].GetTeam( ) != m_Slots[GetSIDFromPID( player->GetPID( ) )].GetTeam( )) {
+                SendChat( player, "You cannot votekick a player from another team!" );
+            } else {
+                player->SetKickVote( true );
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-		{
-			if( (*i)->GetKickVote( ) )
-				++Votes;
-		}
+                unsigned char Team = m_Slots[GetSIDFromPID( Victim->GetPID( ) )].GetTeam( );
+                char sid, team;
+                uint32_t VotesNeeded = 0;
+                uint32_t Votes = 0;
 
-		if( Votes >= VotesNeeded )
-		{
-			CGamePlayer *Victim = GetPlayerFromName( m_KickVotePlayer, true );
+                for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); i++)
+                {
+                    if( *i && Victim != *i && !(*i)->GetLeftMessageSent( ) )
+                    {
+                        sid = GetSIDFromPID( (*i)->GetPID( ) );
+                        team = m_Slots[sid].GetTeam( );
+                        if( sid != 255 )
+                        {
+                            if( team == Team )
+                            {
+                                ++VotesNeeded;
+                                if( (*i)->GetKickVote( ) )
+                                    ++Votes;
+                            }
+                        }
+                    }
+                }
 
-			if( Victim )
-			{
-				Victim->SetDeleteMe( true );
-				Victim->SetLeftReason( m_GHost->m_Language->WasKickedByVote( ) );
+                if( Votes >= VotesNeeded )
+                {
+                    CGamePlayer *Victim = GetPlayerFromName( m_KickVotePlayer, true );
 
-				if( !m_GameLoading && !m_GameLoaded )
-					Victim->SetLeftCode( PLAYERLEAVE_LOBBY );
-				else
-					Victim->SetLeftCode( PLAYERLEAVE_LOST );
+                    if( Victim )
+                    {
+                        Victim->SetDeleteMe( true );
+                        Victim->SetLeftReason( m_GHost->m_Language->WasKickedByVote( ) );
 
-				if( !m_GameLoading && !m_GameLoaded )
-					OpenSlot( GetSIDFromPID( Victim->GetPID( ) ), false );
+                        if( !m_GameLoading && !m_GameLoaded )
+                            Victim->SetLeftCode( PLAYERLEAVE_LOBBY );
+                        else
+                            Victim->SetLeftCode( PLAYERLEAVE_LOST );
 
-				CONSOLE_Print( "[GAME: " + m_GameName + "] votekick against player [" + m_KickVotePlayer + "] passed with " + UTIL_ToString( Votes ) + "/" + UTIL_ToString( GetNumHumanPlayers( ) ) + " votes" );
-				SendAllChat( m_GHost->m_Language->VoteKickPassed( m_KickVotePlayer ) );
-				m_GHost->DenyIP( Victim->GetExternalIPString( ), 15000, "votekick passed" );
-			}
-			else
-				SendAllChat( m_GHost->m_Language->ErrorVoteKickingPlayer( m_KickVotePlayer ) );
+                        if( !m_GameLoading && !m_GameLoaded )
+                            OpenSlot( GetSIDFromPID( Victim->GetPID( ) ), false );
 
-			m_KickVotePlayer.clear( );
-			m_StartedKickVoteTime = 0;
-		}
-		else
-			SendAllChat( m_GHost->m_Language->VoteKickAcceptedNeedMoreVotes( m_KickVotePlayer, User, UTIL_ToString( VotesNeeded - Votes ) ) );
+                        CONSOLE_Print( "[GAME: " + m_GameName + "] votekick against player [" + m_KickVotePlayer + "] passed with " + UTIL_ToString( Votes ) + "/" + UTIL_ToString( GetNumHumanPlayers( ) ) + " votes" );
+                        SendAllChat( m_GHost->m_Language->VoteKickPassed( m_KickVotePlayer ) );
+                        m_GHost->DenyIP( Victim->GetExternalIPString( ), 15000, "votekick passed" );
+                    }
+                    else
+                        SendAllChat( m_GHost->m_Language->ErrorVoteKickingPlayer( m_KickVotePlayer ) );
+
+                    m_KickVotePlayer.clear( );
+                    m_StartedKickVoteTime = 0;
+                }
+                else
+                    SendAllChat( m_GHost->m_Language->VoteKickAcceptedNeedMoreVotes( m_KickVotePlayer, User, UTIL_ToString( VotesNeeded - Votes ) ) );
+            }
+
+        }
 	}
 	
 	//

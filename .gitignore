@@ -1,1 +1,6 @@
 *.o
+Bot.config
+Bot.creator
+Bot.creator.user
+Bot.files
+Bot.includes

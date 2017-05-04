@@ -3,8 +3,8 @@ SYSTEM = $(shell uname)
 C++ = g++
 CC = gcc
 DFLAGS =
-OFLAGS = -O3 -g
-LFLAGS = -L. -L../bncsutil/src/bncsutil/ -L../StormLib/stormlib/ -lbncsutil -lpthread -ldl -lz -lStorm -lmysqlclient_r -lboost_date_time -lboost_thread -lboost_system -lboost_filesystem -lgmp -lGeoIP
+OFLAGS = -O3
+LFLAGS = -L. -L../bncsutil/src/bncsutil/ -L../StormLib/stormlib/ -lbncsutil -lpthread -ldl -lz -lStorm -lmysqlclient -lboost_date_time -lboost_thread -lboost_system -lboost_filesystem -lgmp -lGeoIP
 CFLAGS =
 
 ifeq ($(SYSTEM),Darwin)

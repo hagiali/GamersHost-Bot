@@ -318,18 +318,6 @@ void CBaseGame :: loop( )
 			m_Replay->Save( m_GHost->m_TFT, m_GHost->m_ReplayPath + UTIL_FileSafeName( "GHost++ " + string( Time ) + " " + m_GameName + " (" + MinString + "m" + SecString + "s).w3g" ) );
 		} else {
 			m_Replay->Save( m_GHost->m_TFT, m_GHost->m_ReplayPath + UTIL_FileSafeName( UTIL_ToString( m_DatabaseID ) + ".w3g" ) );
-
-			// also save lobby chat at this time
-			ofstream fout;
-			fout.open( ( m_GHost->m_ReplayPath + UTIL_FileSafeName( UTIL_ToString( m_DatabaseID ) + ".txt" ) ).c_str( ), ios :: app );
-
-			if( !fout.fail( ) )
-			{
-				for( vector<string> :: iterator i = m_LobbyChat.begin(); i != m_LobbyChat.end(); ++i )
-					fout << (*i) << endl;
-
-				fout.close( );
-			}
 		}
 	}
 
@@ -1268,7 +1256,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
-				if( m_SyncCounter - (*i)->GetSyncCounter( ) > m_SyncLimit )
+				//changed by h3rmit
+				if( m_SyncCounter - (*i)->GetSyncCounter( ) > m_SyncLimit && !(*i)->GetGProxyExtended( ) )
 				{
 					// drop them immediately if they have already exceeded their total lagging time (5 minutes)
 					if( (*i)->GetTotalLaggingTicks( ) > 300000 )
@@ -1329,7 +1318,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
-				if( (*i)->GetGProxy( ) )
+				// changed by h3rmit
+				if( (*i)->GetGProxy( ) && !(*i)->GetGProxyExtended( ) )
 					UsingGProxy = true;
 			}
 
@@ -1447,6 +1437,25 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			// keep track of the last lag screen time so we can avoid timing out players
 
 			m_LastLagScreenTime = GetTime( );
+		}
+
+		// added by h3rmit
+		// drop players using GProxy Extended who didn't reconnect in time
+		
+		if( m_GHost->m_ReconnectExtendedTime > 0 )
+		{
+			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); i++ )
+			{
+				CGamePlayer *p;
+				if( (*i)->GetDisconnected( ) && (*i)->GetGProxyExtended( ) && (*i)->GetTotalDisconnectTime( ) > m_GHost->m_ReconnectExtendedTime * 60 )
+				{
+					(*i)->SetDeleteMe( true );
+					(*i)->SetLeftReason( (*i)->GetName( ) + " has been kicked because he didn't reconnect in time" );
+					(*i)->SetLeftCode( PLAYERLEAVE_DISCONNECT );
+					SendAllChat( (*i)->GetName( ) + " has been kicked because he didn't reconnect in time." );
+					CONSOLE_Print( "[GAME: " + m_GameName + "] Player " + (*i)->GetName( ) + " has been kicked because he didn't reconnect in time" );
+				}
+			}
 		}
 
 		// see if we can handle any pending reconnects
@@ -1715,9 +1724,7 @@ void CBaseGame :: SendAllChat( unsigned char fromPID, string message )
                 ce.side = 0;
 
 		if( !m_GameLoading && !m_GameLoaded )
-		{
-			// append to our cached lobby chat data
-			m_LobbyChat.push_back( "[System]: " + message );  
+        {
 			if( message.size( ) > 254 )
 				message = message.substr( 0, 254 );
 
@@ -2042,9 +2049,6 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 {
 	CONSOLE_Print( "[GAME: " + m_GameName + "] deleting player [" + player->GetName( ) + "]: " + player->GetLeftReason( ) );
 
-	// append to our cached lobby chat data
-	m_LobbyChat.push_back( "[System]: *** player [" + player->GetName( ) + "] has left the game (" + player->GetLeftReason( ) + ")" );
-
 	// remove any queued spoofcheck messages for this player
 
 	if( player->GetWhoisSent( ) && !player->GetJoinedRealm( ).empty( ) && player->GetSpoofedRealm( ).empty( ) )
@@ -2173,7 +2177,7 @@ void CBaseGame :: EventPlayerDisconnectTimedOut( CGamePlayer *player )
 			player->SetGProxyDisconnectNoticeSent( true );
 		}
 
-		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 )
+		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 && !player->GetGProxyExtended( ) )
 		{
 			uint32_t TimeRemaining = ( m_GProxyEmptyActions + 1 ) * 60 - ( GetTime( ) - m_StartedLaggingTime );
 
@@ -2191,7 +2195,7 @@ void CBaseGame :: EventPlayerDisconnectTimedOut( CGamePlayer *player )
 	// this is because Warcraft 3 stops sending packets during the lag screen
 	// so when the lag screen finishes we would immediately disconnect everyone if we didn't give them some extra time
 
-	if( GetTime( ) - m_LastLagScreenTime >= 10 )
+	if( GetTime( ) - m_LastLagScreenTime >= 10 && !player->GetGProxyExtended( ) )
 	{
 		player->SetDeleteMe( true );
 		player->SetLeftReason( m_GHost->m_Language->HasLostConnectionTimedOut( ) );
@@ -2227,7 +2231,7 @@ void CBaseGame :: EventPlayerDisconnectSocketError( CGamePlayer *player )
 			player->SetGProxyDisconnectNoticeSent( true );
 		}
 
-		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 )
+		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 && !player->GetGProxyExtended( ) )
 		{
 			uint32_t TimeRemaining = ( m_GProxyEmptyActions + 1 ) * 60 - ( GetTime( ) - m_StartedLaggingTime );
 
@@ -2260,7 +2264,7 @@ void CBaseGame :: EventPlayerDisconnectConnectionClosed( CGamePlayer *player )
 			player->SetGProxyDisconnectNoticeSent( true );
 		}
 
-		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 )
+		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 && !player->GetGProxyExtended( ) )
 		{
 			uint32_t TimeRemaining = ( m_GProxyEmptyActions + 1 ) * 60 - ( GetTime( ) - m_StartedLaggingTime );
 
@@ -2362,10 +2366,10 @@ CGamePlayer *CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncom
 	}
 
         if(m_GHost->m_ShowScoreOnJoin && score == NULL) {
-                 m_ScoreChecks.push_back( m_GHost->m_DB->ThreadedScoreCheck( m_Map->GetMapMatchMakingCategory( ), joinPlayer->GetName( ), JoinedRealm ) );
-                 return NULL;
-        }	
-	
+                m_ScoreChecks.push_back( m_GHost->m_DB->ThreadedScoreCheck( m_Map->GetMapMatchMakingCategory( ), joinPlayer->GetName( ), JoinedRealm ) );
+                return NULL;
+        }
+
 	if( m_MatchMaking && m_AutoStartPlayers != 0 && !m_Map->GetMapMatchMakingCategory( ).empty( ) && m_Map->GetMapOptions( ) & MAPOPT_FIXEDPLAYERSETTINGS && score == NULL )
 	{
 		// matchmaking is enabled
@@ -2612,9 +2616,6 @@ CGamePlayer *CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncom
 
 	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game" );
 
-	// append to our cached lobby chat data
-	m_LobbyChat.push_back( "[System]: *** player [" + joinPlayer->GetName( ) + "] has joined the game" );
-
 	CGamePlayer *Player = new CGamePlayer( potential, m_SaveGame ? EnforcePID : GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), Reserved );
 
 	if( potential->GetGarenaUser( ) != NULL ) {
@@ -2689,9 +2690,9 @@ CGamePlayer *CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncom
 	// send virtual host info and fake player info (if present) to the new player
 
 	SendVirtualHostPlayerInfo( Player );
-		if(m_GHost->m_ShowScoreOnJoin) {
- 		SendAllChat("Player [" + Player->GetName( ) + "@" + JoinedRealm + "] with a score of [" + UTIL_ToString(score[0], 2)+"]");
- 	}
+	if(m_GHost->m_ShowScoreOnJoin) {
+		SendAllChat("Player [" + Player->GetName( ) + "@" + JoinedRealm + "] with a score of [" + UTIL_ToString(score[0], 2)+"]");
+	}
 	SendFakePlayerInfo( Player );
 
 	BYTEARRAY BlankIP;
@@ -3282,20 +3283,17 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 						m_GHost->m_Callables.push_back( m_GHost->m_DB->ThreadedTournamentChat( m_TournamentChatID, player->GetName( ) + " (lobby): " + chatPlayer->GetMessage( ) ) );
 						lock.unlock( );
 					} else {
-	                                        ChatEvent ce;
-                                        	ce.time = (GetTime( ) - m_CreationTime) * 1000;
-                                	        ce.playername = player->GetName();
-                        	                ce.playerColour1 = slot;
-                	                        ce.chatmessage = chatPlayer->GetMessage();
-        	                                ce.side = fteam;
-	                                        m_LobbyChatEvents.push_back(ce);
+                        ChatEvent ce;
+                        ce.time = (GetTime( ) - m_CreationTime) * 1000;
+                        ce.playername = player->GetName();
+                        ce.playerColour1 = slot;
+                        ce.chatmessage = chatPlayer->GetMessage();
+                        ce.side = fteam;
+                        m_LobbyChatEvents.push_back(ce);
 					}
 
 					if( m_MuteLobby )
-						Relay = false;
-
-					// also append to our cached lobby chat data
-					m_LobbyChat.push_back( "[" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
+                        Relay = false;
 
 					// decide if we should broadcast this to ent fun
 					if( player->GetFun( ) )
@@ -3545,7 +3543,7 @@ void CBaseGame :: EventPlayerDropRequest( CGamePlayer *player )
 
 		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
-			if( (*i)->GetLagging( ) )
+			if( (*i)->GetLagging( ) && !(*i)->GetGProxyExtended( ) )
 			{
 				if( (*i)->GetGProxy( ) )
 					AnyGProxy = true;
@@ -5191,13 +5189,15 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 	{
 		// check if enough players are present
 
-		if( GetNumHumanNonObservers( ) < m_AutoStartPlayers )
+        if( GetNumHumanNonObservers( ) < m_AutoStartPlayers)
 		{
 			m_AutoHostPlayerCycle++;
 
 			if( m_AutoHostPlayerCycle >= 3 )
 			{
-				SendAllChat( m_GHost->m_Language->WaitingForPlayersBeforeAutoStart( UTIL_ToString( m_AutoStartPlayers ), UTIL_ToString( m_AutoStartPlayers - GetNumHumanNonObservers( ) ) ) );
+                if(m_GHost->m_ShowWaitingMessage)
+                    SendAllChat( m_GHost->m_Language->WaitingForPlayersBeforeAutoStart( UTIL_ToString( m_AutoStartPlayers ), UTIL_ToString( m_AutoStartPlayers - GetNumHumanNonObservers( ) ) ) );
+
 				m_AutoHostPlayerCycle = 0;
 			}
 

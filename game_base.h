@@ -83,8 +83,7 @@ protected:
 	set<string> m_IgnoredNames;						// set of player names to NOT print ban messages for when joining because they've already been printed
 	set<string> m_IPBlackList;						// set of IP addresses to blacklist from joining (todotodo: convert to uint32's for efficiency)
 	vector<CGameSlot> m_EnforceSlots;				// vector of slots to force players to use (used with saved games)
-	vector<PIDPlayer> m_EnforcePlayers;				// vector of pids to force players to use (used with saved games)
-	vector<string> m_LobbyChat;						// vector of cached chat in lobby
+    vector<PIDPlayer> m_EnforcePlayers;				// vector of pids to force players to use (used with saved games)
 	CMap *m_Map;									// map data
 	string m_MapPath;								// cached map path for game updates
 	CSaveGame *m_SaveGame;							// savegame data (this is a pointer to global data)

@@ -129,6 +129,7 @@ public:
 	bool m_Reconnect;						// config value: GProxy++ reliable reconnects enabled or not
 	uint16_t m_ReconnectPort;				// config value: the port to listen for GProxy++ reliable reconnects on
 	uint32_t m_ReconnectWaitTime;			// config value: the maximum number of minutes to wait for a GProxy++ reliable reconnect
+	uint32_t m_ReconnectExtendedTime;		// config value: the maximum number of minutes to wait for an extended GProxy++ reliable reconnect	
 	uint32_t m_MaxGames;					// config value: maximum number of games in progress
 	char m_CommandTrigger;					// config value: the command trigger inside games
 	string m_MapCFGPath;					// config value: map cfg path
@@ -174,11 +175,29 @@ public:
 	uint32_t m_MatchMakingMethod;			// config value: the matchmaking method
 	vector<GProxyReconnector *> m_PendingReconnects;
 	boost::mutex m_ReconnectMutex;
-    uint32_t m_MapGameType;
-    bool m_FastReconnect;					// config value: whether this is a fast reconnect bot
+	uint32_t m_MapGameType;
+	bool m_Openstats;						// config value: whether we have openstats tables
+	uint32_t m_Autoban;						// config value: how long to autoban for (hours)
+	uint32_t m_AutobanFirstLeavers;			// config value: number of first leavers to autoban
+	uint32_t m_AutobanFirstLimit;			// config value: time limit on banning first leavers, from beginning of game (seconds)
+	uint32_t m_AutobanMinAllies;			// config value: if player has less than this many allies, don't autoban
+	uint32_t m_AutobanMinEnemies;			// config value: if player has less than this many enemies, don't autoban (seconds)
+	uint32_t m_AutobanGameLimit;			// config value: time limit measured backwards from end of game to autoban
+	uint32_t m_GameCounterLimit;			// config value: limit to the #XX autohosting
 	
-	bool m_Gamelist;
-	bool m_ShowScoreOnJoin;
+	uint32_t m_BanDuration;					// config value: default ban duration (hours)
+	uint32_t m_CBanDuration;				// config value: cban duration (hours)
+	uint32_t m_TBanDuration;				// config value: tban duration (hours)
+	uint32_t m_PBanDuration;				// config value: pban duration (hours)
+	uint32_t m_WBanDuration;				// config value: wban duration (hours)
+	
+	uint32_t m_AutoMuteSpammer;				// config value: auto mute spammers?
+	bool m_StatsOnJoin;						// config value: attempt to show stats on join?
+	bool m_AllowAnyConnect;					// config value: allow any wc3connect users to join? (don't check session)
+
+	bool m_Gamelist;	
+    bool m_FastReconnect;					// config value: whether this is a fast reconnect bot
+	bool m_ShowScoreOnJoin;	
     string m_LocalIPs;						// config value: list of local IP's (which Garena is allowed from)
     
     vector<string> m_FlameTriggers;			// triggers for antiflame system
@@ -203,6 +222,8 @@ public:
 
 	deque<HostNameInfo> m_HostNameCache;	// host name lookup cache
 	boost::mutex m_HostNameCacheMutex;
+
+    bool m_ShowWaitingMessage;
 
 	CGHost( CConfig *CFG );
 	~CGHost( );

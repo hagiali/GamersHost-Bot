@@ -158,14 +158,14 @@ void handler()
 
 void CONSOLE_Print( string message )
 {
-	boost::mutex::scoped_lock printLock( PrintMutex );
+    boost::mutex::scoped_lock printLock( PrintMutex );
 	gLogQueue.push_back( message );
 	printLock.unlock( );
 }
 
 void CONSOLE_Flush( )
 {
-	vector<string> logQueue;
+    vector<string> logQueue;
 	boost::mutex::scoped_lock printLock( PrintMutex );
 	gLogQueue.swap( logQueue );
 	printLock.unlock( );
@@ -234,23 +234,20 @@ void DEBUG_Print( BYTEARRAY b )
 //
 // main
 //
-
 int main( int argc, char **argv )
 {
-	srand( time( NULL ) );
-
-	gCFGFile = "ghost.cfg";
-
-	if( argc > 1 && argv[1] )
-		gCFGFile = argv[1];
-
-	// read config file
+    CONSOLE_Print("*******************************************************************");
+    CONSOLE_Print("***                                                            ****");
+    CONSOLE_Print("***                 GriefNetwork-Bot v1.0                      ****");
+    CONSOLE_Print("***        https://github.com/Grief-Code/GriefNetwork-Bot      ****");
+    CONSOLE_Print("***                                                            ****");
+    CONSOLE_Print("*******************************************************************");
+    srand( time( NULL ) );
 
 	CConfig CFG;
-	CFG.Read( "default.cfg" );
-	CFG.Read( gCFGFile );
+    CFG.Read( "default.cfg" );
 	gLogFile = CFG.GetString( "bot_log", string( ) );
-	gLogMethod = CFG.GetInt( "bot_logmethod", 1 );
+    gLogMethod = CFG.GetInt( "bot_logmethod", 1 );
 
 	if( !gLogFile.empty( ) )
 	{
@@ -369,6 +366,7 @@ int main( int argc, char **argv )
 	// shutdown ghost
 
 	CONSOLE_Print( "[GHOST] shutting down" );
+    CONSOLE_Flush();
 	delete gGHost;
 	gGHost = NULL;
 
@@ -740,6 +738,13 @@ CGHost :: CGHost( CConfig *CFG )
 	m_FlameTriggers.push_back("faggot");
 	m_FlameTriggers.push_back("dick");
 	m_FlameTriggers.push_back("raizen");
+
+
+	CONSOLE_Print( "[GHOST] Loading GeoIP data" );
+	m_GeoIP = GeoIP_open( m_GeoIPFile.c_str( ), GEOIP_STANDARD | GEOIP_CHECK_CACHE );
+
+	if( m_GeoIP == NULL )
+		CONSOLE_Print( "[GHOST] GeoIP: error opening database" );
 	
 	// clear the gamelist for this bot, in case there's residual entries
 	m_Callables.push_back( m_DB->ThreadedGameUpdate(0, "", "", "", "", 0, "", 0, 0, false, false) );
@@ -1407,7 +1412,7 @@ bool CGHost :: Update( long usecBlock )
 
 	// autohost
 
-	if( !m_AutoHostGameName.empty( ) && m_AutoHostMaximumGames != 0 && m_AutoHostAutoStartPlayers != 0 && GetTime( ) - m_LastAutoHostTime >= 10 && !m_BNETs.empty( ) && m_BNETs[0]->GetOutPacketsQueued( ) <= 1 )
+    if( !m_AutoHostGameName.empty( ) && m_AutoHostMaximumGames != 0 && m_AutoHostAutoStartPlayers != 0 && GetTime( ) - m_LastAutoHostTime >= 10 && ((!m_BNETs.empty( ) && m_BNETs[0]->GetOutPacketsQueued( ) <= 1) || m_BNETs.empty()))
 	{
 		// copy all the checks from CGHost :: CreateGame here because we don't want to spam the chat when there's an error
 		// instead we fail silently and try again soon
@@ -1691,6 +1696,7 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_Warcraft3Path = UTIL_AddPathSeperator( CFG->GetString( "bot_war3path", "C:\\Program Files\\Warcraft III\\" ) );
 	m_BindAddress = CFG->GetString( "bot_bindaddress", string( ) );
 	m_ReconnectWaitTime = CFG->GetInt( "bot_reconnectwaittime", 3 );
+	m_ReconnectExtendedTime = CFG->GetInt( "bot_reconnectextendedtime", 5 );
 	m_MaxGames = CFG->GetInt( "bot_maxgames", 5 );
 	string BotCommandTrigger = CFG->GetString( "bot_commandtrigger", "!" );
 
@@ -1744,7 +1750,7 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_MOTDFile = CFG->GetString( "bot_motdfile", "motd.txt" );
 	m_GameLoadedFile = CFG->GetString( "bot_gameloadedfile", "gameloaded.txt" );
 	m_GameOverFile = CFG->GetString( "bot_gameoverfile", "gameover.txt" );
-	m_GeoIPFile = CFG->GetString( "bot_geoipfile", "geoip.dat" );
+    m_GeoIPFile = CFG->GetString( "bot_geoipfile", "GeoIP.dat" );
 	m_LocalAdminMessages = CFG->GetInt( "bot_localadminmessages", 1 ) == 0 ? false : true;
 	m_TCPNoDelay = CFG->GetInt( "tcp_nodelay", 0 ) == 0 ? false : true;
 	m_MatchMakingMethod = CFG->GetInt( "bot_matchmakingmethod", 1 );
@@ -1759,7 +1765,14 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_StreamPort = CFG->GetInt( "bot_streamport", m_HostPort * 2 );
 	m_StreamLimit = CFG->GetInt( "bot_streamlimit", 300 );
 	
+	m_AutoMuteSpammer = CFG->GetInt( "bot_automutespammer", 1 ) == 0 ? false : true;
+	m_StatsOnJoin = CFG->GetInt( "bot_statsonjoin", 1 ) == 0 ? false : true;
+	m_AllowAnyConnect = CFG->GetInt( "bot_allowanyconnect", 0 ) == 0 ? false : true;
+	m_CloseSinglePlayer = CFG->GetInt( "bot_closesingleplayer", 1 ) == 0 ? false : true;
+	m_ShowScoreOnJoin = CFG->GetInt( "bot_scoreonjoin", 0 ) == 0 ? false : true;
+	m_Gamelist = CFG->GetInt( "bot_gamelist", 0 ) == 0 ? false : true;
     m_Stage = CFG->GetInt( "bot_stage", 0 ) == 0 ? false : true;
+    m_ShowWaitingMessage = CFG->GetInt( "bot_showwaitingmessage", 0) == 0 ? false : true;
 }
 
 void CGHost :: ExtractScripts( )
