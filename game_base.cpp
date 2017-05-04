@@ -1256,7 +1256,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
-				if( m_SyncCounter - (*i)->GetSyncCounter( ) > m_SyncLimit )
+				//changed by h3rmit
+				if( m_SyncCounter - (*i)->GetSyncCounter( ) > m_SyncLimit && !(*i)->GetGProxyExtended( ) )
 				{
 					// drop them immediately if they have already exceeded their total lagging time (5 minutes)
 					if( (*i)->GetTotalLaggingTicks( ) > 300000 )
@@ -1317,7 +1318,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
-				if( (*i)->GetGProxy( ) )
+				// changed by h3rmit
+				if( (*i)->GetGProxy( ) && !(*i)->GetGProxyExtended( ) )
 					UsingGProxy = true;
 			}
 
@@ -1435,6 +1437,25 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			// keep track of the last lag screen time so we can avoid timing out players
 
 			m_LastLagScreenTime = GetTime( );
+		}
+
+		// added by h3rmit
+		// drop players using GProxy Extended who didn't reconnect in time
+		
+		if( m_GHost->m_ReconnectExtendedTime > 0 )
+		{
+			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); i++ )
+			{
+				CGamePlayer *p;
+				if( (*i)->GetDisconnected( ) && (*i)->GetGProxyExtended( ) && (*i)->GetTotalDisconnectTime( ) > m_GHost->m_ReconnectExtendedTime * 60 )
+				{
+					(*i)->SetDeleteMe( true );
+					(*i)->SetLeftReason( (*i)->GetName( ) + " has been kicked because he didn't reconnect in time" );
+					(*i)->SetLeftCode( PLAYERLEAVE_DISCONNECT );
+					SendAllChat( (*i)->GetName( ) + " has been kicked because he didn't reconnect in time." );
+					CONSOLE_Print( "[GAME: " + m_GameName + "] Player " + (*i)->GetName( ) + " has been kicked because he didn't reconnect in time" );
+				}
+			}
 		}
 
 		// see if we can handle any pending reconnects
@@ -2156,7 +2177,7 @@ void CBaseGame :: EventPlayerDisconnectTimedOut( CGamePlayer *player )
 			player->SetGProxyDisconnectNoticeSent( true );
 		}
 
-		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 )
+		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 && !player->GetGProxyExtended( ) )
 		{
 			uint32_t TimeRemaining = ( m_GProxyEmptyActions + 1 ) * 60 - ( GetTime( ) - m_StartedLaggingTime );
 
@@ -2174,7 +2195,7 @@ void CBaseGame :: EventPlayerDisconnectTimedOut( CGamePlayer *player )
 	// this is because Warcraft 3 stops sending packets during the lag screen
 	// so when the lag screen finishes we would immediately disconnect everyone if we didn't give them some extra time
 
-	if( GetTime( ) - m_LastLagScreenTime >= 10 )
+	if( GetTime( ) - m_LastLagScreenTime >= 10 && !player->GetGProxyExtended( ) )
 	{
 		player->SetDeleteMe( true );
 		player->SetLeftReason( m_GHost->m_Language->HasLostConnectionTimedOut( ) );
@@ -2210,7 +2231,7 @@ void CBaseGame :: EventPlayerDisconnectSocketError( CGamePlayer *player )
 			player->SetGProxyDisconnectNoticeSent( true );
 		}
 
-		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 )
+		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 && !player->GetGProxyExtended( ) )
 		{
 			uint32_t TimeRemaining = ( m_GProxyEmptyActions + 1 ) * 60 - ( GetTime( ) - m_StartedLaggingTime );
 
@@ -2243,7 +2264,7 @@ void CBaseGame :: EventPlayerDisconnectConnectionClosed( CGamePlayer *player )
 			player->SetGProxyDisconnectNoticeSent( true );
 		}
 
-		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 )
+		if( GetTime( ) - player->GetLastGProxyWaitNoticeSentTime( ) >= 20 && !player->GetGProxyExtended( ) )
 		{
 			uint32_t TimeRemaining = ( m_GProxyEmptyActions + 1 ) * 60 - ( GetTime( ) - m_StartedLaggingTime );
 
@@ -3522,7 +3543,7 @@ void CBaseGame :: EventPlayerDropRequest( CGamePlayer *player )
 
 		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
-			if( (*i)->GetLagging( ) )
+			if( (*i)->GetLagging( ) && !(*i)->GetGProxyExtended( ) )
 			{
 				if( (*i)->GetGProxy( ) )
 					AnyGProxy = true;
